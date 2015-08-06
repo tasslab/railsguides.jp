@@ -1,0 +1,8 @@
+source_repository_url: https://github.com/rails/rails.git
+target_repository_url: https://github.com/tasslab/railsguides.jp.git
+source_branch: 4-2-stable
+target_branch: japanese
+source_lang: en
+target_lang: ja
+paths:
+  guides/source/action_controller_overview.md: guides/source/ja
