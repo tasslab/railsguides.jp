@@ -1,4 +1,3 @@
-﻿
 Action Controller の概要
 ==========================
 
@@ -20,7 +19,7 @@ Action Controller の概要
 コントローラの役割
 --------------------------
 
-Action Controllerは、MVCモデルのCに相当します。リクエストを処理するコントローラがルーティング設定によって指名されると、コントローラはリクエストの意味を理解し、適切な出力を行なうための責任を持ちます。幸い、これらの処理はほとんどAction Controllerが行ってくれます。しかも吟味された規則を使用しているので、リクエストの処理は可能な限り素直な方法で行われます。
+Action Controllerは、MVCモデルのCに相当します。. After routing has determined which controller to use for a request, your controller is responsible for making sense of the request and producing the appropriate output. 幸い、これらの処理はほとんどAction Controllerが行ってくれます。しかも吟味された規則を使用しているので、リクエストの処理は可能な限り素直な方法で行われます。
 
 従来のいわゆる[RESTful](http://ja.wikipedia.org/wiki/REST) なアプリケーションでは、コントローラはリクエストを受け取り (この部分は開発者からは見えないようになっています)、データをモデルから取得したりモデルに保存するなどの作業を行い、最後にビューを使用してHTML出力を生成する、という役割を担います。自分のコントローラのつくりがこれと少し違っていたりするかもしれませんが、気にする必要はありません。ここではコントローラの一般的な使用法について説明しています。
 
@@ -67,14 +66,14 @@ publicなメソッドでないとアクションとして呼び出すことは�
 パラメータ
 ----------
 
-コントローラのアクションでは、ユーザーから送信されたデータやその他のパラメータにアクセスして何か作業を行なうのが普通です。Railsに限らず、一般にWebアプリケーションでは2種類のパラメータを扱うことができます。1番目は、URLの一部として送信されるパラメータで、「クエリ文字列パラメータ」と呼ばれます。クエリ文字列は、常にURLの"?"の後に置かれます。2番目のパラメータは、「POSTデータ」と呼ばれるものです。POSTデータは通常、ユーザーが記入したHTMLフォームから受け取ります。これがPOSTデータと呼ばれているのは、HTTP POSTリクエストの一部として送信されるからです。Railsでは、クエリ文字列パラメータの受け取り方とPOSTデータの受け取り方に違いはありません。どちらもコントローラ内では`params`という名前のハッシュでアクセスできます。
+コントローラのアクションでは、ユーザーから送信されたデータやその他のパラメータにアクセスして何か作業を行なうのが普通です。Railsに限らず、一般にWebアプリケーションでは2種類のパラメータを扱うことができます。1番目は、URLの一部として送信されるパラメータで、「クエリ文字列パラメータ」と呼ばれます。クエリ文字列は、UR"?" in the URL. The second type of parameter is usually referred to as POST data. POSTデータは通常、ユーザーが記入したHTMLフォームから受け取ります。これがPOSTデータと呼ばれているのは、HTTP POSTリクエストの一部として送信されるからです。It's called POST data because it can only be sent as part of an HTTP POST request. Rails does not make any distinction between query string parameters and POST parameters, and both are available in the `params` hash in your controller:
 
 ```ruby
 class ClientsController < ApplicationController
   # このアクションではクエリ文字列パラメータが使用されています
   # 送信側でHTTP GETリクエストが使用されているためです
-  # ただしパラメータにアクセスするうえでは下との違いは生じません
-  # 有効な顧客リストを得るため、このアクションへのURLは以下のようになっています
+  # ただしパラメータにアクセスするうえでは下との違いは生じませんThe URL fo
+  # 有効な顧客リストを得るため、このアクションへのURLは以下のようになっていまs
   # clients: /clients?status=activated
   def index
     if params[:status] == "activated"
@@ -84,8 +83,8 @@ class ClientsController < ApplicationController
     end
   end
 
-  # このアクションではPOSTパラメータが使用されています。このパラメータは通常
-  # ユーザーが送信したHTMLフォームが元になります。
+  # このアクションではPOSTパラメータがしようされていmこのパラメータは通常
+  # ユーザーが送信したHTMLフォームが元になります。The URL fo
   # これはRESTfulなアクセスであり、URLは"/clients"となります。
   # データはURLではなくリクエストのbodyの一部として送信されます。
   def create
@@ -113,8 +112,7 @@ NOTE: "["と"]"はURLで使用できない文字なので、この例の実際�
 
 これで、受け取った`params[:ids]`の値は`["1", "2", "3"]`になりました。もう一つ知っておいて欲しいのは、パラメータの値はすべて「文字列型」であることです。Railsはパラメータの型を推測することもしなければ、型変換も行いませんので、必要であれば自分で型を変換する必要があります。パラメータの数字を`to_i`で整数に変換するのはよく行われます。
 
-NOTE: `params`の中に`[]`、`[nil]`、`[nil, nil, ...]`という値があると、すべて自動的に`nil`に置き換えられます。この動作は、デフォルトのセキュリティ上の理由にもとづいています。詳細については [セキュリティガイド](security.html#安全でないクエリ生成) を参照してください。
-
+NOTE: `params`の中に`[]`、`[nil]`、`[nil, nil, ...]`という値があると、すべて自動的に`nil`に置き換えられます。この動作は、デフォルトのセキュリティ上の理由にもとづいています。詳細については[セキュリティガイド](security.html#安全でないクエリ生成)を参照してください。
 フォームから、中かっこ[]の中にキー名を含めたハッシュを送信するには以下のようにします。
 
 ```html
@@ -142,7 +140,7 @@ Webサービスアプリケーションを開発していると、パラメー�
 
 `params[:company]`で受け取る値は`{ "name" => "acme", "address" => "123 Carrot Street" }`になります。
 
-同様に、初期化設定で`config.wrap_parameters`をオンにした場合や、コントローラで`wrap_parameters`を呼び出した場合、JSONパラメータのルート要素を安全に取り除くことができます。このパラメータは、デフォルトではコントローラ名に応じて複製およびラップされます。従って、上のパラメータは以下のように書けます。
+同様に、初期化設定で`config.wrap_parameters`をオンにした場合や、コントローラで`wrap_parameters`を呼び出した場合、JSONパラメータのルート要素を安全に取り除くことができます。[REVIEW]このパラメータは、デフォルトではコントローラ名に応じて複製およびラップされます。従って、上のパラメータは以下のように書けます。
 
 ```json
 { "name": "acme", "address": "123 Carrot Street" }
@@ -188,7 +186,7 @@ end
 
 strong parametersを使用することで、Action ControllerのパラメータがActive Modelのマスアサインメントに利用されることを禁止できます。ホワイトリストに追記したもののみ使用できます。これは、多くの属性を一度に更新したいときに、どの属性の更新を許可し、どの属性の更新を禁止するかを明示的に決定しなければならないことを意味します。大雑把にすべての属性の更新をまとめて許可してしまうと、外部に公開する必要のない属性まで誤って公開されてしまう可能性が生じますので、そのような事態を防ぐために行います。
 
-さらに、パラメータの属性には「必須 (required)」を指定することもでき、事前に定義したraise/rescueフローを実行して400 Bad Requestで終了するようにすることもできます。
+[REVIEW]さらに、パラメータの属性には「必須 (required)」を指定することもでき、事前に定義したraise/rescueフローを実行して400 Bad Requestで終了するようにすることもできます。
 
 ```ruby
 class PeopleController < ActionController::Base
@@ -223,13 +221,13 @@ end
 
 #### 許可されたスカラー値
 
-以下の例では
+Given
 
 ```ruby
 params.permit(:id)
 ```
 
-`:id`キーが`params`にあり、それの値の型が許可済みスカラーがあれば、ホワイトリストチェックをパスします。でなければ、このキーはフィルタによって除外されます。従って、ハッシュやその他のオブジェクトを外部から注入することはできなくなります。
+[REVIEW]`:id`キーが`params`にあり、それに関連付けられた許可済みスカラー値があれば、ホワイトリストチェックをパスします。でなければ、このキーはフィルタによって除外されます。従って、ハッシュやその他のオブジェクトを外部から注入することはできなくなります。
 
 許可されるスカラー型は`String`、`Symbol`、`NilClass`、`Numeric`、`TrueClass`、`FalseClass`、`Date`、`Time`、`DateTime`、`StringIO`、`IO`、`ActionDispatch::Http::UploadedFile`、`Rack::Test::UploadedFile`です。
 
@@ -245,7 +243,8 @@ params.permit(id: [])
 params.require(:log_entry).permit!
 ```
 
-こうすることで、`:log_entry`パラメータハッシュとすべてのサブハッシュが「許可」としてマーキングされます。ただし、`permit!`は属性を一括で許可してしまうものなので、くれぐれも慎重に使用してください。現在のモデルはもちろんのこと、将来属性が追加されたときにそこにマスアサインメントの脆弱性が生じる可能性があるからです。
+This will mark the `:log_entry` parameters hash and any sub-hash of it
+permitted. ただし、`permit!`は属性を一括で許可してしまうものなので、くれぐれも慎重に使用してください。現在のモデルはもちろんのこと、将来属性が追加されたときにそこにマスアサインメントの脆弱性が生じる可能性があるからです。
 
 #### ネストしたパラメータ
 
@@ -338,7 +337,7 @@ Rails.application.config.session_store :cookie_store, key: '_your_app_session'
 `:domain`キーを渡して、cookieで使用するドメイン名を指定することもできます。
 
 ```ruby
-# このファイルを変更後サーバーを必ず再起動してください。
+# Be sure to restart your server when you modify this file.
 Rails.application.config.session_store :cookie_store, key: '_your_app_session', domain: ".example.com"
 ```
 
@@ -464,7 +463,7 @@ redirect_to root_url, flash: { referral_code: 1234 }
 
     <!-- 以下略 -->
   </body>
-</html> 
+</html>
 ```
 
 このように、アクションで通知(notice)や警告(alert)メッセージを設置すると、レイアウト側で自動的にそのメッセージが表示されます。
@@ -485,7 +484,7 @@ class MainController < ApplicationController
   # すべてのリクエストをUsersController#indexにリダイレクトしたいとします。
   # あるアクションでflashを設定してこのindexアクションにリダイレクトすると、
   # 別のリダイレクトが発生した場合にはflashは消えてしまいます。
-  # ここで'keep'を使用すると別のリクエストでflashが消えないようになります。
+  # ここで'keep'を使用すると別のリクエストでflashが消えないようになります
   def index
     # すべてのflash値を保持する
     flash.keep
@@ -549,7 +548,7 @@ end
 セッションを削除する場合はキーに`nil`を指定することで削除しましたが、cookieを削除する場合はこの方法ではなく、`cookies.delete(:key)`を使用してください。
 
 Railsでは、機密データ保存のために署名済みcookie jarと暗号化cookie jarを利用することもできます。署名済みcookie jarでは、暗号化した署名をcookie値に追加することで、cookieの改竄を防ぎます。暗号化cookie jarでは、署名の追加と共に、値自体を暗号化してエンドユーザーに読まれることのないようにします。
-詳細については[APIドキュメント](http://api.rubyonrails.org/classes/ActionDispatch/Cookies.html)を参照してください。
+詳細については[APIドキュメント](http://api.rubyonrails.org/classes/ActionDispatch/Cookies.html)をさんしょうしてください。
 
 これらの特殊なcookieではシリアライザを使用して値を文字列に変換して保存し、読み込み時に逆変換(deserialize)を行ってRubyオブジェクトに戻しています。
 
@@ -585,7 +584,7 @@ end
 ```
 
 cookieには文字列や数字などの単純なデータだけを保存することをお勧めします。
-cookieに複雑なオブジェクトを保存しなければならない場合は、後続のリクエストでcookieから値を読み出す場合の変換については自分で面倒を見る必要があります。
+cookiesに複雑なオブジェクトを保存しなければならない場合は、後続のリクエストでcookiesから値を読み出す場合の変換については自分で面倒を見る必要があります。
 
 cookieセッションストアを使用する場合、`session`や`flash`ハッシュについてもこのことは該当します。
 
@@ -645,7 +644,7 @@ end
 
 上のようにすることで、`LoginsController`の`new`アクションと`create`アクションをこれまでどおり認証不要にすることができました。特定のアクションについてだけフィルタをスキップしたい場合には`:only`オプションを使用します。逆に特定のアクションについてだけフィルタをスキップしたくない場合は`:except`オプションを使用します。これらのオプションはフィルタを追加するときにも使用できるので、最初の場所で選択したアクションに対してだけ実行されるフィルタを追加することもできます。
 
-### afterフィルタとaroundフィルタ
+### a fterフィルタとaroundフィルタ
 
 "before"フィルタ以外に、アクションの実行後に実行されるフィルタや、実行前実行後の両方で実行されるフィルタを使用することもできます。
 
@@ -681,7 +680,7 @@ end
 
 最も一般的なフィルタの使用法は、privateメソッドを作成し、*_action を使用してそのメソッドを追加することですが、同じ結果を得られるフィルタ使用法が他にも2とおりあります。
 
-1番目は、*\_action メソッドに対して直接ブロックを与えることです。このブロックはコントローラを引数として受け取ります。さきほどの`require_login`フィルタを書き換えて、ブロックを使用するようにします。
+The first is to use a block directly with the *\_action methods. [REVIEW]このブロックはコントローラを引数として受け取り、その上の`require_login`フィルタを書き換えて、ブロックを使用するようにします。
 
 ```ruby
 class ApplicationController < ActionController::Base
@@ -722,7 +721,7 @@ end
 
 この攻撃を防ぐために必要な手段の第一歩は、「create/update/destroyのような破壊的な操作に対して絶対にGETリクエストでアクセスできない」ようにすることです。WebアプリケーションがRESTful規則に従っていれば、これは守られているはずです。しかし、邪悪なWebサイトはGET以外のリクエストを目標サイトに送信することなら簡単にできてしまいます。リクエストフォージェリの保護はまさにここを守るためのものです。文字どおり、リクエストの偽造(forgery)から保護するのです。
 
-その具体的な保護方法は、推測不可能なトークンをすべてのリクエストに追加することです。このトークンはサーバーだけが知っています。これにより、リクエストに含まれているトークンが不正であればアクセスが拒否されます。
+その具体的な保護方法は、推測不可能なトークンをすべてのリクエストにThe way this is done is to add a non-guessable token which is only known to your server to each request. This way, if a request comes in without the proper token, it will be denied access.
 
 以下のようなフォームを試しに生成してみます。
 
@@ -757,38 +756,38 @@ Railsでは、[formヘルパー](form_helpers.html)を使用して生成され�
 
 ### `request`オブジェクト
 
-リクエストオブジェクトには、クライアントブラウザから返されるリクエストに関する有用な情報が多数含まれています。利用可能なメソッドをすべて知りたい場合は[APIドキュメント](http://api.rubyonrails.org/classes/ActionDispatch/Request.html)を参照してください。その中から、このオブジェクトでアクセス可能なメソッドを紹介します。
+リクエストオブジェクトには、クライアントブラウザから返されるリクエストに関する有用な情報が多数含まれています。利用可能なメソッドをすべて知りたい場合はTo get a full list of the available methods, refer to the [API documentation](http://api.rubyonrails.org/classes/ActionDispatch/Request.html). Among the properties that you can access on this object are:
 
 | `request`のプロパティ                     | 目的                                                                          |
 | ----------------------------------------- | -------------------------------------------------------------------------------- |
-| host                                      | リクエストで使用されているホスト名                                              |
-| domain(n=2)                               | ホスト名の右 (TLD:トップレベルドメイン) から数えて`n`番目のセグメント            |
-| format                                    | クライアントからリクエストされたContent-Type                                        |
-| method                                    | リクエストで使用されたHTTPメソッド                                            |
-| get?, post?, patch?, put?, delete?, head? | HTTPメソッドがGET/POST/PATCH/PUT/DELETE/HEADのいずれかの場合にtrueを返す               |
-| headers                                   | リクエストに関連付けられたヘッダーを含むハッシュを返す               |
-| port                                      | リクエストで使用されたポート番号 (整数)                                  |
+| host                                      | The hostname used for this request.                                              |
+| domain(n=2)                               | The hostname's first `n` segments, starting from the right (the TLD).            |
+| format                                    | The content type requested by the client.                                        |
+| method                                    | The HTTP method used for the request.                                            |
+| get?, post?, patch?, put?, delete?, head? | Returns true if the HTTP method is GET/POST/PATCH/PUT/DELETE/HEAD.               |
+| headers                                   | Returns a hash containing the headers associated with the request.               |
+| port                                      | The port number (integer) used for the request.                                  |
 | protocol                                  | プロトコル名に"://"を加えたものを返す ("http://"など) |
-| query_string                              | URLの一部で使用されているクエリ文字 ("?"より後の部分)                    |
-| remote_ip                                 | クライアントのipアドレス                                                    |
-| url                                       | リクエストで使用されているURL全体                                             |
+| query_string                              | The query string part of the URL, i.e., everything after "?".                    |
+| remote_ip                                 | The IP address of the client.                                                    |
+| url                                       | The entire URL used for the request.                                             |
 
 #### `path_parameters`、`query_parameters`、`request_parameters`
 
-Railsは、リクエストに関連する`params`ハッシュに集約してくれます。 collects all of the parameters sent along with the request in the `params` hash, whether they are sent as part of the query string or the post body. requestオブジェクトには3つのアクセサがあり、パラメータの由来に応じたアクセスを行なうこともできます。`query_parameters`ハッシュにはクエリ文字列として送信されたパラメータが含まれます。`request_parameters`ハッシュにはPOST bodyの一部として送信されたパラメータが含まれます。`path_parameters`には、ルーティング機構によって特定のコントローラとアクションへのパスの一部であると認識されたパラメータが含まれます。
+Railsは、送信されたリクエストに関連するすべてのパラメータを`params`ハッシュに集約してくれます。このとき、クエリ文字列であったパラメータも、POSTで送信されたパラメータも区別なく`params`ハッシュに保存されます。requestオブジェクトには3つのアクセサがあり、パラメータの由来に応じたアクセスを行なうこともできます。`query_parameters`ハッシュにはクエリ文字列として送信されたパラメータが含まれます。`request_parameters`ハッシュにはPOST bodyの一部として送信されたパラメータが含まれます。`path_parameters`には、ルーティング機構によって特定のコントローラとアクションへのパスの一部であると認識されたパラメータが含まれます。
 
-### The `response`オブジェクト
+### `response`オブジェクト
 
 responseオブジェクトはアクションが実行されるときに構築され、クライアントに送り返されるデータを描画 (レンダリング) するものなので、responseオブジェクトを直接使用することは通常ありません。しかし、たとえばafter filter内などでresponseオブジェクトを直接操作できれば便利です。responseオブジェクトのアクセサメソッドがセッターを持っていれば、これを使用してresponseオブジェクトの値を直接変更できます。
 
 | `response`のプロパティ | 目的                                                                                             |
 | ---------------------- | --------------------------------------------------------------------------------------------------- |
-| body                   | クライアントに送り返されるデータの文字列。多くの場合HTML。                  |
+| body                   | クライアントに送り返されるデータの文字列。This is most often HTML.                  |
 | status                 | レスポンスのステータスコード (200 OK、404 file not foundなど)|
-| location               | リダイレクト時のリダイレクト先URL                                                  |
-| content_type           | レスポンスのContent-Type                                                                   |
-| charset                | レスポンスで使用される文字セット。デフォルトは"utf-8"。                                  |
-| headers                | レスポンスで使用されるヘッダー                                                                      |
+| location               | The URL the client is being redirected to, if any.                                                  |
+| content_type           | The content type of the response.                                                                   |
+| charset                | レスポンスで使用される文字セット。Default is "utf-8".                                  |
+| headers                | Headers used for the response.                                                                      |
 
 #### カスタムヘッダーの設定
 
@@ -906,7 +905,7 @@ TIP: 静的なファイルをわざわざRails経由でストリーミング送�
 ```ruby
 class ClientsController < ApplicationController
   # ユーザーはリソース受信時にHTMLまたはPDFをリクエストできる
-  def show
+[W2]def show
     @client = Client.find(params[:id])
 
     respond_to do |format|
@@ -925,7 +924,7 @@ Mime::Type.register "application/pdf", :pdf
 
 NOTE: Railsの設定ファイルは、起動時にしか読み込まれません(app/以下のファイルのようにリクエストごとに読み出されたりしません)。上の設定変更を反映するサーバーを再起動する必要があります。
 
-これで、以下のようにURLに".pdf"を追加するだけでPDF版のclientを取得できます。
+これで、以下のようにURLに".pdf"を追加するだけでPDF版のclientをしゅとくで
 
 ```bash
 GET /clients/1.pdf
@@ -963,13 +962,15 @@ end
 
 今あなたはカラオケマシンを開発中です。ユーザーは曲の歌詞を見たいと思っています。それぞれの`Song`には特定の数の行があり、その行1つ1つに、「曲が終わるまで後何拍あるか」を表す`num_beats`が記入されています。
 
-歌詞を「カラオケスタイル」でユーザーに表示したいので、直前の歌詞を歌い終わってから次の歌詞を表示することになります。そこで、以下のように`ActionController::Live`を使用します。
+If we wanted to return the lyrics in Karaoke fashion (only sending the line when
+the singer has finished the previous line), then we could use `ActionController::Live`
+as follows:
 
 ```ruby
 class LyricsController < ActionController::Base
   include ActionController::Live
 
-  def show
+[W2]def show
     response.headers['Content-Type'] = 'text/event-stream'
     song = Song.find(params[:id])
 
@@ -987,7 +988,7 @@ end
 
 #### ストリーミングを行う場合の考慮事項
 
-任意のデータをストリーミング送信できることは、きわめて強力なツールとなります。これまでの例でご紹介したように、好きな時に好きなものをレスポンスストリームに流すことができます。ただし、以下の点についてご注意ください。
+任意のデータをストリーミング送信できることは、きわめて強力なツールとなります。これまでの例でご紹介したように、好きな時に好きなものをレスポンスストリームに流すことができますただし、以下の点についてご注意ください。
 
 * レスポンスストリームが1つ作成されるたびに新しいスレッドが作成され、元のスレッドからスレッドローカルな変数がコピーされます。スレッドローカルな変数が増えすぎるとパフォーマンスに悪影響が生じます。また、スレッド数が多すぎても同様にパフォーマンスが低下します。
 * レスポンスストリームを閉じることに失敗すると、対応するソケットが永久に開いたままになってしまいます。レスポンスストリームを使用する場合は、`close`が確実に呼び出されるようにしてください。
@@ -1000,7 +1001,7 @@ Railsのログファイルは、環境ごとに`log`フォルダの下に出力�
 
 ### パラメータをフィルタする
 
-Railsアプリケーションの設定ファイル config.filter_parameters に、特定のリクエストパラメータをログ出力時にフィルタする設定を追加することができます。フィルタされたパラメータはログ内で [FILTERED] という文字に置き換えられます。
+You can filter out sensitive request parameters from your log files by appending them to `config.filter_parameters` in the application configuration. フィルタされたパラメータはログ内で [FILTERED] という文字に置き換えられます。
 
 ```ruby
 config.filter_parameters << :password
@@ -1008,7 +1009,7 @@ config.filter_parameters << :password
 
 ### リダイレクトをフィルタする
 
-アプリケーションからのリダイレクト先となるURLのいくつかは、場合によってはログに出力しない方がよいことがあります。
+Sometimes it's desirable to filter out from log files some sensitive locations your application is redirecting to.
 設定の`config.filter_redirect`オプションを使用して、リダイレクト先をログに出力しないようにすることができます。
 
 ```ruby
@@ -1072,7 +1073,7 @@ class ClientsController < ApplicationController
   # ユーザーがクライアントにアクセスする権限を持っているかどうかをチェックする
   before_action :check_authorization
 
-  # このアクション内で認証周りを心配する必要がない
+  # このアクション内で認証周りをほとんど心配する必要がないことに注目
   def edit
     @client = Client.find(params[:id])
   end
@@ -1085,6 +1086,8 @@ class ClientsController < ApplicationController
     end
 end
 ```
+
+WARNING: You shouldn't do `rescue_from Exception` or `rescue_from StandardError` unless you have a particular reason as it will cause serious side-effects (e.g. you won't be able to see exception details and tracebacks during development).
 
 NOTE: `ApplicationController`クラスでは特定の例外についてはrescueできないものがあります。その理由は、コントローラが初期化されてアクションが実行される前に発生する例外があるからです。詳細については、Pratik Naikによる[記事](http://m.onkey.org/2008/7/20/rescue-from-dispatching)を参照してください。
 
@@ -1104,7 +1107,7 @@ end
 ```ruby
 class DinnerController
   force_ssl only: :cheeseburger
-  # または
+  # or
   force_ssl except: :cheeseburger
 end
 ```
