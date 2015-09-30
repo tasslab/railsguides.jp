@@ -1,4 +1,3 @@
-﻿
 Active Record の基礎
 ====================
 
@@ -21,11 +20,13 @@ Active Recordとは、[MVC](http://ja.wikipedia.org/wiki/Model_View_Controller)�
 
 ### Active Recordパターン
 
-[Active RecordはMartin Fowlerによって](http://www.martinfowler.com/eaaCatalog/activeRecord.html) _Patterns of Enterprise Application Architecture_ という書籍で記述されました。Active Recordにおいて、オブジェクトとは永続的なデータであり、そのデータに対する振る舞いでもあります。Active Recordでは、データアクセスのロジックを確実なものにすることは、そのオブジェクトの利用者にデータベースへの読み書き方法を教育することの一部である、という意見を採用しています。
+[Active RecordはMartin Fowlerによって](http://www.martinfowler.com/eaaCatalog/activeRecord.html) _Patterns of Enterprise Application Architecture_ という書籍で記述されました。Active Recordにおいて、オブジェクトとは永続的なデータであり、そのデータに対する振る舞いでもあります。Active Record takes the opinion that ensuring
+data access logic as part of the object will educate users of that
+object on how to write to and read from the database.
 
 ### O/Rマッピング
 
-オブジェクトリレーショナルマッピング (O/RマッピングやORMと略されることもあります)とは、アプリケーションが持つリッチなオブジェクトをリレーショナルデータベース(RDBMS)のテーブルに接続するものです。ORMを使用することで、SQL文を直接書く代りにわずかなアクセスコードを書くだけで、アプリケーションにおけるオブジェクトの属性やリレーションシップをデータベースに保存したりデータベースから読み出したりすることができるようになります。
+オブジェクトリレーショナルマッピング) (O/RマッピングやORMと略されることもあります)とは、アプリケーションが持つリッチなオブジェクトをリレーショナルデータベース(RDBMS)のテーブルに接続するものです。ORMを使用することで、SQL文を直接書く代りにわずかなアクセスコードを書くだけで、アプリケーションにおけるオブジェクトの属性やリレーションシップをデータベースに保存したりデータベースから読み出したりすることができるようになります。
 
 ### ORMフレームワークとしてのActive Record
 
@@ -44,14 +45,14 @@ Active RecordにおけるCoC(Convention over Configuration)
 
 ### 命名ルール
 
-Active Recordには、モデルとデータベースのテーブルとのマッピング作成時に従うべきルールがいくつかあります。Railsでは、データベースのテーブル名を見つけるときに、モデルのクラス名を複数形にしたものを使用します。つまり、`Book`というモデルクラスがある場合、これに対応するデータベースのテーブルは複数形の**books**になります。Railsの複数形化メカニズムは非常に強力で、不規則な語であっても複数形にしたり単数形にしたりできます(person <-> peopleなど)。モデルのクラス名が2語以上の複合語である場合、Rubyの慣習であるキャメルケース(CamelCaseのように語頭を大文字にしてスペースなしでつなぐ)に従ってください。一方、テーブル名は(camel_caseなどのように)小文字かつアンダースコアで区切られなければなりません。以下の例を参照ください。
+Active Recordには、モデルとデータベースのテーブルとのマッピング作成時に従うべきルールがいくつかあります。Railsでは、データベースのテーブル名を見つけるときに、モデルのクラス名を複数形にしたものを使用します。つまり、`Book`というモデルクラスがある場合、これに対応するデータベースのテーブルは複数形の**books**になります。Railsの複数形化メカニズムは非常に強力で、不規則な語であっても複数形にしたり単数形にしたりできます(person <-> peopleなど)。モデルのクラス名が2語以上の複合語である場合、Rubyの慣習であるキャメルケース(CamelCaseのように語頭を大文字にしてスペースなしでつなぐ)に従ってください。一方、テーブル名は(camel_caseなどのように)小文字かつアンダースコアで区切られなければなりません。例:
 
 * データベースのテーブル - 複数形であり、語はアンダースコアで区切られる (例: `book_clubs`)
 * モデルのクラス - 単数形であり、語頭を大文字にする (例: `BookClub`)
 
 | モデル / クラス | テーブル / スキーマ |
-| ------------- | -------------- |
-| `Post`        | `posts`        |
+| ---------------- | -------------- |
+| `Article`        | `articles`     |
 | `LineItem`    | `line_items`   |
 | `Deer`        | `deers`        |
 | `Mouse`       | `mice`         |
@@ -63,17 +64,19 @@ Active Recordには、モデルとデータベースのテーブルとのマッ�
 Active Recordでは、データベースのテーブルで使用されるカラムの名前についても、利用目的に応じてルールがあります。
 
 * **外部キー** - このカラムは `テーブル名の単数形_id` にする必要があります (例 `item_id`、`order_id`)これらのカラムは、Active Recordがモデル間の関連付けを作成するときに参照されます。
-
 * **主キー** - デフォルトでは `id` という名前を持つintegerのカラムをテーブルの主キーとして使用します。このカラムは、[Active Recordマイグレーション](migrations.html)を使用してテーブルを作成するときに自動的に作成されます。
 
 他にも、Active Recordインスタンスに機能を追加するカラム名がいくつかあります。
 
 * `created_at` - レコードが作成された時に現在の日付時刻が自動的に設定されます
-* `updated_at` - レコードが更新されたときに現在の日付時刻が自動的に設定されます
+* `updated_at` - レコードが更新されたときに現在の日付時刻が自動的にせっていされま
 * `lock_version` - モデルに[optimistic locking](http://api.rubyonrails.org/classes/ActiveRecord/Locking.html)を追加します
-* `type` - モデルで[Single Table Inheritance](http://api.rubyonrails.org/classes/ActiveRecord/Base.html#label-Single+table+inheritance)を使用する場合に指定します
+* `type` - Specifies that the model uses [Single Table
+  Inheritance](http://api.rubyonrails.org/classes/ActiveRecord/Base.html#class-ActiveRecord::Base-label-Single+table+inheritance).
 * `関連付け名_type` - [ポリモーフィック関連付け](association_basics.html#ポリモーフィック関連付け)の種類を保存します
-* `テーブル名_count` - 関連付けにおいて、所属しているオブジェクトの数をキャッシュするのに使用されます。たとえば、`Post`クラスに`comments_count`というカラムがあり、そこに`Comment`のインスタンスが多数あると、ポストごとのコメント数がここにキャッシュされます。
+* `テーブル名_count` - 関連付けにおいて、所属しているオブジェクトの数をキャッシュするのに使用されます。以下に例を示します。 a `comments_count` column in a `Articles` class that
+  has many instances of `Comment` will cache the number of existent comments
+  for each article.
 
 NOTE: これらのカラム名は必須ではありませんが、Active Recordに予約されています。特殊なことをするのでなければ、これらの予約済みカラム名の使用は避けてください。たとえば、`type`という語はテーブルでSingle Table Inheritance (STI)を指定するために予約されています。STIを使用しないとしても、予約語より先にまず"context"などのような、モデルのデータを適切に表す語を検討してください。
 
@@ -114,16 +117,18 @@ Railsアプリケーションで別の命名ルールを使用しなければな
 
 ```ruby
 class Product < ActiveRecord::Base
-  self.table_name = "PRODUCT"
+  self.table_name = "my_products"
 end
 ```
 
-この指定を行った場合、テストの定義で`set_fixture_class`メソッドを使用し、フィクスチャ (クラス名.yml) に対応するクラス名を別途定義する必要があります。
+If you do so, you will have to define manually the class name that is hosting
+the fixtures (my_products.yml) using the `set_fixture_class` method in your test
+definition:
 
 ```ruby
-class FunnyJoke < ActiveSupport::TestCase
-  set_fixture_class funny_jokes: Joke
-  fixtures :funny_jokes
+class ProductTest < ActiveSupport::TestCase
+  set_fixture_class my_products: Product
+  fixtures :my_products
   ...
 end
 ```
@@ -139,7 +144,7 @@ end
 CRUD: データの読み書き
 ------------------------------
 
-CRUDとは、4つのデータベース操作を表す **C** reate、 **R** ead、 **U** pdate、 **D** eleteの頭字語です。Active Recordはこれらのメソッドを自動的に作成し、これによってアプリケーションはテーブルに保存されているデータを操作することができます。
+CRUDとは、4つのデータベース操作を表す **C** reate、 **R** ead、 **U** pdate、 **D**eleteの頭字語です。Active Recordはこれらのメソッドを自動的に作成し、これによってアプリケーションはテーブルに保存されているデータを操作することができます。
 
 ### Create
 
@@ -185,16 +190,16 @@ user = User.first
 ```
 
 ```ruby
-# Davidという名前を持つ最初のユーザーを返す
+# Davidという名前を持つ最初のゆーざーをか
 david = User.find_by(name: 'David')
 ```
 
 ```ruby
 # 名前がDavidで、職業がコードアーティストのユーザーをすべて返し、created_atカラムで逆順ソートする
-users = User.where(name: 'David', occupation: 'Code Artist').order('created_at DESC')
+users = User.where(name: 'David', occupation: 'Code Artist').order(created_at: :desc)
 ```
 
-Active Recordモデルへのクエリについては[Active Recordクエリインターフェイス](active_record_querying.html)ガイドで詳細を説明します。
+Active Recordモデルへのクエリについては[Active Recordクエリインターフェイス](active_record_querying.html)ガイドで詳細をせつめいします
 
 ### Update
 
@@ -233,7 +238,12 @@ user.destroy
 
 Active Recordを使用して、モデルがデータベースに書き込まれる前にモデルの状態を検証することができます。モデルをチェックするためのさまざまなメソッドが用意されています。属性が空でないこと、一意であること、既にデータベースにないこと、特定のフォーマットに従っていることなど、多岐にわたった検証が行えます。
 
-検証は、データベースを永続化するうえで極めて重要です。そのため、`create`、`save`、`update`メソッドは、検証に失敗した場合に`false`を返します。このとき実際のデータベース操作は行われません。上の3つのメソッドにはそれぞれ破壊的なバージョン (`create!`、`save!`、`update!`)があり、こちらは検証に失敗した場合にさらに厳しい対応、つまり`ActiveRecord::RecordInvalid`例外を発生します。
+Validation is a very important issue to consider when persisting to the database, so
+the methods `save` and `update` take it into account when
+running: they return `false` when validation fails and they didn't actually
+perform any operation on the database. All of these have a bang counterpart (that
+is, `save!` and `update!`), which are stricter in that
+they raise the exception `ActiveRecord::RecordInvalid` if validation fails.
 以下の例で簡単に説明します。
 
 ```ruby
@@ -241,13 +251,14 @@ class User < ActiveRecord::Base
   validates :name, presence: true
 end
 
-User.create  # => false
-User.create! # => ActiveRecord::RecordInvalid: Validation failed: Name can't be blank
+user = User.new
+user.save   # => false
+user.save! # => ActiveRecord::RecordInvalid: Validation failed: 空欄にはできません
 ```
 
 検証の詳細については[Active Record検証ガイド](active_record_validations.html)を参照してください。
 
-コールバック
+Callbacks
 ---------
 
 Active Recordコールバックを使用することで、モデルのライフサイクルにおける特定のイベント実行時にコードをアタッチして実行することができます。これにより、モデルで特定のイベントが発生したときにコードが透過的に実行されるようになります。レコードの作成、更新、削除などさまざまなイベントに対してコールバックを設定できます。コールバックの詳細については[Active Recordコールバックガイド](active_record_callbacks.html)を参照してください。
@@ -268,7 +279,7 @@ class CreatePublications < ActiveRecord::Migration
       t.string :publisher_type
       t.boolean :single_issue
 
-      t.timestamps
+      t.timestamps null: false
     end
     add_index :publications, :publication_type_id
   end
