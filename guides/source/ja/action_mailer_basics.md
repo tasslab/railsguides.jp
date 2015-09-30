@@ -1,4 +1,3 @@
-﻿
 Action Mailer の基礎
 ====================
 
@@ -109,7 +108,7 @@ end
       example.comへのサインアップが成功しました。
       your username is: <%= @user.login %>.<br>
     </p>
-    <p>
+      <p>
       このサイトにログインするには、<%= @url %>をクリックしてください。
     </p>
     <p>ご入会ありがとうございます。どうぞお楽しみくださいませ。</p>
@@ -252,7 +251,7 @@ Action Mailer 3.0はファイルをインライン添付できます。この機
 * これは`image_tag`に対する標準的な呼び出しであるため、画像ファイルを扱う時と同様、添付URLの後にもオプションのハッシュを1つ置くことができます。
 
     ```html+erb
-    <p>こんにちは、以下の写真です。</p>
+    <p>Hello there, this is our image</p>
 
     <%= image_tag attachments['image.jpg'].url, alt: 'My Photo', class: 'photos' %>
     ```
@@ -385,7 +384,13 @@ config.action_mailer.default_url_options = { host: 'example.com' }
 
 #### `url_for`を使用してURLを生成する
 
-テンプレートで`url_for`を使用して生成されるURLはデフォルトでフルパスになります。
+`url_for`には`only_path: false`オプションを渡すこともできます。`url_for`ビューヘルパーは、`:host`が明示的に与えられていない場合はデフォルトで相対パスのURLを生成しますが、このオプションを渡すと絶対パスのURLが生成されます。
+
+```erb
+<%= url_for(controller: 'welcome',
+            action: 'greeting',
+            only_path: false) %>
+```
 
 `:host`オプションをグローバルに設定していない場合は、`url_for`に`:host`オプションを明示的に渡す必要があることにご注意ください。
 
@@ -396,6 +401,8 @@ config.action_mailer.default_url_options = { host: 'example.com' }
             action: 'greeting') %>
 ```
 
+NOTE: `:host`を明示的に渡すと常に絶対パスのURLが生成されるので、`:host`を指定する場合は`only_path: false`を指定する必要はありません。
+
 #### 名前付きルーティングを使用してURLを生成する
 
 メールクライアントはWebサーバーのコンテキストから切り離されているので、メールに記載するパスではWebのアドレスのベースURLは補完されません。従って、名前付きルーティングヘルパーについても "*_path" ではなく "*_url" を使用する必要があります。
@@ -405,6 +412,9 @@ config.action_mailer.default_url_options = { host: 'example.com' }
 ```erb
 <%= user_url(@user, host: 'example.com') %>
 ```
+
+NOTE: non-`GET` links require [jQuery UJS](https://github.com/rails/jquery-ujs)
+and won't work in mailer templates. They will result in normal `GET` requests.
 
 ### マルチパートメールを送信する
 
@@ -455,7 +465,7 @@ Action Mailerを使用するメールの受信と解析は、メール送信に�
 
 * `/(アプリのパス)/bin/rails runner 'UserMailer.receive(STDIN.read)'`でメールを受信するアプリケーションに、メールサーバーからメールを転送する。
 
-いずれかのメイラーに`receive`メソッドを定義すると、受信した生のメールはAction Mailerによって解析され、emailオブジェクトに変換されてデコードされた後、メイラーが新たにインスタンス化され、そのメイラーの`receive`インスタンスメソッドに渡されます。以下に例を示します。
+いずれかのメイラーに`receive`メソッドを定義すると、受信した生のメールはAction Mailerによって解析され、emailオブジェクトに変換されてデコードされた後、メイラーが新たにインスタンス化され、そのメイラーの`receive`インスタンスメソッドに渡されます。例: 
 
 ```ruby
 class UserMailer < ApplicationMailer
@@ -545,10 +555,10 @@ Action Mailerを設定する
 | 設定 | 説明 |
 |---------------|-------------|
 |`logger`|可能であればメール送受信に関する情報を生成します。`nil`を指定するとログ出力を行わなくなります。Ruby自身の`Logger`ロガーおよび`Log4r`ロガーのどちらとも互換性があります。|
-|`smtp_settings`|`:smtp`の配信メソッドの詳細設定を行います。<ul><li>`:address` - リモートのメールサーバーの使用を許可する。デフォルトは`"localhost"`であり、必要に応じて変更する。</li><li>`:port` - メールサーバーが万一ポート25番で動作していない場合はここで変更する。</li><li>`:domain` - HELOドメインを指定する必要がある場合はここで行なう。</li><li>`:user_name` - メールサーバーで認証が必要な場合はここでユーザー名を指定する。</li><li>`:password` - メールサーバーで認証が必要な場合はここでパスワードを指定する。</li><li>`:authentication` - メールサーバーで認証が必要な場合はここで認証の種類を指定する。`:plain`、`:login`、`:cram_md5`のいずれかのシンボルを指定する。</li><li>`:enable_starttls_auto` - 自力では解決できない証明書問題が発生している場合は`false`を指定する。</li></ul>|
-|`sendmail_settings`|`:sendmail`の配信オプションを上書きします。<ul><li>`:location` - sendmailの実行可能ファイルの場所を指定する。デフォルトは`/usr/sbin/sendmail`。</li><li>`:arguments` - sendmailに渡すコマンドライン引数を指定する。デフォルトは`-i -t`。</li></ul>|
+|`smtp_settings`|`:smtp`配信メソッド delivery method:<ul><li>`:address` - Allows you to use a remote mail server. デフォルトは`"localhost"`であり、必要に応じて変更する。</li>[DLF]<li>`:port` - メールサーバーが万一ポート25番で動作していない場合はここで変更する。</li>[DLF]<li>`:domain` - HELOドメインを指定する必要がある場合はここで行なう。</li>[DLF]<li>`:user_name` - メールサーバーで認証が必要な場合はここでユーザー名を指定する。</li>[DLF]<li>`:password` - メールサーバーで認証が必要な場合はここでパスワードを指定する。</li>[DLF]<li>`:authentication` - メールサーバーで認証が必要な場合はここで認証の種類を指定する。This is a symbol and one of `:plain` (will send the password in the clear), `:login` (will send password Base64 encoded) or `:cram_md5` (combines a Challenge/Response mechanism to exchange information and a cryptographic Message Digest 5 algorithm to hash important information)</li><li>`:enable_starttls_auto` - Detects if STARTTLS is enabled in your SMTP server and starts to use it. デフォルトは`true`です。</li><li>`:openssl_verify_mode` - When using TLS, you can set how OpenSSL checks the certificate. This is really useful if you need to validate a self-signed and/or a wildcard certificate. You can use the name of an OpenSSL verify constant ('none', 'peer', 'client_once', 'fail_if_no_peer_cert') or directly the constant (`OpenSSL::SSL::VERIFY_NONE`, `OpenSSL::SSL::VERIFY_PEER`, ...).</li></ul>|
+|`sendmail_settings`|`:sendmail`の配信オプションを上書きします。[DLF]<ul><li>`:location` - sendmailの実行可能ファイルの場所を指定する。デフォルトは`/usr/sbin/sendmail`。</li>[DLF]<li>`:arguments` - sendmailに渡すコマンドライン引数を指定する。デフォルトは`-i -t`。</li></ul>|
 |`raise_delivery_errors`|メール配信に失敗した場合にエラーを発生するかどうかを指定します。このオプションは、外部のメールサーバーが即時配信を行っている場合にのみ機能します。|
-|`delivery_method`|配信方法を指定します。以下の配信方法を指定可能です。<ul><li>`:smtp` (default) -- `config.action_mailer.smtp_settings`で設定可能。</li><li>`:sendmail` -- `config.action_mailer.sendmail_settings`で設定可能。</li><li>`:file`: -- メールをファイルとして保存する。`config.action_mailer.file_settings`で設定可能。</li><li>`:test`: -- メールを配列`ActionMailer::Base.deliveries`に保存する。</li></ul>詳細については[APIドキュメント](http://api.rubyonrails.org/classes/ActionMailer/Base.html)を参照。|
+|`delivery_method`|配信方法を指定します。以下の配信方法を指定可能です。<ul>[DLF]<li>`:smtp` (default) -- `config.action_mailer.smtp_settings`で設定可能。</li>[DLF]<li>`:sendmail` -- `config.action_mailer.sendmail_settings`で設定可能。</li>[DLF]<li>`:file`: -- メールをファイルとして保存する。`config.action_mailer.file_settings`で設定可能。</li>[DLF]<li>`:test`: -- メールを配列`ActionMailer::Base.deliveries`に保存する。</li>[DLF]</ul>詳細については[APIドキュメント](http://api.rubyonrails.org/classes/ActionMailer/Base.html)を参照。|
 |`perform_deliveries`|Mailのメッセージに`deliver`メソッドを実行したときに実際にメール配信を行なうかどうかを指定します。デフォルトでは配信が行われます。機能テストなどで配信を一時的にオフにしたい場合に便利です。|
 |`deliveries`|`delivery_method :test`を使用してAction Mailerから送信されたメールの配列を保持します。単体テストおよび機能テストで最も便利です。|
 |`default_options`|`mail`メソッドオプション (`:from`、`:reply_to`など)のデフォルト値を設定します。|
@@ -608,7 +618,9 @@ end
 インターセプタが動作するようにするには、Action Mailerフレームワークに登録する必要があります。これは、以下のようにイニシャライザファイル`config/initializers/sandbox_email_interceptor.rb`で行います。
 
 ```ruby
-ActionMailer::Base.register_interceptor(SandboxEmailInterceptor) if Rails.env.staging?
+if Rails.env.staging?
+  ActionMailer::Base.register_interceptor(SandboxEmailInterceptor)
+end
 ```
 
 NOTE: 上の例では"staging"というカスタマイズした環境を使用しています。これは本番 (production環境) に準じた状態でテストを行うための環境です。Railsのカスタム環境については[Rails環境を作成する](configuring.html#rails環境を作成する)を参照してください。
