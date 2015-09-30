@@ -1,4 +1,3 @@
-﻿
 Action View の概要
 ====================
 
@@ -8,7 +7,6 @@ Action View の概要
 * テンプレート、パーシャル(部分テンプレート)、レイアウトの最適な利用法
 * Action Viewで提供されるヘルパーの紹介と、カスタムヘルパーの作成法
 * ビューのローカライズ方法
-* Rails以外の環境でAction Viewを使用する方法
 
 --------------------------------------------------------------------------------
 
@@ -29,34 +27,34 @@ Action ViewをRailsで使用する
 scaffoldを使用してリソースを生成するときに、Railsがデフォルトでどんなことを行なうのか見てみましょう。
 
 ```bash
-$ rails generate scaffold post
+$ bin/rails generate scaffold article
       [...]
       invoke  scaffold_controller
-      create    app/controllers/posts_controller.rb
+　create  app/controllers/articles_controller.rb
       invoke    erb
-      create      app/views/posts
-      create      app/views/posts/index.html.erb
-      create      app/views/posts/edit.html.erb
-      create      app/views/posts/show.html.erb
-      create      app/views/posts/new.html.erb
-      create      app/views/posts/_form.html.erb
+　create  app/views/articles
+　create  app/views/articles/index.html.erb
+　create  app/views/articles/edit.html.erb
+　create  app/views/articles/show.html.erb
+　create  app/views/articles/new.html.erb
+　create  app/views/articles/_form.html.erb
       [...]
 ```
 
 Railsのビューには命名規則があります。上で生成されたファイルを見るとわかるように、ビューテンプレートファイルは基本的にコントローラのアクションと関連付けられています。
-たとえば、`posts_controller.rb`コントローラのindexアクションは、`app/views/posts`ディレクトリの`index.html.erb`を使用します。
-これらのERBファイルに、それらを内包するレイアウトテンプレートや、ビューから参照されるあらゆるパーシャル (部分テンプレート) が組み合わさって完全なHTMLが生成され、クライアントに送信されます。この後、本ガイドではこれらの3つの要素について詳細に説明します。
+以下に例を示します。 the index controller action of the `articles_controller.rb` will use the `index.html.erb` view file in the `app/views/articles` directory.
+これらのERBファイルに、それらを内包するレイアウトテンプレートや、ビューから参照されるあらゆるパーシャル (部分テンプレート) が組み合わさって完全なHTMLが生成され、クライアントに送信されます。Within this guide you will find more detailed documentation about each of these three components.
 
 
 テンプレート、パーシャル、レイアウト
 -------------------------------
 
-前述のとおり、Railsが出力する最終的なHTMLは`テンプレート`、`パーシャル`、`レイアウト`の3つの要素から成ります。
-まずこれらについて簡単に説明いたします。
+As mentioned, the final HTML output is a composition of three Rails elements: `Templates`, `Partials` and `Layouts`.
+Below is a brief overview of each of them.
 
 ### テンプレート
 
-Action Viewのテンプレートはさまざまな方法で記述することができます。テンプレートの拡張子が`.erb`であれば、ERB (ここにRubyのコードが含まれます) とHTMLが含まれます。テンプレートの拡張子が`.builder`であれば、`Builder::XmlMarkup`ライブラリの新鮮なインスタンスが使用されます。
+Action Viewのテンプレートはさまざまな方法で記述することができます。If the template file has a `.erb` extension then it uses a mixture of ERB (Embedded Ruby) and HTML. If the template file has a `.builder` extension then the `Builder::XmlMarkup` library is used.
 
 Railsでは複数のテンプレートシステムがサポートされており、テンプレートファイルの拡張子で区別されます。たとえば、ERBテンプレートシステムを使用するHTMLファイルの拡張子は`.html.erb`になります。
 
@@ -73,7 +71,7 @@ ERBテンプレートの内部では、`<% %>`タグや`<%= %>`タグにRubyコ�
 <% end %>
 ```
 
-ループの開始行と終了行は通常のERBタグ (`<% %>`) に書かれており、名前を出力する行は出力用のERBタグ (`<%= %>`) に書かれています。上のコードは、単にERBの書き方を説明しているだけではありません。Rubyでよく使用される`print`や`puts`のような通常の出力関数はERBでは使用できませんのでご注意ください。以下のコードは誤りです。
+The loop is set up using regular embedding tags (`<% %>`) and the name is inserted using the output embedding tags (`<%= %>`). Note that this is not just a usage suggestion: regular output functions such as `print` and `puts` won't be rendered to the view with ERB templates. 以下のコードは誤りです。
 
 ```html+erb
 <%# 間違い %>
@@ -82,9 +80,9 @@ Hi, Mr. <% puts "Frodo" %>
 
 なお、Webページへの出力結果の最初と最後からホワイトスペースを取り除きたい場合は`<%-` および `-%>`を通常の`<%` および `%>`と交互にご使用ください (訳注: これは英語のようなスペース分かち書きを行なう言語向けのノウハウです)。
 
-#### Builderテンプレート
+#### Builderてんぷれー
 
-BuilderテンプレートはERBの代わりに使用できる、よりプログラミング向きな記法です。これは特にXMLコンテンツの生成を得意とします。テンプレートの拡張子を`.builder`にすると、`xml`という名前のXmlMarkupオブジェクトが自動で使用できるようになります。
+BuilderテンプレートはERBの代わりに使用できる、よりプログラミング向きな記法です。. They are especially useful for generating XML content. テンプレートの拡張子を`.builder`にすると、`xml`という名前のXmlMarkupオブジェクトが自動で使用できるようになります。
 
 基本的な例を以下にいくつか示します。
 
@@ -153,11 +151,11 @@ Railsは、デフォルトですべてのビューテンプレートをコンパ
 
 ### パーシャル
 
-部分テンプレートまたはパーシャルは、出力を扱いやすく分割するための仕組みです。パーシャルを使用することで、ビュー内のコードをいくつものファイルに分割して書き出し、他のテンプレートでも使いまわすことができます。
+部分テンプレートは通常単にパーシャルと呼ばれます。パーシャルは、上とは異なる方法でレンダリング処理を扱いやすい単位に分割するためのしくみです。パーシャルを使用することで、ビュー内のコードをいくつものファイルに分割して書き出し、他のテンプレートでも使いまわすことができます。
 
-#### パーシャルの命名ルール
+#### パーシャルに名前を与える
 
-パーシャルをビューの一部に含めて出力するには、ビューで`render`メソッドを使用します。
+パーシャルをビューの一部に含めて出力するには、ビュー内で`render`メソッドを使用します。
 
 ```erb
 <%= render "menu" %>
@@ -169,11 +167,11 @@ Railsは、デフォルトですべてのビューテンプレートをコンパ
 <%= render "shared/menu" %>
 ```
 
-上のコードでは、`app/views/shared/_menu.html.erb`パーシャルを読み込んで使用します。
+上のコードは、`app/views/shared/_menu.html.erb`パーシャルの内容をその場所でレンダリングします。
 
-#### パーシャルを活用してビューを簡潔に保つ
+#### パーシャルを使用する to simplify Views
 
-すぐに思い付くパーシャルの使い方といえば、パーシャルをサブルーチンと同等のものとみなすというのがあります。ビューの詳細部分をパーシャルに移動し、コードの見通しを良くするために、パーシャルを使うのです。たとえば、以下のようなビューがあるとします。
+すぐに思い付くパーシャルの使い方といえば、パーシャルをサブルーチンと同等のものとみなすというのがあります。ビューの詳細部分をパーシャルに移動し、コードの見通しを良くするために、パーシャルを使うのです。以下に例を示します。 you might have a view that looks like this:
 
 ```html+erb
 <%= render "shared/ad_banner" %>
@@ -192,33 +190,33 @@ Railsは、デフォルトですべてのビューテンプレートをコンパ
 
 #### `as`と`object`オプション
 
-`ActionView::Partials::PartialRenderer`は、デフォルトでテンプレートと同じ名前を持つローカル変数の中に自身のオブジェクトを持ちます。以下のコードを見てみましょう。
+`ActionView::Partials::PartialRenderer`は、デフォルトでテンプレートと同じ名前を持つローカル変数の中に自身のオブジェクトを持ちます。従って、以下のコードは
 
 ```erb
 <%= render partial: "product" %>
 ```
 
-上のコードでは、ローカル変数である`product`の中に`@product`が置かれます。これは以下のコードと同等の結果になります。
+within product we'll get `@product` in the local variable `product`, as if we had written:
 
 ```erb
 <%= render partial: "product", locals: {product: @product} %>
 ```
 
-`as`オプションは、ローカル変数の名前を変更したい場合に使用します。たとえば、ローカル変数名を`product`ではなく`item`にしたいのであれば、以下のようにします。
+With the `as` option we can specify a different name for the local variable. たとえば、ローカル変数名を`product`ではなく`item`にしたいのであれば、以下のようにします。
 
 ```erb
 <%= render partial: "product", as: "item" %>
 ```
 
-`object`オプションは、パーシャルで出力するオブジェクトを直接指定したい場合に使用します。これは、テンプレートのオブジェクトが他の場所 (別のインスタンス変数や別のローカル変数) にある場合に便利です。
+The `object` option can be used to directly specify which object is rendered into the partial; useful when the template's object is elsewhere (eg. in a different instance variable or in a local variable).
 
-たとえば、以下のコードがあるとします。
+以下の例文ではyouが3度も使用されている。:
 
 ```erb
 <%= render partial: "product", locals: {product: @item} %>
 ```
 
-上のコードは以下のようになります。
+we would do:
 
 ```erb
 <%= render partial: "product", object: @item %>
@@ -230,11 +228,11 @@ Railsは、デフォルトですべてのビューテンプレートをコンパ
 <%= render partial: "product", object: @item, as: "item" %>
 ```
 
-#### コレクションを出力する
+#### コレクションをレンダリングする
 
-テンプレート上にコレクションを1つ表示し、サブテンプレートでそのコレクションの要素を1つずつ出力するというのは、よくあるパターンです。このパターンは1つのメソッドだけで実行できます。このメソッドは配列を受け取り、配列内の各要素ごとにパーシャルを出力します。
+It is very common that a template will need to iterate over a collection and render a sub-template for each of the elements. This pattern has been implemented as a single method that accepts an array and renders a partial for each one of the elements in the array.
 
-すべての製品(products)を出力するコード例は以下のようになります。
+So this example for rendering all the products:
 
 ```erb
 <% @products.each do |product| %>
@@ -242,13 +240,13 @@ Railsは、デフォルトですべてのビューテンプレートをコンパ
 <% end %>
 ```
 
-上のコードは以下のように1行で書けます。
+can be rewritten in a single line:
 
 ```erb
 <%= render partial: "product", collection: @products %>
 ```
 
-パーシャルでこのようにコレクションなどが使用されている場合、パーシャルの各インスタンスは、パーシャル名に基づいた変数を経由して出力されるコレクションのメンバーにアクセスします。このパーシャルは`_product`という名前なので、`product`を指定すれば、出力されるインスタンスを取得できます。
+When a partial is called with a collection, the individual instances of the partial have access to the member of the collection being rendered via a variable named after the partial. In this case, the partial is `_product`, and within it you can refer to `product` to get the collection member that is being rendered.
 
 コレクション出力には短縮記法があります。`@products`が`Product`インスタンスのコレクションであれば、以下のコードでも同じ結果を得られます。
 
@@ -256,44 +254,44 @@ Railsは、デフォルトですべてのビューテンプレートをコンパ
 <%= render @products %>
 ```
 
-使用されるパーシャル名は、コレクションの中にある「モデル名」を参照して決定されます。この場合のモデル名は`Product`です。作成するコレクションの各要素が不揃い (訳注: 要素ごとにモデルが異なる場合を指します) であっても、Railsはコレクションのメンバごとに適切なパーシャルを選んで出力してくれます。
+Rails determines the name of the partial to use by looking at the model name in the collection, `Product` in this case. In fact, you can even render a collection made up of instances of different models using this shorthand, and Rails will choose the proper partial for each member of the collection.
 
 #### スペーサーテンプレート
 
-`:spacer_template`オプションを使用すると、主要なパーシャル同士の間を埋める第二のパーシャルを指定することができます。
+`:spacer_template`オプションを使用することで、メインパーシャルのインスタンスと交互にレンダリングされるセカンドパーシャルを指定することもできます。
 
 ```erb
 <%= render partial: @products, spacer_template: "product_ruler" %>
 ```
 
-主要な`_product`パーシャルの合間に、スペーサーとなる`_product_ruler`パーシャルが出力されます (`_product_ruler`にはデータは渡していません)。
+Rails will render the `_product_ruler` partial (with no data passed to it) between each pair of `_product` partials.
 
-### レイアウト
+### Layouts
 
-Railsにおける「レイアウト」は、多くのコントローラのアクションにわたって共通して使用できるテンプレートのことです。Railsアプリケーションには必ず全体用のレイアウトがあり、ほぼすべてのWebページ出力はこの全体レイアウトの内側で行われますが、これが典型的なレイアウトです。たとえば、あるWebサイトにはユーザーログイン用のレイアウトが使用されていたり、別のWebサイトにはマーケティングやセールス用のレイアウトが使用されていたりします。ログインしたユーザー向けのレイアウトであれば、ナビゲーションツールバーをページのトップレベルに表示し、多くのコントローラ/アクションで共通して使用できるようにするでしょう。SaaSアプリケーションにおけるセールス用のレイアウトであれば、トップレベルのナビゲーションに「お値段」や「お問い合わせ先」を共通して表示するでしょう。レイアウトごとに異なる外観を設定してこれらを使い分けることができます。レイアウトの詳細については、[ビューのレイアウトとレンダリング](layouts_and_rendering.html) ガイドを参照してください。
+Layouts can be used to render a common view template around the results of Rails controller actions. Typically, a Rails application will have a couple of layouts that pages will be rendered within. 以下に例を示します。 a site might have one layout for a logged in user and another for the marketing or sales side of the site. The logged in user layout might include top-level navigation that should be present across many controller actions. The sales layout for a SaaS app might include top-level navigation for things like "Pricing" and "Contact Us" pages. You would expect each layout to have a different look and feel. You can read about layouts in more detail in the [レイアウトとレンダリング](layouts_and_rendering.html) guide.
 
-パーシャルレイアウト
+Partial Layouts
 ---------------
 
-パーシャルに独自のレイアウトを適用することができます。パーシャル用のレイアウトは、アクション全体にわたるグローバルなレイアウトとは異なりますが、動作は同じです。
+Partials can have their own layouts applied to them. These layouts are different from those applied to a controller action, but they work in a similar fashion.
 
-試しに、ページ上に投稿を1つ表示してみましょう。表示制御のため`div`タグで囲むことにします。最初に、`Post`を1つ新規作成します。
+Let's say we're displaying an article on a page which should be wrapped in a `div` for display purposes. Firstly, we'll create a new `Article`:
 
 ```ruby
-Post.create(body: 'Partial Layouts are cool!')
+Article.create(body: 'Partial Layouts are cool!')
 ```
 
-`show`テンプレートは、`box`レイアウトに内包された`_post`パーシャルを出力します。
+In the `show` template, we'll render the `_article` partial wrapped in the `box` layout:
 
-**posts/show.html.erb**
+**articles/show.html.erb**
 
 ```erb
-<%= render partial: 'post', layout: 'box', locals: {post: @post} %>
+<%= render partial: 'article', layout: 'box', locals: {article: @article} %>
 ```
 
-`box`レイアウトは、`div`タグの中に`_post`パーシャルを内包した簡単な構造です。
+The `box` layout simply wraps the `_article` partial in a `div`:
 
-**posts/_box.html.erb**
+**articles/_box.html.erb**
 
 ```html+erb
 <div class='box'>
@@ -301,39 +299,37 @@ Post.create(body: 'Partial Layouts are cool!')
 </div>
 ```
 
-`_post`パーシャルは、投稿の本文(`body`)を`div`タグに内包します(`div_for`を使用して`div`タグに投稿の`id`を与えます)。
+The `_article` partial wraps the article's `body` in a `div` with the `id` of the article using the `div_for` helper:
 
-**posts/_post.html.erb**
+**articles/_article.html.erb**
 
 ```html+erb
-<%= div_for(post) do %>
-  <p><%= post.body %></p>
+<%= div_for(article) do %>
+  <p><%= article.body %></p>
 <% end %>
 ```
 
-上のコードの出力は以下のようになります。
+this would output the following:
 
 ```html
 <div class='box'>
-  <div id='post_1'>
-    <p>Partial Layouts are cool!</p>
+  <div id='article_1'>
+      <p>Partial Layouts are cool!</p>
   </div>
 </div>
 ```
 
-このパーシャルレイアウトは、`render`呼び出しに渡されたローカルの`post`変数にアクセスできる点にご注目ください。ただし、アプリケーション全体で共通のレイアウトとは異なり、パーシャルレイアウトのファイル名冒頭にはアンダースコアが必要です。
+Note that the partial layout has access to the local `article` variable that was passed into the `render` call. However, unlike application-wide layouts, partial layouts still have the underscore prefix.
 
-`yield`を呼び出す代わりに、パーシャルレイアウト内にあるコードのブロックを出力することもできます。たとえば、`_post`というパーシャルがない場合でも、以下のような呼び出しが行えます。
+`yield`を呼び出す代わりに、パーシャルレイアウト内にあるコードのブロックを出力することもできます。以下に例を示します。 if we didn't have the `_article` partial, we could do this instead:
 
-**posts/show.html.erb**
+**articles/show.html.erb**
 
 ```html+erb
-<% render(layout: 'box', locals: {post: @post}) do %>
-  <%= div_for(post) do %>
-    <p><%= post.body %></p>
-  <% end %>
-<% end %>
-```
+<% render(layout: 'box', locals: {article: @article}) do %>
+  <%= div_for(article) do %>
+      <p><%= article.body %></p>
+  <% end %> <% end %>  ```
 
 ここでは、同じ`_box`パーシャルを使用する前提であり、先の例と同じ出力が得られます。
 
@@ -357,71 +353,71 @@ Action Viewで利用できるヘルパーの概要を以下に示します。[AP
 
 Active Recordオブジェクトに関連付けられるコンテナタグを出力します。
 
-たとえば、`@post`が`Post`クラスのオブジェクトであれば、以下のように書くことができます。
+以下の例で考察してみましょう。 `@article` is the object of `Article` class, you can do:
 
 ```html+erb
-<%= content_tag_for(:tr, @post) do %>
-  <td><%= @post.title %></td>
+<%= content_tag_for(:tr, @article) do %>
+  <td><%= @article.title %></td>
 <% end %>
 ```
 
 上のコードによって以下のHTMLが生成されます。
 
 ```html
-<tr id="post_1234" class="post">
+<tr id="article_1234" class="article">
   <td>Hello World!</td>
 </tr>
 ```
 
-オプションのハッシュを追加することで、HTML属性を指定することもできます。例：
+オプションのハッシュを追加することで、HTML属性を指定することもできます。以下に例を示します。
 
 ```html+erb
-<%= content_tag_for(:tr, @post, class: "frontpage") do %>
-  <td><%= @post.title %></td>
+<%= content_tag_for(:tr, @article, class: "frontpage") do %>
+  <td><%= @article.title %></td>
 <% end %>
 ```
 
 上のコードによって以下のHTMLが生成されます。
 
 ```html
-<tr id="post_1234" class="post frontpage">
+<tr id="article_1234" class="article frontpage">
   <td>Hello World!</td>
 </tr>
 ```
 
-Active Recordオブジェクトのコレクションを渡すこともできます。このメソッドはオブジェクトをループで回してそれぞれについてコンテナを作成します。たとえば、`@posts`は`Post`オブジェクトを2つ含む配列であるとします。
+Active Recordオブジェクトのコレクションを渡すこともできます。このメソッドはオブジェクトをループで回してそれぞれについてコンテナを作成しm以下の例で考察してみましょう。 `@articles` is an array of two `Article` objects:
 
 ```html+erb
-<%= content_tag_for(:tr, @posts) do |post| %>
-  <td><%= post.title %></td>
+<%= content_tag_for(:tr, @articles) do |article| %>
+  <td><%= article.title %></td>
 <% end %>
 ```
 
 上のコードによって以下のHTMLが生成されます。
 
 ```html
-<tr id="post_1234" class="post">
+<tr id="article_1234" class="article">
   <td>Hello World!</td>
 </tr>
-<tr id="post_1235" class="post">
+<tr id="article_1235" class="article">
   <td>Ruby on Rails Rocks!</td>
 </tr>
 ```
 
 #### div_for
 
-このメソッドは内部で`content_tag_for`を呼び出して`:div`をタグ名にしてくれる、便利なメソッドです。Active Recordオブジェクトを単体またはコレクションとして渡すことができます。例：
+このメソッドは内部で`content_tag_for`を呼び出して`:div`をタグ名にしてくれる、便利なメソッドです。Active Recordオブジェクトを単体またはコレクションとして渡すことができます。以下に例を示します。
 
 ```html+erb
-<%= div_for(@post, class: "frontpage") do %>
-  <td><%= @post.title %></td>
+<%= div_for(@article, class: "frontpage") do %>
+  <td><%= @article.title %></td>
 <% end %>
 ```
 
 上のコードによって以下のHTMLが生成されます。
 
 ```html
-<div id="post_1234" class="post frontpage">
+<div id="article_1234" class="article frontpage">
   <td>Hello World!</td>
 </div>
 ```
@@ -437,39 +433,13 @@ config.action_controller.asset_host = "assets.example.com"
 image_tag("rails.png") # => <img src="http://assets.example.com/images/rails.png" alt="Rails" />
 ```
 
-#### register_javascript_expansion
-
-javascript_include_tagにシンボルを渡すことで、インクルードしたいJavaScriptファイルを1つまたは複数登録できます。このメソッドの主な目的は、プラグインの初期化中に、プラグインによって`vendor/assets/javascripts`にインストールされたJavaScriptファイルを登録することです。
-
-```ruby
-ActionView::Helpers::AssetTagHelper.register_javascript_expansion monkey: ["head", "body", "tail"]
-
-javascript_include_tag :monkey # =>
-  <script src="/assets/head.js"></script>
-  <script src="/assets/body.js"></script>
-  <script src="/assets/tail.js"></script>
-```
-
-#### register_stylesheet_expansion
-
-javascript_include_tagにシンボルを渡すことで、インクルードしたいスタイルシートファイルを1つまたは複数登録できます。このメソッドの主な目的は、プラグインの初期化中に、プラグインによって`vendor/assets/stylesheets`にインストールされたスタイルシートファイルを登録することです。
-
-```ruby
-ActionView::Helpers::AssetTagHelper.register_stylesheet_expansion monkey: ["head", "body", "tail"]
-
-stylesheet_link_tag :monkey # =>
-  <link href="/assets/head.css" media="screen" rel="stylesheet" />
-  <link href="/assets/body.css" media="screen" rel="stylesheet" />
-  <link href="/assets/tail.css" media="screen" rel="stylesheet" />
-```
-
 #### auto_discovery_link_tag
 
 ブラウザやフィードリーダーが検出可能なRSSフィードやAtomフィードのリンクタグを返します。
 
 ```ruby
-auto_discovery_link_tag(:rss, "http://www.example.com/feed.rss", {title: "RSS Feed"}) # =>
-  <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="http://www.example.com/feed" />
+auto_discovery_link_tag(:rss, "http://www.example.com/feed.rss", { title: "RSS Feed" }) # =>
+  <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="http://www.example.com/feed.rss" />
 ```
 
 #### image_path
@@ -496,7 +466,7 @@ image_url("edit.png") # => http://www.example.com/assets/edit.png
 
 #### image_tag
 
-HTML imgタグを返します。画像へのフルパス、または`app/assets/images`ディレクトリ内にあるファイルを引数として与えられます。
+Returns an HTML image tag for the source. 画像へのフルパス、または`app/assets/images`ディレクトリ内にあるファイルを引数として与えられます。
 
 ```ruby
 image_tag("icon.png") # => <img src="/assets/icon.png" alt="Icon" />
@@ -504,7 +474,7 @@ image_tag("icon.png") # => <img src="/assets/icon.png" alt="Icon" />
 
 #### javascript_include_tag
 
-引数に与えられたソースごとにHTML scriptタグを返します。`app/assets/javascripts`ディレクトリにあるJavaScriptファイル名 (拡張子`.js`はあってもなくても構いません) を引数として渡すことができます。この結果は現在のページにインクルードされます。ドキュメントルートからの相対完全パスを渡すこともできます。
+Returns an HTML script tag for each of the sources provided. `app/assets/javascripts`ディレクトリにあるJavaScriptファイル名 (拡張子`.js`はあってもなくても構いません) を引数として渡すことができます。この結果は現在のページにインクルードされます。ドキュメントルートからの相対完全パスを渡すこともできます。
 
 ```ruby
 javascript_include_tag "common" # => <script src="/assets/common.js"></script>
@@ -591,14 +561,14 @@ stylesheet_url "application" # => http://www.example.com/assets/application.css
 **config/routes.rb**
 
 ```ruby
-resources :posts
+resources :articles
 ```
 
-**app/controllers/posts_controller.rb**
+**app/controllers/articles_controller.rb**
 
 ```ruby
 def index
-  @posts = Post.all
+  @articles = Article.all
 
   respond_to do |format|
     format.html
@@ -607,20 +577,20 @@ def index
 end
 ```
 
-**app/views/posts/index.atom.builder**
+**app/views/articles/index.atom.builder**
 
 ```ruby
 atom_feed do |feed|
-  feed.title("Posts Index")
-  feed.updated((@posts.first.created_at))
+  feed.title("Articles Index")
+  feed.updated((@articles.first.created_at))
 
-  @posts.each do |post|
-    feed.entry(post) do |entry|
-      entry.title(post.title)
-      entry.content(post.body, type: 'html')
+  @articles.each do |article|
+    feed.entry(article) do |entry|
+      entry.title(article.title)
+      entry.content(article.body, type: 'html')
 
       entry.author do |author|
-        author.name(post.author_name)
+        author.name(article.author_name)
       end
     end
   end
@@ -680,7 +650,7 @@ end
 
 #### content_for
 
-`content_for`を呼び出すと、後の利用に備えて、idに対応するマークアップのブロックが保存されます。以後、保存されたコンテンツを他のテンプレートやレイアウトで呼び出すことができます。呼び出しの際には、`yield`の引数となるidを渡します。
+[REVIEW]`content_for`を呼び出すと、後の利用に備えて、idに対応するマークアップのブロックが保存されます。[REVIEW]以後、保存されたコンテンツを他のテンプレートやレイアウトで呼び出すことができます。呼び出しの際には、`yield`の引数となるidを渡します。
 
 たとえば、あるRailsアプリケーション全体にわたって標準のアプリケーションレイアウトを使用しているが、特定のページでのみ特定のJavaScriptコードが必要となり、他のページではこのJavaScriptはまったく不要であるとします。このようなときには`content_for`を使用します。これにより、そのJavaScriptコードを特定のページにだけインクルードし、サイトの他の部分でインクルードされることのないようにできます。
 
@@ -698,7 +668,7 @@ end
 </html>
 ```
 
-**app/views/posts/special.html.erb**
+**app/views/articles/special.html.erb**
 
 ```html+erb
 <p>This is a special page.</p>
@@ -715,7 +685,7 @@ end
 日付用のselectタグのセットを返します。タグは年・月・日用にそれぞれあり、日付に関する特定の属性にアクセスして年月日を選択済みの状態にします。
 
 ```ruby
-date_select("post", "published_on")
+date_select("article", "published_on")
 ```
 
 #### datetime_select
@@ -723,7 +693,7 @@ date_select("post", "published_on")
 日付・時刻用のselectタグのセットを返します。タグは年・月・日・時・分用にそれぞれあり、日付・時刻に関する特定の属性にアクセスして日時が選択済みになります。
 
 ```ruby
-datetime_select("post", "published_on")
+datetime_select("article", "published_on")
 ```
 
 #### distance_of_time_in_words
@@ -731,13 +701,13 @@ datetime_select("post", "published_on")
 TimeオブジェクトやDateオブジェクト、秒を表す整数同士を比較して近似表現を返します。`include_seconds`をtrueにすると、より詳細な差を得られます。
 
 ```ruby
-distance_of_time_in_words(Time.now, Time.now + 15.seconds)        # => less than a minute
+distance_of_time_in_words(Time.now, Time.now + 15.seconds)        # => less than a minute 
 distance_of_time_in_words(Time.now, Time.now + 15.seconds, include_seconds: true)  # => less than 20 seconds
 ```
 
 #### select_date
 
-日付用のselectタグのセットを返します。タグは年・月・日用にそれぞれあり、`date`で得られる値で選択済みの状態にします。
+Returns a set of HTML select-tags (one for year, month, and day) pre-selected with the `date` provided.
 
 ```ruby
 # 指定された日付 (ここでは本日から6日後) をデフォルト値とする日付セレクトボックスを生成する
@@ -749,7 +719,7 @@ select_date()
 
 #### select_datetime
 
-日付・時刻用のselectタグのセットを返します。タグは年・月・日・時・分用にそれぞれあり、`datetime`で得られる値で選択済みの状態にします。
+Returns a set of HTML select-tags (one for year, month, day, hour, and minute) pre-selected with the `datetime` provided.
 
 ```ruby
 # 指定された日時 (ここでは本日から4日後) をデフォルト値とする日時セレクトボックスを生成する
@@ -761,28 +731,28 @@ select_datetime()
 
 #### select_day
 
-1から31までの日付をオプションに持ち、当日が選択されているselectタグを返します。
+Returns a select tag with options for each of the days 1 through 31 with the current day selected.
 
 ```ruby
-# 指定された日付をデフォルト値に持つセレクトボックスを生成する
+# Generates a select field for days that defaults to the day for the date provided
 select_day(Time.today + 2.days)
 
-# 指定された数値をデフォルトの日付として持つセレクトボックスを生成する
+# Generates a select field for days that defaults to the number given
 select_day(5)
 ```
 
 #### select_hour
 
-0から23までの時をオプションに持ち、現在時刻が選択されているselectタグを返します。
+Returns a select tag with options for each of the hours 0 through 23 with the current hour selected.
 
 ```ruby
-# 指定された時をデフォルト値として持つセレクトボックスを生成する
+# Generates a select field for hours that defaults to the hours for the time provided
 select_hour(Time.now + 6.hours)
 ```
 
 #### select_minute
 
-0から59までの分をオプションに持ち、現在時刻の分が選択されているselectタグを返します。
+Returns a select tag with options for each of the minutes 0 through 59 with the current minute selected.
 
 ```ruby
 # 指定された分をデフォルト値として持つセレクトボックスを生成する
@@ -791,63 +761,63 @@ select_minute(Time.now + 6.hours)
 
 #### select_month
 
-JanuaryからDecemberまでの月をオプションに持ち、現在の月が選択されているselectタグを返します(訳注: 日本語環境では1月から12月が表示されます)。
+Returns a select tag with options for each of the months January through December with the current month selected.
 
 ```ruby
-# 現在の月をデフォルト値に持つセレクトボックスを生成する
+# Generates a select field for months that defaults to the current month
 select_month(Date.today)
 ```
 
 #### select_second
 
-0から59までの秒をオプションに持ち、現在時刻の秒が選択されているselectタグを返します。
+Returns a select tag with options for each of the seconds 0 through 59 with the current second selected.
 
 ```ruby
-# 指定の秒を現在時刻に加えた値をデフォルト値に持つ秒用のセレクトボックスを生成する
+# Generates a select field for seconds that defaults to the seconds for the time provided
 select_second(Time.now + 16.minutes)
 ```
 
 #### select_time
 
-時刻用のselectタグのセットを返します。タグは時・分用にそれぞれあります。
+Returns a set of HTML select-tags (one for hour and minute).
 
 ```ruby
-# 現在時刻をデフォルト値に持つ時刻セレクトボックスを生成する
+# Generates a time select that defaults to the time provided
 select_time(Time.now)
 ```
 
 #### select_year
 
-当年を含む直近の5つの年をオプションに持ち、当年がデフォルトとして選択されているselectタグを返します。`:start_year`キーと`:end_year`キーを`options`に設定することで、デフォルトの5年を変更できます。
+Returns a select tag with options for each of the five years on each side of the current, which is selected. The five year radius can be changed using the `:start_year` and `:end_year` keys in the `options`.
 
 ```ruby
-# 今年をデフォルト値に持ち、Date.todayで得られた日の前後5年をオプションに持つセレクトボックスを生成する
+# Generates a select field for five years on either side of Date.today that defaults to the current year
 select_year(Date.today)
 
-# 今年をデフォルト値に持ち、1900年から2009年までをオプションに持つセレクトボックスを生成する
+# Generates a select field from 1900 to 2009 that defaults to the current year
 select_year(Date.today, start_year: 1900, end_year: 2009)
 ```
 
 #### time_ago_in_words
 
-`distance_of_time_in_words`と基本的に同じ動作であり、`to_time`の部分が`Time.now`に固定されている点だけが異なります。
+Like `distance_of_time_in_words`, but where `to_time` is fixed to `Time.now`.
 
 ```ruby
-time_ago_in_words(3.minutes.from_now)  # => 3分
+time_ago_in_words(3.minutes.from_now)  # => 3 minutes
 ```
 
 #### time_select
 
-時刻用のselectタグのセットを返します。タグは時・分用の他にオプションで秒もあります。時刻に関する特定の属性にアクセスして日時が選択済みになります。このタグで選択された項目は、Active Recordオブジェクトにマルチパラメータとして割り当て可能な形式になります。
+Returns a set of select tags (one for hour, minute and optionally second) pre-selected for accessing a specified time-based attribute. The selects are prepared for multi-parameter assignment to an Active Record object.
 
 ```ruby
-# 時刻選択用タグを作成する。フォームがPOSTされると、submitted属性のorder変数が保存される。
+# Creates a time select tag that, when POSTed, will be stored in the order variable in the submitted attribute
 time_select("order", "submitted")
 ```
 
 ### DebugHelper
 
-YAMLからダンプしたオブジェクトを含む`pre`タグを返します。これを利用することで、オブジェクトの内容が非常に読みやすくなります。
+YAMLからダンプしたオブジェクトを含む`pre`タグを返します。
 
 ```ruby
 my_hash = {'first' => 1, 'second' => 'two', 'third' => [1,2,3]}
@@ -857,7 +827,7 @@ debug(my_hash)
 ```html
 <pre class='debug_dump'>---
 first: 1
-second: two 
+second: two
 third:
 - 1
 - 2
@@ -882,7 +852,7 @@ third:
 <% end %>
 ```
 
-上のコードによって生成されるHTMLは以下のようになります。
+上のコードによって生成されるHTMLは以下のようになります
 
 ```html
 <form action="/people/create" method="post">
@@ -905,10 +875,10 @@ third:
 指定された属性にアクセスするためのチェックボックスタグを生成します。
 
 ```ruby
-# @post.validated?が1の場合
-check_box("post", "validated")
-# => <input type="checkbox" id="post_validated" name="post[validated]" value="1" />
-#    <input name="post[validated]" type="hidden" value="0" />
+# Let's say that @article.validated? is 1:
+check_box("article", "validated")
+# => <input type="checkbox" id="article_validated" name="article[validated]" value="1" />
+#    <input name="article[validated]" type="hidden" value="0" />
 ```
 
 #### fields_for
@@ -922,9 +892,7 @@ form_forのような特定のモデルオブジェクトの外側にスコープ
 
   <%= fields_for @person.permission do |permission_fields| %>
     Admin?  : <%= permission_fields.check_box :admin %>
-  <% end %>
-<% end %>
-```
+  <% end %> <% end %>  ```
 
 #### file_field
 
@@ -940,7 +908,7 @@ file_field(:user, :avatar)
 フィールドにどのような値があるかを問い合わせるのに使用される、特定のモデルオブジェクトの外側にフォームを1つとスコープを1つ作成します。
 
 ```html+erb
-<%= form_for @post do |f| %>
+<%= form_for @article do |f| %>
   <%= f.label :title, 'Title' %>:
   <%= f.text_field :title %><br>
   <%= f.label :body, 'Body' %>:
@@ -962,8 +930,8 @@ hidden_field(:user, :token)
 特定の属性用のinputフィールドに与えるラベルを返します。
 
 ```ruby
-label(:post, :title)
-# => <label for="post_title">Title</label>
+label(:article, :title)
+# => <label for="article_title">Title</label>
 ```
 
 #### password_field
@@ -980,11 +948,11 @@ password_field(:login, :pass)
 特定の属性にアクセスするためのラジオボタンタグを返します。
 
 ```ruby
-# @post.categoryが"rails"を返す場合
-radio_button("post", "category", "rails")
-radio_button("post", "category", "java")
-# => <input type="radio" id="post_category_rails" name="post[category]" value="rails" checked="checked" />
-#    <input type="radio" id="post_category_java" name="post[category]" value="java" />
+# Let's say that @article.category returns "rails":
+radio_button("article", "category", "rails")
+radio_button("article", "category", "java")
+# => <input type="radio" id="article_category_rails" name="article[category]" value="rails" checked="checked" />
+#    <input type="radio" id="article_category_java" name="article[category]" value="java" />
 ```
 
 #### text_area
@@ -1003,13 +971,13 @@ text_area(:comment, :text, size: "20x30")
 特定の属性にアクセスするための、種類が"text"のinputタグを返します。
 
 ```ruby
-text_field(:post, :title)
-# => <input type="text" id="post_title" name="post[title]" value="#{@post.title}" />
+text_field(:article, :title)
+# => <input type="text" id="article_title" name="article[title]" value="#{@article.title}" />
 ```
 
 #### email_field
 
-特定の属性にアクセスするための、種類が"email"のinputタグを返します。
+特定の属性にアクセスするための、種類が"emai"のinputタグを返します。
 
 ```ruby
 email_field(:user, :email)
@@ -1036,28 +1004,28 @@ url_field(:user, :url)
 例として、このメソッドを適用するオブジェクトの構造が以下のようになっているとします。
 
 ```ruby
-class Post < ActiveRecord::Base
+class Article < ActiveRecord::Base
   belongs_to :author
 end
 
 class Author < ActiveRecord::Base
-  has_many :posts
+  has_many :articles
   def name_with_initial
     "#{first_name.first}. #{last_name}"
   end
 end
 ```
 
-利用法は、たとえば以下のようになります。ここでは、Postモデルのインスタンスである`@post`に関連付けられているAuthorモデルから選択肢を取り出しています。
+Sample usage (selecting the associated Author for an instance of Article, `@article`):
 
 ```ruby
-collection_select(:post, :author_id, Author.all, :id, :name_with_initial, {prompt: true})
+collection_select(:article, :author_id, Author.all, :id, :name_with_initial, {prompt: true})
 ```
 
-`@post.author_id`が1の場合、以下が返されます。
+If `@article.author_id` is 1, this would return:
 
 ```html
-<select name="post[author_id]">
+<select name="article[author_id]">
   <option value="">Please select</option>
   <option value="1" selected="selected">D. Heinemeier Hansson</option>
   <option value="2">D. Thomas</option>
@@ -1072,33 +1040,33 @@ collection_select(:post, :author_id, Author.all, :id, :name_with_initial, {promp
 例として、このメソッドを適用するオブジェクトの構造が以下のようになっているとします。
 
 ```ruby
-class Post < ActiveRecord::Base
+class Article < ActiveRecord::Base
   belongs_to :author
 end
 
 class Author < ActiveRecord::Base
-  has_many :posts
+  has_many :articles
   def name_with_initial
     "#{first_name.first}. #{last_name}"
   end
 end
 ```
 
-利用法は、たとえば以下のようになります。ここでは、Postモデルのインスタンスである`@post`に関連付けられているAuthorモデルから選択肢を取り出しています。
+Sample usage (selecting the associated Author for an instance of Article, `@article`):
 
 ```ruby
-collection_radio_buttons(:post, :author_id, Author.all, :id, :name_with_initial)
+collection_radio_buttons(:article, :author_id, Author.all, :id, :name_with_initial)
 ```
 
-`@post.author_id`が1の場合、以下が返されます。
+If `@article.author_id` is 1, this would return:
 
 ```html
-<input id="post_author_id_1" name="post[author_id]" type="radio" value="1" checked="checked" />
-<label for="post_author_id_1">D. Heinemeier Hansson</label>
-<input id="post_author_id_2" name="post[author_id]" type="radio" value="2" />
-<label for="post_author_id_2">D. Thomas</label>
-<input id="post_author_id_3" name="post[author_id]" type="radio" value="3" />
-<label for="post_author_id_3">M. Clark</label>
+<input id="article_author_id_1" name="article[author_id]" type="radio" value="1" checked="checked" />
+<label for="article_author_id_1">D. Heinemeier Hansson</label>
+<input id="article_author_id_2" name="article[author_id]" type="radio" value="2" />
+<label for="article_author_id_2">D. Thomas</label>
+<input id="article_author_id_3" name="article[author_id]" type="radio" value="3" />
+<label for="article_author_id_3">M. Clark</label>
 ```
 
 #### collection_check_boxes
@@ -1108,43 +1076,35 @@ collection_radio_buttons(:post, :author_id, Author.all, :id, :name_with_initial)
 例として、このメソッドを適用するオブジェクトの構造が以下のようになっているとします。
 
 ```ruby
-class Post < ActiveRecord::Base
+class Article < ActiveRecord::Base
   has_and_belongs_to_many :authors
 end
 
 class Author < ActiveRecord::Base
-  has_and_belongs_to_many :posts
+  has_and_belongs_to_many :articles
   def name_with_initial
     "#{first_name.first}. #{last_name}"
   end
 end
 ```
 
-利用法は、たとえば以下のようになります。ここでは、Postモデルのインスタンスである`@post`に関連付けられているAuthorsから選択肢を取り出しています。
+Sample usage (selecting the associated 作者 for an instance of Article, `@article`):
 
 ```ruby
-collection_check_boxes(:post, :author_ids, Author.all, :id, :name_with_initial)
+collection_check_boxes(:article, :author_ids, Author.all, :id, :name_with_initial)
 ```
 
-`@post.author_ids`が1の場合、以下が返されます。
+If `@article.author_ids` is [1], this would return:
 
 ```html
-<input id="post_author_ids_1" name="post[author_ids][]" type="checkbox" value="1" checked="checked" />
-<label for="post_author_ids_1">D. Heinemeier Hansson</label>
-<input id="post_author_ids_2" name="post[author_ids][]" type="checkbox" value="2" />
-<label for="post_author_ids_2">D. Thomas</label>
-<input id="post_author_ids_3" name="post[author_ids][]" type="checkbox" value="3" />
-<label for="post_author_ids_3">M. Clark</label>
-<input name="post[author_ids][]" type="hidden" value="" />
+<input id="article_author_ids_1" name="article[author_ids][]" type="checkbox" value="1" checked="checked" />
+<label for="article_author_ids_1">D. Heinemeier Hansson</label>
+<input id="article_author_ids_2" name="article[author_ids][]" type="checkbox" value="2" />
+<label for="article_author_ids_2">D. Thomas</label>
+<input id="article_author_ids_3" name="article[author_ids][]" type="checkbox" value="3" />
+<label for="article_author_ids_3">M. Clark</label>
+<input name="article[author_ids][]" type="hidden" value="" />
 ```
-
-#### country_options_for_select
-
-世界のほぼすべての国名を含むオプションタグの文字列を返します。
-
-#### country_select
-
-country_options_for_selectを使用してオプションタグを生成し、指定されたオブジェクトとメソッド用のselectタグとoptionタグを返します。
 
 #### option_groups_from_collection_for_select
 
@@ -1220,16 +1180,16 @@ NOTE: 返されるのは`option`だけです。従って、出力結果の外側
 
 指定されたオブジェクトとメソッドに従って、selectタグの中に一連のoptionタグを含んだものを作成します。
 
-例：
+Example:
 
 ```ruby
-select("post", "person_id", Person.all.collect {|p| [ p.name, p.id ] }, {include_blank: true})
+select("article", "person_id", Person.all.collect {|p| [ p.name, p.id ] }, {include_blank: true})
 ```
 
-`@post.person_id`が1の場合、以下が返されます。
+If `@article.person_id` is 1, this would become:
 
 ```html
-<select name="post[person_id]">
+<select name="article[person_id]">
   <option value=""></option>
   <option value="1" selected="selected">David</option>
   <option value="2">Sam</option>
@@ -1304,10 +1264,10 @@ file_field_tag 'attachment'
 `url_for_options`で設定されたURLへのアクションに送信されるフォームタグを作成します。これは`ActionController::Base#url_for`と似ています。
 
 ```html+erb
-<%= form_tag '/posts' do %>
+<%= form_tag '/articles' do %>
   <div><%= submit_tag 'Save' %></div>
 <% end %>
-# => <form action="/posts" method="post"><div><input type="submit" name="submit" value="Save" /></div></form>
+# => <form action="/articles" method="post"><div><input type="submit" name="submit" value="Save" /></div></form>
 ```
 
 #### hidden_field_tag
@@ -1369,8 +1329,8 @@ select_tag "people", "<option>David</option>"
 キャプションとして指定されたテキストを使用して送信ボタンを作成します。
 
 ```ruby
-submit_tag "Publish this post"
-# => <input name="commit" type="submit" value="Publish this post" />
+submit_tag "Publish this article"
+# => <input name="commit" type="submit" value="Publish this article" />
 ```
 
 #### text_area_tag
@@ -1378,8 +1338,8 @@ submit_tag "Publish this post"
 textareaタグでテキスト入力エリアを作成します。ブログへの投稿や説明文などの長いテキストを入力するにはtextareaをご使用ください。
 
 ```ruby
-text_area_tag 'post'
-# => <textarea id="post" name="post"></textarea>
+text_area_tag 'article'
+# => <textarea id="article" name="article"></textarea>
 ```
 
 #### text_field_tag
@@ -1422,22 +1382,6 @@ date_field_tag "dob"
 
 ビューでJavaScriptを使用するための機能を提供します。
 
-#### button_to_function
-
-`onclick`ハンドラを使用するJavaScript関数を起動するボタンを返します。以下の例を参照ください。
-
-```ruby
-button_to_function "Greeting", "alert('Hello world!')"
-button_to_function "Delete", "if (confirm('Really?')) do_delete()"
-button_to_function "Details" do |page|
-  page[:details].visual_effect :toggle_slide
-end
-```
-
-#### define_javascript_functions
-
-単一の`script`タグ内にAction PackのJavaScriptライブラリを追加します。
-
 #### escape_javascript
 
 JavaScriptセグメントから改行 (CR) と一重引用符と二重引用符をエスケープします。
@@ -1456,15 +1400,6 @@ javascript_tag "alert('All is good')"
 alert('All is good')
 //]]>
 </script>
-```
-
-#### link_to_function
-
-`onclick`ハンドラを使用するJavaScript関数を起動し、その後falseを返すリンクを返します。
-
-```ruby
-link_to_function "Greeting", "alert('Hello world!')"
-# => <a onclick="alert('Hello world!'); return false;" href="#">Greeting</a>
 ```
 
 ### NumberHelper
@@ -1527,13 +1462,13 @@ SanitizeHelperモジュールは、望ましくないHTML要素を除去する�
 
 #### sanitize
 
-sanitizeヘルパーメソッドは、すべてのタグ文字をHTMLエンコードし、明示的に許可されていない属性をすべて削除します。
+This sanitize helper will HTML encode all tags and strip all attributes that aren't specifically allowed.
 
 ```ruby
 sanitize @article.body
 ```
 
-:attributesオプションまたは:tagsオプションが渡されると、そこで指定されたタグおよび属性のみが処理の対象外となります。
+[REVIEW]:attributesオプションまたは:tagsオプションが渡されると、そこで指定されたタグおよび属性のみが処理の対象外となります。
 
 ```ruby
 sanitize @article.body, tags: %w(table tr td), attributes: %w(id class style)
@@ -1594,14 +1529,14 @@ CAUTION: この出力にはエスケープされていない'<'、'>'、'&'文�
 <%= csrf_meta_tags %>
 ```
 
-NOTE: 通常のフォームではそのための隠しフィールドが生成されるので、これらのタグは使用されません。詳細については[セキュリティガイド](security.html#クロスサイトリクエストフォージェリ-csrf)を参照してください。
+NOTE: 通常のフォームではそのための隠しフィールドが生成されるので、これらのタグは使用されません。詳細については[セキュリティガイド](security.html#クロスサイトリクエストフォージェリ-(csrf))を参照してください。
 
 ローカライズされたビュー
 ---------------
 
 Action Viewは、現在のロケールに応じてさまざまなテンプレートを出力することができます。
 
-たとえば、`PostsController`にshowアクションがあるとしましょう。このshowアクションを呼び出すと、デフォルトでは`app/views/posts/show.html.erb`が出力されます。ここで`I18n.locale = :de`を設定すると、代りに`app/views/posts/show.de.html.erb`が出力されます。ローカライズ版のテンプレートが見当たらない場合は、装飾なしのバージョンが使用されます。つまり、ローカライズ版ビューがなくても動作しますが、ローカライズ版ビューがあればそれが使用されます。
+以下に例を示します。 suppose you have a `ArticlesController` with a show action. By default, calling this action will render `app/views/articles/show.html.erb`. But if you set `I18n.locale = :de`, then `app/views/articles/show.de.html.erb` will be rendered instead. ローカライズ版のテンプレートが見当たらない場合は、装飾なしのバージョンが使用されます。つまり、ローカライズ版ビューがなくても動作しますが、ローカライズ版ビューがあればそれが使用されます。
 
 同じ要領で、publicディレクトリのレスキューファイル (いわゆるエラーページ) もローカライズできます。たとえば、`I18n.locale = :de`と設定し、`public/500.de.html`と`public/404.de.html`を作成することで、ローカライズ版のレスキューページを作成できます。
 
@@ -1615,6 +1550,6 @@ def set_expert_locale
 end
 ```
 
-これにより、たとえば`app/views/posts/show.expert.html.erb`のような特殊なビューをエキスパートユーザーにだけ表示することができます。
+Then you could create special views like `app/views/articles/show.expert.html.erb` that would only be displayed to expert users.
 
 詳細については、[Rails国際化 (I18n) API](i18n.html) を参照してください。
