@@ -3,7 +3,7 @@ Caching with Rails: An overview
 
 This guide will teach you what you need to know about avoiding that expensive round-trip to your database and returning what you need to return to the web clients in the shortest time possible.
 
-After reading this guide, you will know:
+このガイドの内容:
 
 * Page and action caching (moved to separate gems as of Rails 4).
 * Fragment caching.
@@ -15,7 +15,10 @@ After reading this guide, you will know:
 Basic Caching
 -------------
 
-This is an introduction to three types of caching techniques: page, action and fragment caching. Rails provides by default fragment caching. In order to use page and action caching, you will need to add `actionpack-page_caching` and `actionpack-action_caching` to your Gemfile.
+This is an introduction to three types of caching techniques: page, action and
+fragment caching. Rails provides by default fragment caching. In order to use
+page and action caching, you will need to add `actionpack-page_caching` and
+`actionpack-action_caching` to your Gemfile.
 
 To start playing with caching you'll want to ensure that `config.action_controller.perform_caching` is set to `true`, if you're running in development mode. This flag is normally set in the corresponding `config/environments/*.rb` and caching is disabled by default for development and test, and enabled for production.
 
@@ -25,15 +28,15 @@ config.action_controller.perform_caching = true
 
 ### Page Caching
 
-Page caching is a Rails mechanism which allows the request for a generated page to be fulfilled by the webserver (i.e. Apache or nginx), without ever having to go through the Rails stack at all. Obviously, this is super-fast. Unfortunately, it can't be applied to every situation (such as pages that need authentication) and since the webserver is literally just serving a file from the filesystem, cache expiration is an issue that needs to be dealt with.
+Page caching is a Rails mechanism which allows the request for a generated page to be fulfilled by the webserver (i.e. Apache or NGINX), without ever having to go through the Rails stack at all. Obviously, this is super-fast. Unfortunately, it can't be applied to every situation (such as pages that need authentication) and since the webserver is literally just serving a file from the filesystem, cache expiration is an issue that needs to be dealt with.
 
-INFO: Page Caching has been removed from Rails 4. See the [actionpack-page_caching gem](https://github.com/rails/actionpack-page_caching). See [DHH's key-based cache expiration overview](http://signalvnoise.com/posts/3113-how-key-based-cache-expiration-works) for the newly-preferred method.
+INFO: Page Caching has been removed from Rails 4. ポストプロセッサが実行されるときの詳細については [actionpack-page_caching gem](https://github.com/rails/actionpack-page_caching). See [DHH's key-based cache expiration overview](http://signalvnoise.com/posts/3113-how-key-based-cache-expiration-works) for the newly-preferred method.
 
 ### Action Caching
 
 Page Caching cannot be used for actions that have before filters - for example, pages that require authentication. This is where Action Caching comes in. Action Caching works like Page Caching except the incoming web request hits the Rails stack so that before filters can be run on it before the cache is served. This allows authentication and other restrictions to be run while still serving the result of the output from a cached copy.
 
-INFO: Action Caching has been removed from Rails 4. See the [actionpack-action_caching gem](https://github.com/rails/actionpack-action_caching). See [DHH's key-based cache expiration overview](http://signalvnoise.com/posts/3113-how-key-based-cache-expiration-works) for the newly-preferred method.
+INFO: Action Caching has been removed from Rails 4. ポストプロセッサが実行されるときの詳細については [actionpack-action_caching gem](https://github.com/rails/actionpack-action_caching). See [DHH's key-based cache expiration overview](http://signalvnoise.com/posts/3113-how-key-based-cache-expiration-works) for the newly-preferred method.
 
 ### Fragment Caching
 
@@ -52,9 +55,7 @@ As an example, if you wanted to show all the orders placed on your website in re
   All available products:
   <% Product.all.each do |p| %>
     <%= link_to p.name, product_url(p) %>
-  <% end %>
-<% end %>
-```
+  <% end %> <% end %>  ```
 
 The cache block in our example will bind to the action that called it and is written out to the same place as the Action Cache, which means that if you want to cache multiple fragments per action, you should provide an `action_suffix` to the cache call:
 
@@ -94,7 +95,7 @@ module ProductsHelper
 end
 ```
 
-This method generates a cache key that depends on all products and can be used in the view:
+This method 上を実行すると以下が生成されます。 a cache key that depends on all products and can be used in the view:
 
 ```erb
 <% cache(cache_key_for_products) do %>
@@ -102,7 +103,7 @@ This method generates a cache key that depends on all products and can be used i
 <% end %>
 ```
 
-If you want to cache a fragment under certain condition you can use `cache_if` or `cache_unless` 
+If you want to cache a fragment under certain condition you can use `cache_if` or `cache_unless`
 
 ```erb
 <% cache_if (condition, cache_key_for_products) do %>
@@ -116,9 +117,7 @@ You can also use an Active Record model as the cache key:
 <% Product.all.each do |p| %>
   <% cache(p) do %>
     <%= link_to p.name, product_url(p) %>
-  <% end %>
-<% end %>
-```
+  <% end %> <% end %>  ```
 
 Behind the scenes, a method called `cache_key` will be invoked on the model and it returns a string like `products/23-20130109142513`. The cache key includes the model name, the id and finally the updated_at timestamp. Thus it will automatically generate a new fragment when the product is updated because the key changes.
 
@@ -155,13 +154,13 @@ class Product < ActiveRecord::Base
 end
 ```
 
-NOTE: Notice that in this example we used `cache_key` method, so the resulting cache-key will be something like `products/233-20140225082222765838000/competing_price`. `cache_key` generates a string based on the model’s `id` and `updated_at` attributes. This is a common convention and has the benefit of invalidating the cache whenever the product is updated. In general, when you use low-level caching for instance level information, you need to generate a cache key.
+NOTE: Notice that in this example we used `cache_key` method, so the resulting cache-key will be something like `products/233-20140225082222765838000/competing_price`. `cache_key` 上を実行すると以下が生成されます。 a string based on the model’s `id` and `updated_at` attributes. This is a common convention and has the benefit of invalidating the cache whenever the product is updated. In general, when you use low-level caching for instance level information, you need to generate a cache key.
 
 ### SQL Caching
 
 Query caching is a Rails feature that caches the result set returned by each query so that if Rails encounters the same query again for that request, it will use the cached result set as opposed to running the query against the database again.
 
-For example:
+以下に例を示します。
 
 ```ruby
 class ProductsController < ApplicationController
@@ -182,7 +181,7 @@ end
 Cache Stores
 ------------
 
-Rails provides different stores for the cached data created by <b>action</b> and <b>fragment</b> caches.
+Rails provides different stores for the cached data created by **action** and **fragment** caches.
 
 TIP: Page caches are always stored on disk.
 
@@ -206,7 +205,7 @@ The main methods to call are `read`, `write`, `delete`, `exist?`, and `fetch`. T
 
 There are some common options used by all cache implementations. These can be passed to the constructor or the various methods to interact with entries.
 
-* `:namespace` - This option can be used to create a namespace within the cache store. It is especially useful if your application shares a cache with other applications.
+* `:namespace` - This option can be used to create a namespace within the cache store It is especially useful if your application shares a cache with other applications.
 
 * `:compress` - This option can be used to indicate that compression should be used in the cache. This can be useful for transferring large cache entries over a slow network.
 
@@ -254,7 +253,7 @@ config.cache_store = :mem_cache_store, "cache-1.example.com", "cache-2.example.c
 
 ### ActiveSupport::Cache::EhcacheStore
 
-If you are using JRuby you can use Terracotta's Ehcache as the cache store for your application. Ehcache is an open source Java cache that also offers an enterprise version with increased scalability, management, and commercial support. You must first install the jruby-ehcache-rails3 gem (version 1.1.0 or later) to use this cache store.
+If you are using JRuby you can use Terracotta's Ehcache as the cache store for your application. Ehcache is an open source Java cache that also offers an enterprise version with increased scalability, management, and commercial support. You must first install the jruby-ehcache-rails3 gem (version 1.1.0 or later) to use this cache store
 
 ```ruby
 config.cache_store = :ehcache_store
@@ -302,7 +301,7 @@ config.cache_store = MyCacheStore.new
 
 ### Cache Keys
 
-The keys used in a cache can be any object that responds to either `:cache_key` or to `:to_param`. You can implement the `:cache_key` method on your classes if you need to generate custom keys. Active Record will generate keys based on the class name and record id.
+The keys used in a cache can be any object that responds to either `:cache_key` or to `:to_param`. You can implement the `:cache_key` method on your classes if you need to generate custom keys. Active Record 上を実行すると以下が生成されます。 keys based on the class name and record id.
 
 You can use Hashes and Arrays of values as cache keys.
 
@@ -332,7 +331,7 @@ class ProductsController < ApplicationController
     # (i.e. it needs to be processed again) then execute this block
     if stale?(last_modified: @product.updated_at.utc, etag: @product.cache_key)
       respond_to do |wants|
-        # ... normal response processing
+      # ... normal response processing
       end
     end
 
@@ -350,12 +349,17 @@ Instead of an options hash, you can also simply pass in a model, Rails will use 
 class ProductsController < ApplicationController
   def show
     @product = Product.find(params[:id])
-    respond_with(@product) if stale?(@product)
+
+    if stale?(@product)
+      respond_to do |wants|
+      # ... normal response processing
+      end
+    end
   end
 end
 ```
 
-If you don't have any special response processing and are using the default rendering mechanism (i.e. you're not using respond_to or calling render yourself) then you've got an easy helper in fresh_when:
+If you don't have any special response processing and are using the default rendering mechanism (i.e. you're not using `respond_to` or calling render yourself) then you've got an easy helper in `fresh_when`:
 
 ```ruby
 class ProductsController < ApplicationController
