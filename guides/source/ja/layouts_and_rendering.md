@@ -1,4 +1,3 @@
-﻿
 レイアウトとレンダリング
 ==============================
 
@@ -41,7 +40,7 @@ end
 ルーティングファイルに以下が記載されているとします。
 
 ```ruby
-  resources :books
+resources :books
 ```
 
 `app/views/books/index.html.erb`ビューファイルの内容が以下のようになっているとします。
@@ -98,7 +97,7 @@ NOTE: 実際のレンダリングは、`ActionView::TemplateHandlers`のサブ�
 
 ### `render`を使用する
 
-アプリケーションがブラウザで表示するコンテンツのレンダリング (出力) という力仕事は、`ActionController::Base#render`メソッドがほぼ一手に引き受けています。`render`メソッドはさまざまな方法でカスタマイズできます。Railsテンプレートのデフォルトビューを出力することもできますし、特定のテンプレート、ファイル、インラインコードを指定して出力したり、何も出力しないこともできます。テキスト、JSON、XMLを出力することもできます。出力されるレスポンスのcontent typeやHTTPステータスを指定することもできます。
+アプリケーションがブラウザで表示するコンテンツのレンダリング (出力) という力仕事は、`ActionController::Base#render`メソッドがほぼ一手に引き受けています。`render`メソッドはさまざまな方法でカスタマイズできます。Railsテンプレートのデフォルトビューを出力することもできますし、特定のテンプレート、ファイル、インラインコードを指定して出力したり、何も出力しないこともできます。テキスト、JSON、XMLをYou can render text, JSON, or XML. You can specify the content type or HTTP status of the rendered response as well.
 
 TIP: 出力結果をブラウザで表示して調べることなく、`render`呼び出しの正確な結果を取得したい場合は、`render_to_string`を呼び出すことができます。このメソッドの動作は`render`と完全に同じであり、出力結果をブラウザに返さずに文字列を返す点だけが異なります。
 
@@ -126,7 +125,7 @@ Cache-Control: no-cache
 $
 ```
 
-レスポンスの内容は空欄になっています (`Cache-Control`行以降にデータがない) が、ステータスコートが200 OKになっているのでリクエストが成功していることがわかります。renderメソッドの`:status`オプションを設定することでレスポンスを変更できます。何も出力しないというレスポンスは、Ajaxリクエストを使用する時に便利です。これを使用することで、リクエストが成功したという確認応答だけをブラウザに送り返すことができるからです。
+レスポンスの内容は空欄になっています (`Cache-Control`行以降にデータがない) が、ステータスコートが200 OKになっているのでリクエストが成功していることがわかります。何も出力しないというレスポンスは、Ajaxリクエストを使用する時に便利です。これを使用することで、リクエストが成功したという確認応答だけをブラウザに送り返すことができるからです。
 
 TIP: 200 OKヘッダーだけを送信したいのであれば、ここでご紹介した`render :nothing`よりも、本ガイドで後述する`head`メソッドを使用する方がおそらくよいでしょう。`head`メソッドは`render :nothing`よりも柔軟性が高く、HTTPヘッダーだけを生成していることが明確になるからです。
 
@@ -190,7 +189,7 @@ render file: "/u/apps/warehouse_app/current/app/views/products/show"
 
 `:file`オプションに与えるパスは、ファイルシステムの絶対パスです。当然ながら、コンテンツを出力したいファイルに対して適切なアクセス権が与えられている必要があります。
 
-NOTE: ファイルを出力する場合、デフォルトでは現在のレイアウトが適用されません。ファイルの出力を現在のレイアウト内で行いたい場合は、`layout: true`オプションを追加する必要があります。
+NOTE: By default, the file is rendered using the current layout.
 
 TIP: Microsoft Windows上でRailsを実行している場合、ファイルを出力する際に`:file`オプションを省略できません。Windowsのファイル名フォーマットはUnixのファイル名と同じではないためです。
 
@@ -245,20 +244,22 @@ render plain: "OK"
 
 TIP: 平文テキストの出力は、AjaxやWebサービスリクエストに応答するときに最も有用です。これらではHTML以外の応答を期待しています。
 
-NOTE: デフォルトでは、`:plain`オプションを使用すると出力結果に現在のレイアウトが適用されません。テキストの出力を現在のレイアウト内で行いたい場合は、`layout: true`オプションを追加する必要があります。
+NOTE: デフォルトでは、`:plain`オプションを使用すると出力結果に現在のレイアウトが適用されません。If you want Rails to put the text into the current
+layout, you need to add the `layout: true` option and use the `.txt.erb`
+extension for the layout file.
 
 #### HTMLを出力する
 
 `render`で`:html`オプションを使用すると、HTML文字列を直接ブラウザに送信することができます。
 
-```ruby 
+```ruby
 render html: "<strong>Not Found</strong>".html_safe
 ```
 
 TIP: この手法は、HTMLコードのごく小規模なスニペットを出力したい場合に便利です。
 スニペットのマークアップが複雑になるようであれば、早めにテンプレートファイルに移行することをご検討ください。
 
-NOTE: このオプションを使用すると、文字列が「HTML safe」でない場合にHTML要素をエスケープします。
+NOTE: This option will escape HTML entities if the string is not HTML safe.
 
 #### JSONを出力する
 
@@ -300,7 +301,8 @@ render body: "raw"
 
 TIP: このオプションを使用するのは、レスポンスのcontent typeがどんなものであってもよい場合のみにしてください。ほとんどの場合、`:plain`や`:html`などを使用する方が適切です。
 
-NOTE: このオプションを使用してブラウザに送信されるレスポンスは、上書きされない限り`text/html`が使用されます。これはAction Dispatchによるレスポンスのデフォルトのcontent typeであるためです。
+NOTE: Unless overridden, your response returned from this render option will be
+`text/html`, as that is the default content type of Action Dispatch response.
 
 #### `render`のオプション
 
@@ -421,7 +423,7 @@ Railsは現在のレイアウトを探索する場合、最初に現在のコン
 
 ##### コントローラ用のレイアウトを指定する
 
-`layout`宣言を使用することで、デフォルトのレイアウト名ルールを上書きすることができます。例: 
+`layout`宣言を使用することで、デフォルトのレイアウト名ルールを上書きすることができます。以下に例を示します。
 
 ```ruby
 class ProductsController < ApplicationController
@@ -463,9 +465,9 @@ class ProductsController < ApplicationController
 end
 ```
 
-上のコードは、現在のユーザーが特別なユーザーの場合、そのユーザーが製品ページを見るときに特別なレイアウトを適用します。
+Now, if the current user is a special user, they'll get a special layout when viewing a product.
 
-レイアウトを決定する際に、Procなどのインラインメソッドを使用することもできます。たとえばProcオブジェクトを渡すと、Procを渡されたブロックには`controller`インスタンスが渡されます。これにより、現在のリクエストを元にしてレイアウトを決定することができます。
+You can even use an inline method, such as a Proc, to determine the layout. 以下に例を示します。 if you pass a Proc object, the block you give the Proc will be given the `controller` instance, so the layout can be determined based on the current request:
 
 ```ruby
 class ProductsController < ApplicationController
@@ -473,9 +475,9 @@ class ProductsController < ApplicationController
 end
 ```
 
-##### 条件付きレイアウト
+##### Conditional Layouts
 
-コントローラレベルで指定されたレイアウトでは、`:only`オプションと`:except`オプションがサポートされています。これらのオプションは、単一のメソッド名またはメソッド名の配列を引数として受け取ります。渡すメソッド名はコントローラ内のメソッド名に対応します。
+Layouts specified at the controller level support the `:only` and `:except` options. These options take either a method name, or an array of method names, corresponding to method names within the controller:
 
 ```ruby
 class ProductsController < ApplicationController
@@ -487,43 +489,43 @@ end
 
 ##### レイアウトの継承
 
-レイアウト宣言は下の階層に継承されます。下の階層、つまりより具体的なレイアウト宣言は、上の階層、つまりより一般的なレイアウトよりも常に優先されます。例: 
+レイアウト宣言は下の階層に継承されます。下の階層、つまりより具体的なレイアウト宣言は、上の階層、つまりより一般的なレイアウトよりも常に優先されます。以下に例を示します。
 
 * `application_controller.rb`
 
     ```ruby
-class ApplicationController < ActionController::Base
+    class ApplicationController < ActionController::Base
       layout "main"
     end
     ```
 
-* `posts_controller.rb`
+* `articles_controller.rb`
 
     ```ruby
-    class PostsController < ApplicationController
+  class ArticlesController < ApplicationController
     end
     ```
 
-* `special_posts_controller.rb`
+* `special_articles_controller.rb`
 
     ```ruby
-    class SpecialPostsController < PostsController
+    class SpecialArticlesController < ArticlesController
       layout "special"
     end
     ```
 
-* `old_posts_controller.rb`
+* `old_articles_controller.rb`
 
     ```ruby
-    class OldPostsController < SpecialPostsController
+    class OldArticlesController < SpecialArticlesController
       layout false
 
-      def show
-        @post = Post.find(params[:id])
+[W6]def show
+  @article = Article.find(params[:id])
       end
 
       def index
-        @old_posts = Post.older
+        @old_articles = Article.older
         render layout: "old"
       end
       # ...
@@ -533,14 +535,14 @@ class ApplicationController < ActionController::Base
 上のアプリケーションは以下のように動作します。
 
 * ビューの出力には基本的に`main`レイアウトが使用されます。
-* `PostsController#index`では`main`レイアウトが使用されます。
-* `SpecialPostsController#index`では`special`レイアウトが使用されます。
-* `OldPostsController#show`ではレイアウトが適用されません。
-* `OldPostsController#index`では`old`レイアウトが使用されます。
+* `ArticlesController#index` will use the `main` layout
+* `SpecialArticlesController#index` will use the `special` layout
+* `OldArticlesController#show` will use no layout at all
+* `OldArticlesController#index` will use the `old` layout
 
 #### 二重レンダリングエラーを避ける
 
-Rails開発をやっていれば、一度は "Can only render or redirect once per action" エラーに遭遇したことがあるでしょう。いまいましいエラーですが、修正は比較的簡単です。このエラーはほとんどの場合、開発者が`render`メソッドの基本的な動作を誤って理解していることが原因です。
+Rails開発をやっていれば、一度は "Can only render or redirect once per action" エラーに遭遇したことがあるでしょう。いまいましいエラーですが、修正は比較的簡単です。このエラーはほとんどの場合、開発者が`render`メソッドの基本的な動作を誤って理解している ことが原因です。
 
 このエラーを発生する以下のコードを例にとって説明しましょう。
 
@@ -583,9 +585,9 @@ end
 
 ### `redirect_to`を使用する
 
-HTTPリクエストにレスポンスを返すもう一つの方法は、`redirect_to`を使用することです。前述のとおり、`render`はレスポンス構成時にどのビュー (または他のアセット) を使用するかを指定するためのものです。`redirect_to`メソッドは、この点において`render`メソッドと根本的に異なります。`redirect_to`メソッドは、別のURLに対して改めてリクエストを再送信するよう、ブラウザに指令を出すためのものです。たとえば以下の呼び出しを行なうと、アプリケーションで現在どのページが表示されていても、写真のインデックス表示ページにリダイレクトされます。
+HTTPリクエストにレスポンスを返すもう一つの方法は、`redirect_to`を使用することです。前述のとおり、`render`はレスポンス構成時にどのビュー (または他のアセット) を使用するかを指定するためのものです。`redirect_to`メソッドは、この点において`render`メソッドと根本的に異なります。`redirect_to`メソッドは、it tells the browser to send a new request for a different URL. For example, you could redirect from wherever you are in your code to the index of photos in your application with this call:
 
-```ruby 
+```ruby
 redirect_to photos_url
 ```
 
@@ -613,7 +615,7 @@ redirect_to photos_path, status: 301
 
 ```ruby
 def index
-  @books = Book.all
+  @books = Book.all 
 end
 
 def show
@@ -628,7 +630,7 @@ end
 
 ```ruby
 def index
-  @books = Book.all
+  @books = Book.all 
 end
 
 def show
@@ -641,13 +643,13 @@ end
 
 上のコードであれば、ブラウザから改めてindexページにリクエストが送信されるので、`index`メソッドのコードが正常に実行されます。
 
-上のコードで1つ残念な点があるとすれば、ブラウザとのやりとりが1往復増えることです。ブラウザから`/books/1`に対してshowアクションが呼び出され、コントローラが本が1冊もないことを検出すると、コントローラはブラウザに対してステータスコード302 (リダイレクト) レスポンスを返し、`/books/`に再度アクセスするようブラウザに指令を出します。ブラウザはこの指令に応じ、このコントローラの`index`アクションを呼び出すためのリクエストを改めてサーバーに送信します。そしてコントローラはこのリクエストを受けてデータベースからすべての蔵書リストを取り出し、indexテンプレートをレンダリングして出力結果をブラウザに送り返すと、ブラウザで蔵書リストが表示されます。
+上のコードで1つ残念な点があるとすれば、ブラウザとのやりとりが1往復増えることです。ブラウザから`/books/1`に対してshowアクションが呼び出され、コントローラが本が1冊もないことを検出すると、コントローラはブラウザに対してステータスコード302 (リダイレクト) レスポンスを返し、`/books/`に再度アクセスするようブラウザに指令を出します。ブラウザはこの指令に応じ、このコントローラの`index`アクションを呼び出すためのリクエストを改めてサーバーに送信します。そしてコントローはこのリクエストを受けてデータベースからすべての蔵書リストを取り出し、indexテンプレートをレンダリングして出力結果をブラウザに送り返すと、ブラウザで蔵書リストが表示されます。
 
 このやりとりの増加による遅延は、小規模なアプリケーションであればおそらく問題になりませんが、遅延が甚だしくなってきた場合にはこの点を改める必要があるかもしれません。ブラウザとのやりとりを増やさないように工夫した例を以下に示します。
 
 ```ruby
 def index
-  @books = Book.all
+  @books = Book.all 
 end
 
 def show
@@ -706,15 +708,15 @@ Cache-Control: no-cache
 レイアウトを構成する
 -------------------
 
-Railsがビューからレスポンスを出力するときには、そのビューには現在のレイアウトも組み込まれます。現在のレイアウトを探索するときのルールは、本ガイドで既に説明したものが使用されます。レイアウト内では、さまざまな出力の断片を組み合わせて最終的なレスポンス出力を得るための3つのツールを利用できます。
+When Rails renders a view as a response, it does so by combining the view with the current layout, using the rules for finding the current layout that were covered earlier in this guide. Within a layout, you have access to three tools for combining different bits of output to form the overall response:
 
 * Asset tags
 * `yield` and `content_for`
 * Partials
 
-### アセットタグヘルパー
+### Asset Tag Helpers
 
-アセットタグヘルパーが提供するメソッドは、フィード、JavaScript、スタイルシート、画像、動画および音声のビューにリンクするHTMLを生成するためのものです。Railsでは以下の6つのアセットタグヘルパーが利用できます。
+Asset tag helpers provide methods for generating HTML that link views to feeds, JavaScript, stylesheets, images, videos and audios. There are six asset tag helpers available in Rails:
 
 * `auto_discovery_link_tag`
 * `javascript_include_tag`
@@ -788,7 +790,7 @@ Railsアプリケーション内やRailsエンジン内のJavaScriptファイル
 
 Railsでアセットパイプラインを有効にしている場合、このヘルパーは`/assets/stylesheets/`へのリンクを生成します。その後このリンクはSprockets gemによって処理されます。スタイルシートファイルは、`app/assets`、`lib/assets`、または`vendor/assets`のいずれかの場所に置かれます。
 
-ドキュメントルートからの相対フルパスやURLを指定することもできます。たとえば、`app/assets`、`lib/assets`、または`vendor/assets`の下にある`stylesheets`の下にあるスタイルシートファイルにリンクしたい場合は以下のようにします。
+ドキュメントルートからの相対フルパスやURLを指定することもできます。For example, to link to a stylesheet file that is inside a directory called `stylesheets` inside of one of `app/assets`, `lib/assets` or `vendor/assets`, you would do this:
 
 ```erb
 <%= stylesheet_link_tag "main" %>
@@ -894,7 +896,7 @@ WARNING: 画像ファイルの拡張子は省略できません。
 上のコードによって以下が生成されます。
 
 ```erb
-<video><source src="trailer.ogg" /><source src="movie.ogg" /></video>
+<video><source src="/videos/trailer.ogg" /><source src="/videos/trailer.flv" /></video>
 ```
 
 #### `audio_tag`を使用して音声ファイルにリンクする
@@ -973,7 +975,7 @@ WARNING: 画像ファイルの拡張子は省略できません。
 </html>
 ```
 
-`content_for`メソッドは、たとえばレイアウトが「サイドバー」や「フッター」などの領域に分かれていて、それらに異なるコンテンツを挿入したいような場合に大変便利です。あるいは、多くのページで使用する共通のヘッダーがあり、このヘッダーに特定のページでのみJavaScriptやCSSファイルを挿入したい場合にも便利です。
+`content_for`メソッドは、たとえばレイアウトが「サイドバー」や「フッター」などの領域に分かれていて、それらに異なるコンテンツを挿入したいような場合にたいへんべんりdあるいは、多くのページで使用する共通のヘッダーがあり、このヘッダーに特定のページでのみJavaScriptやCSSファイルを挿入したい場合にも便利です。
 
 ### パーシャルを使用する
 
@@ -1161,7 +1163,7 @@ TIP: コレクションによって呼び出されるパーシャル内でカウ
 <%= render partial: @products, spacer_template: "product_ruler" %>
 ```
 
-上のコードでは、`_product`パーシャルと`_product`パーシャルの合間に`_product_ruler`パーシャル (引数なし) をレンダリングします。
+上のコードでは、`_product`パーシャルと`_product`パーシャルの合間に`_product_ruler`パーシャル (引数なし) をレンダリング
 
 #### コレクションパーシャルレイアウト
 
@@ -1205,7 +1207,7 @@ TIP: コレクションによって呼び出されるパーシャル内でカウ
       #top_menu {display: none}
       #right_menu {float: right; background-color: yellow; color: black}
     <% end %>
-    <% content_for :content do %>
+    <% content_for :content do %> 
       <div id="right_menu">Right menu items here</div>
       <%= content_for?(:news_content) ? yield(:news_content) : yield %>
     <% end %>
@@ -1214,4 +1216,4 @@ TIP: コレクションによって呼び出されるパーシャル内でカウ
 
 以上でおしまいです。Newsビューで新しいレイアウトが使用されるようになり、トップメニューが隠されて"content" divタグ内に右メニューが新しく追加されました。
 
-これと同じ結果を得られるサブテンプレートの使用法はこの他にもさまざまなものが考えられます。ネスティングレベルには制限がない点にご注目ください。たとえばNewsレイアウトで新しいレイアウトを使用するために、`render template: 'layouts/news'`経由で`ActionView::render`メソッドを使用することもできます。`News`レイアウトをサブテンプレート化するつもりがないのであれば、`content_for?(:news_content) ? yield(:news_content) : yield`を単に`yield`に置き換えれば済みます。
+これと同じ結果を得られるサブテンプレートの使用法はこの他にもさまざまなものが考えられます。ネスティングレベルには制限がない点にご注目ください。たtNewsレイアウトで新しいレイアウトを使用するために、`render template: 'layouts/news'`経由で`ActionView::render`メソッドを使用することもできます。`News`レイアウトをサブテンプレート化するつもりがないのであれば、`content_for?(:news_content) ? yield(:news_content) : yield`を単に`yield`に置き換えれば済みます。
