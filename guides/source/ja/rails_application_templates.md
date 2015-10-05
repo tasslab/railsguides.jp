@@ -1,6 +1,3 @@
-﻿
-
-
 Rails のアプリケーションテンプレート
 ===========================
 
@@ -13,7 +10,7 @@ Railsのアプリケーションテンプレートは単純なRubyファイル�
 
 --------------------------------------------------------------------------------
 
-### 使用法
+Usage
 -----
 
 アプリケーションテンプレートを適用するためには、-mオプションを使用してテンプレートの場所を指定する必要があります。ファイルパスまたはURLのどちらでも使用できます。
@@ -23,7 +20,7 @@ $ rails new blog -m ~/template.rb
 $ rails new blog -m http://example.com/template.rb
 ```
 
-rakeタスク`rails:template`を使用して、既存のRailsアプリケーションにテンプレートを適用することもできます。テンプレートの場所はLOCATION環境変数を使用して渡す必要があります。ここでも、ファイルパスまたはURLのどちらを使用してもかまいません。
+rakeタスク`rails:template`を使用して、既存のRailsアプリケーションにテンプレートを適用することもできます。テンプレートの場所はLOCATION. Again, this can either be path to a file or a URL.
 
 ```bash
 $ bin/rake rails:template LOCATION=~/template.rb
@@ -33,7 +30,7 @@ $ bin/rake rails:template LOCATION=http://example.com/template.rb
 テンプレートAPI
 ------------
 
-RailsのテンプレートAPIはわかりやすく設計されています。以下は代表的なRailsアプリケーションテンプレートです。
+RailsのテンプレートAPIはわかりやすく設計されています。以下は代表的なRailsあぷりけーテンプレートです。
 
 ```ruby
 # template.rb
