@@ -1,6 +1,3 @@
-﻿
-
-
 Rails コア開発環境の構築方法
 ================================
 
@@ -29,7 +26,7 @@ Rails development boxを利用できない事情がある場合は、この先�
 Ruby on Railsではソースコード管理にGitを使用しています。インストール方法については[Gitホームページ](http://git-scm.com/)に記載されています。Gitを学ぶための資料はネット上に山ほどあります (特記ないものは英語)。
 
 * [Try Git course](http://try.github.io/)は、対話的な操作のできるコースで基礎を学べます。
-* [Git公式ドキュメント](http://git-scm.com/documentation)には多くの情報がまとめられており、Gitの基礎を学べる動画もあります。
+* [Git公式ドキュメント](http://git-scm.com/documentation)には多くの情報がまとめられており、Gitの基礎を学べる動画もあります。is pretty comprehensive and also contains some videos with the basics of Git
 * [Everyday Git](http://schacon.github.io/git/everyday.html)は最小限必要なGitの知識を学ぶのに向いています。
 * [PeepCode screencast](https://peepcode.com/products/git)のGitのページは学びやすいスクリーンキャストです。
 * [GitHub](http://help.github.com)にはさまざまなGit関連リソースへのリンクがあります。
@@ -54,7 +51,7 @@ $ cd rails
 $ brew install sqlite3
 ```
 
-Ubuntuなら以下で行えます。
+Ubuntuの場合は以下を実行します。
 
 ```bash
 $ sudo apt-get install sqlite3 libsqlite3-dev
@@ -72,7 +69,7 @@ Arch Linuxなら以下を実行する必要があります。
 $ sudo pacman -S sqlite
 ```
 
-FreeBSDの場合は以下を実行します。
+FreeBSDの場合は以下のようにします。
 
 ```bash
 # pkg install sqlite3
@@ -103,7 +100,7 @@ OS Xの場合、[Homebrew](http://brew.sh/)を使用してmemcachedをインス�
 $ brew install memcached
 ```
 
-Ubuntuの場合はapt-getを使用できます。
+Ubuntuの場合はapt-getをしようできます
 
 ```bash
 $ sudo apt-get install memcached
@@ -142,7 +139,7 @@ $ cd actionpack
 $ bundle exec rake test
 ```
 
-特定のディレクトリにあるテストを実行したい場合、    `TEST_DIR`環境変数を使用する方法もあります。たとえば、`railties/test/generators`ディレクトリのテストだけを実行したい場合は以下のようにします。
+特定のディレクトリにあるテストを実行したい場合、　`TEST_DIR`環境変数を使用する方法もありますたとえば、`railties/test/generators`ディレクトリのテストだけを実行したい場合は以下のようにします。
 
 ```bash
 $ cd railties
