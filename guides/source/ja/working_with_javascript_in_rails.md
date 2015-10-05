@@ -1,4 +1,3 @@
-﻿
 Rails で JavaScript を使用する
 ================================
 
@@ -92,27 +91,27 @@ $ ->
     paintIt(this, backgroundColor, textColor)
 ```
 ```html
-<a href="#" data-background-color="#990000">Paint it red</a>
+<a href="#" data-background-color="#990000">Paint it red</a> 
 <a href="#" data-background-color="#009900" data-text-color="#FFFFFF">Paint it green</a>
 <a href="#" data-background-color="#000099" data-text-color="#FFFFFF">Paint it blue</a>
 ```
 
-私たちはこの手法を「控えめなJavaScript」と呼んでいます。この名称は、HTMLの中にJavaScriptを混入させないという意図に由来しています。JavaScriptを正しく分離することができたので、今後の変更が容易になりました。今後は、この`data-*`属性をリンクタグに追加するだけでこの動作を簡単に追加できます。Railsでは、こうした最小化と連結を使用することで、あらゆるJavaScriptを実行できます。JavaScriptコードはRailsのあらゆるWebページでまるごとバンドルされます。つまり、ページが最初にブラウザに読み込まれるときにダウンロードされ、以後はブラウザでキャッシュされます。これにより多くの利点が得られます。
+私たちはこの手法を「控えめなJavaScript」と呼んでいます。We call this 'unobtrusive' JavaScript because we're no longer mixing our JavaScript into our HTML. We've properly separated our concerns, making future change easy. 今後は、この`data-*`属性をリンクタグに追加するだけでこの動作を簡単に追加できます。Railsでは、こうした最小化と連結を使用することで、あらゆるJavaScriptを実行できます。JavaScriptコードはRailsのあらゆるWebページでまるごとバンドルされます。つまり、ページが最初にブラウザに読み込まれるときにダウンロードされ、以後はブラウザでキャッシュされます。これにより多くの利点が得られます。
 
 Railsチームは、本ガイドでご紹介した方法でCoffeeScriptとJavaScriptを使用することを強く推奨いたします。多くのJavaScriptライブラリもこの方法で利用できることが期待できます。
 
-組み込みヘルパー
+Built-in Helpers
 ----------------------
 
-HTML生成を行い易くするために、Rubyで記述されたさまざまなビューヘルパーメソッドが用意されています。それらのHTML要素にAjaxコードを若干追加したくなったときにも、Railsがちゃんとサポートしてくれます。
+HTML生成を助けるために、Rubyで記述されたさまざまなビューヘルパーメソッドが用意されています。 provides a bunch of view helper methods written in Ruby to assist you in generating HTML. Sometimes, you want to add a little Ajax to those elements, and Rails has got your back in those cases.
 
 RailsのJavaScriptは、「控えめなJavaScript」原則に基いて、JavaScriptによる要素とRubyによる要素の2つの要素で構成されています。
 
-JavaScriptによる要素は[rails.js](https://github.com/rails/jquery-ujs/blob/master/src/rails.js)であり、Rubyによる要素である正規のビューヘルパーによってDOMに適切なタグが追加されます。これによりrails.jsに含まれるCoffeeScriptがDOMの属性をリッスンするようになり、それらの属性に適切なハンドラが与えられます。
+[rails.js](https://github.com/rails/jquery-ujs/blob/master/src/rails.js)はJavaScript側の要素であり、 provides the JavaScript half, and the regular Ruby view helpers add appropriate tags to your DOM. The CoffeeScript in rails.js then listens for these attributes, and attaches appropriate handlers.
 
 ### form_for
 
-[`form_for`](http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-form_for) はフォーム作成を支援するヘルパーです。`form_for`は、JavaScriptを利用するための`:remote`オプションを引数に取ることができます。この動作は次のようになります。
+[`form_for`](http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-form_for) はis a helper that assists with writing forms. `form_for` takes a `:remote` option. この動作は次のようになります。
 
 ```erb
 <%= form_for(@article, remote: true) do |f| %>
@@ -176,7 +175,7 @@ $(document).ready ->
 <a href="/articles/1" data-remote="true">an article</a>
 ```
 
-`form_for`の場合と同様、同じAjaxイベントをバインドできます。例を以下に示します。1クリックで削除できる記事の一覧があるとします。このHTMLは以下のような感じになります。
+`form_for`の場合と同様、同じAjaxイベントをバインドできます。Here's an example. 1クリックで削除できる記事の一覧があるとします。このHTMLは以下のような感じになります。
 
 ```erb
 <%= link_to "Delete article", @article, remote: true, method: :delete %>
@@ -211,7 +210,7 @@ $ ->
 サーバー側で考慮すべき点
 --------------------
 
-Ajaxはクライアント側だけでなく、ある程度サーバー側でのサポートも必要です。Ajaxリクエストに対してレスポンスを返す際の形式は、HTMLよりもJSONを使用することが好まれるようです。それでは、必要となるものについて解説します。
+Ajaxはクライアント側だけでなく、ある程度サーバー側でのサポートも必要です。Ajaxリクエストに対して送り返す内容は、HTMLよりもJSONを使用するOften, people like their Ajax requests to return JSON rather than HTML. Let's discuss what it takes to make that happen.
 
 ### シンプルな例
 
@@ -252,7 +251,9 @@ indexビュー (`app/views/users/index.html.erb`) の内容は以下のように
 
 indexページの上部にはユーザーの一覧が表示されます。下部にはユーザー作成用のフォームが表示されます。
 
-下部のフォームは`UsersController`の`create`アクションを呼び出します。フォームのremoteオプションがオンになっているので、リクエストはAjaxリクエストとして`UsersController`に渡され、JavaScriptを探します。コントローラ内でリクエストに応答する`create`アクションは以下のようになります。
+下部のフォームは`UsersController`の`create`アクションを呼び出します。フォームのremoteオプションがオンになっているので、リクエストはAjaxリクエストとして`UsersController`に渡され、JavaScriptを探します。In order to
+serve that request, the `create` action of your controller would look like
+this:
 
 ```ruby
 # app/controllers/users_controller.rb
@@ -273,7 +274,7 @@ indexページの上部にはユーザーの一覧が表示されます。下部
   end
 ```
 
-format.jsが`respond_to`ブロックの中にある点にご注目ください。これによって、 コントローラがAjaxリクエストに応答できるようになります。続いて、対応する`app/views/users/create.js.erb`ビューファイルを作成します。実際のJavaScriptはこのビューで生成され、クライアントに送信されてそこで実行されます。
+format.jsが`respond_to`ブロックの中にある点にご注目ください。これによって、 that allows the controller to respond to your Ajax request. You then have a corresponding `app/views/users/create.js.erb` view file that generates the actual JavaScript code that will be sent and executed on the client side.
 
 ```erb
 $("<%= escape_javascript(render @user) %>").appendTo("#users");
@@ -286,7 +287,11 @@ Rails 4には[Turbolinks gem](https://github.com/rails/turbolinks)が同梱さ�
 
 ### Turbolinksの動作原理
 
-Turbolinksは、ページにあるすべての`<a>`にクリックハンドラを1つずつ追加します。ブラウザで[PushState](https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Manipulating_the_browser_history#The_pushState\(\).C2.A0method)がサポートされている場合、Turbolinksはそのページ用のAjaxリクエストを生成し、サーバーからのレスポンスを解析し、そのページの`<body>`全体をレスポンスの`<body>`で置き換えます。続いて、TurbolinksはPushStateを使用してURLを正しいものに書き換え、リフレッシュのセマンティクスを維持しながらプリティURLを与えます。
+Turbolinksは、ページにあるすべての`<a>`にクリックハンドラを1つずつ追加します。If your browser
+supports
+[PushState](https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Manipulating_the_browser_history#The_pushState%28%29_method),
+Turbolinks will make an Ajax request for the page, parse the response, and
+replace the entire `<body>` of the page with the `<body>` of the response. [REVIEW]続いて、TurbolinksはPushStateを使用してURLを正しいものに書き換え、リフレッシュのセマンティクスを維持しながらプリティURLを与えます。
 
 Turbolinksを有効にするには、TurbolinksをGemfileに追加し、CoffeeScriptのマニフェスト (通常は`app/assets/javascripts/application.js`) に`//= require turbolinks`を追加します。
 
