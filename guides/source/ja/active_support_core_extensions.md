@@ -1,6 +1,3 @@
-﻿
-
-
 Active Support コア拡張機能
 ==============================
 
@@ -159,10 +156,10 @@ singletonでない数字にも、複製不可能なものがあります。
 Active Supportには、オブジェクトがプログラム的に複製可能かどうかを問い合わせるための`duplicable?`メソッドがあります。
 
 ```ruby
-"foo".duplicable? # => true
-"".duplicable?    # => true
-0.0.duplicable?  # => false
-false.duplicable? # => false
+"foo".duplicable? true
+0.0.duplicable?  true
+0.0.duplicable?  false)
+false.duplicable?  # => false
 ```
 
 デフォルトでは、`nil`、`false`、`true`、シンボル、数値、クラス、モジュール、メソッドオブジェクトを除くすべてのオブジェクトが`duplicable?` #=> trueです。
@@ -246,7 +243,7 @@ end
 `try`メソッドは引数の代りにブロックを与えて呼び出すこともできます。この場合オブジェクトが`nil`でない場合にのみブロックが実行されます。
 
 ```ruby
-@person.try { |p| "#{p.first_name} #{p.last_name}" }
+@person.try { |p| "#{p.first_name} #{p.last_name}" } 
 ```
 
 NOTE: 定義ファイルの場所は`active_support/core_ext/object/try.rb`です。
@@ -315,7 +312,7 @@ Railsのあらゆるオブジェクトは`to_param`メソッドに応答しま�
 [0, true, String].to_param # => "0/true/String"
 ```
 
-特に、Railsのルーティングシステムはモデルに対して`to_param`メソッドを実行することで、`:id`プレースホルダの値を取得しています。`ActiveRecord::Base#to_param`はモデルの`id`を返しますが、このメソッドをモデル内で再定義することもできます。たとえば
+特に、Railsのルーティングシステムはモデルに対して`to_param`メソッドを実行することで、`:id`プレースホルダの値を取得しています。`ActiveRecord::Base#to_param`はモデルの`id`を返しますが、このメソッドをモデル内で再定義することもできます。以下の例で考察してみましょう。
 
 ```ruby
 class User
@@ -337,7 +334,7 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/object/to_param.rb`
 
 ### `to_query`
 
-このメソッドは、エスケープされていない`key`を受け取ると、そのキーを`to_param`が返す値に対応させるクエリ文字列の一部を生成します。ただしハッシュは例外です(後述)。たとえば以下の場合、
+このメソッドは、エスケープされていない`key`を受け取ると、そのキーを`to_param`が返す値に対応させるクエリ文字列の一部を生成します。ただしハッシュは例外です(後述)。以下の例で考察してみましょう。
 
 ```ruby
 class User
@@ -350,7 +347,7 @@ end
 以下の結果を得ます。
 
 ```ruby
-current_user.to_query('user') # => "user=357-john-smith"
+current_user.to_query('user') # => user=357-john-smith
 ```
 
 このメソッドは、キーと値のいずれについても、必要な箇所をすべてエスケープします。
@@ -467,7 +464,7 @@ C.new(0, 1).instance_variable_names # => ["@x", "@y"]
 
 NOTE: 定義ファイルの場所は`active_support/core_ext/object/instance_variables.rb`です。
 
-### 警告・例外の抑制
+### 警告・ストリーム・例外の抑制
 
 `silence_warnings`メソッドと`enable_warnings`メソッドは、ブロックが継続する間`$VERBOSE`の値を変更し、その後リセットします。
 
@@ -475,7 +472,23 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/object/instance_var
 silence_warnings { Object.const_set "RAILS_DEFAULT_LOGGER", logger }
 ```
 
-`suppress`メソッドを使用すると例外の発生を止めることもできます。このメソッドは、例外クラスを表す任意の数値を受け取ります。`suppress`は、あるブロックの実行時に例外が発生し、その例外が(`kind_of?`による判定で)いずれかの引数に一致する場合、それをキャプチャして例外を発生せずに戻ります。一致しない場合、例外はキャプチャされません。
+`silence_stream`メソッドは、与えたブロックが実行中の間、あらゆるストリームを止めることができます。
+
+```ruby
+silence_stream(STDOUT) do
+  # STDOUTの出力が止まる
+end
+```
+
+`quietly`メソッドは、サブプロセスも含めてSTDOUTとSTDERRの出力を抑制したい場合に使用します。
+
+```ruby
+quietly { system 'bundle install' }
+```
+
+たとえば、railtiesテストスイートではこのメソッドを数箇所で使用することで、echoされたコマンドメッセージが進捗ステータスと混じって表示されることのないようにしています。
+
+`suppress`メソッドを使用すると例外の発生を止めることもできます。このメソッドは引数に、任意の数の例外クラスを受け取ります。`suppress`は、あるブロックの実行時に例外が発生し、その例外が(`kind_of?`による判定で)いずれかの引数に一致する場合、それをキャプチャして例外を発生せずに戻ります。一致しない場合、例外はキャプチャされません。
 
 ```ruby
 # ユーザーがロックされていればインクリメントは失われるが、重要ではない
@@ -506,16 +519,13 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/object/inclusion.rb
 
 ### `alias_method_chain`
 
-**このメソッドは非推奨になりました。Module#prependをお使いください。**
-
 拡張されていない純粋なRubyを使用して、メソッドを他のメソッドで包み込む(wrap)ことができます。これは _エイリアスチェーン (alias chaining)_ と呼ばれています。
 
 たとえば、機能テストのときにはパラメータが (実際のリクエストのときと同様に) 文字列であって欲しいとします。しかし必要なときには整数など他の型の値を持つこともできるようにしておきたいとします。これを実現するには、`ActionController::TestCase#process`を以下のように`test/test_helper.rb`でラップします。
 
 ```ruby
 ActionController::TestCase.class_eval do
-  # 元のプロセスメソッドへの参照を保存
-  alias_method :original_process, :process
+  # 参照を元のプロセスメソッドalias_method :original_process, :processへ保存
 
   # 今度はプロセスを再定義してoriginal_processに以上する
   def process(action, params=nil, session=nil, flash=nil, http_method='GET')
@@ -552,6 +562,8 @@ ActionController::TestCase.class_eval do
 end
 ```
 
+Railsでは`alias_method_chain`を全面的にコードベースに採用しています。たとえば、`ActiveRecord::Base#save`メソッドに検証 (validation) 機能を追加するために、検証専用の独立したモジュール内でメソッドを上の方法でラップしています。
+
 NOTE: 定義ファイルの場所は`active_support/core_ext/module/aliasing.rb`です。
 
 ### 属性
@@ -564,7 +576,7 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/module/aliasing.rb`
 class User < ActiveRecord::Base
   # emailカラムを"login"という名前でも参照したい
   # そうすることで認証のコードがわかりやすくなる
-  alias_attribute :login, :email
+  alias_attribute :login, :email 
 end
 ```
 
@@ -590,7 +602,7 @@ class MyCrawler < ThirdPartyLibrary::Crawler
 end
 ```
 
-先の例では、`:log_level`はライブラリのパブリックインターフェイスに属さず、開発用途にのみ使用されます。クライアント側のコードでは衝突の可能性について考慮せずに独自に`:log_level`をサブクラスで定義しています。ライブラリ側で`attr_internal`を使用しているおかげで衝突が生じずに済んでいます。
+先の例では、`:log_level`はライブラリのパブリックインターフェイスに属さず、開発用途にのみ使用されます。クライアント側のコードでは衝突の可能性について考慮せずに独自に`:log_level`をサブクラスで定義しています。ライブラリ側で`attr_internal`を使用しているおかげで衝突が生じずに済んでいます。 
 
 このとき、内部インスタンス変数の名前にはデフォルトで冒頭にアンダースコアが追加されます。上の例であれば`@_log_level`となります。この動作は`Module.attr_internal_naming_format`を使用して変更することもできます。`sprintf`と同様のフォーマット文字列を与え、冒頭に`@`を置き、それ以外の名前を置きたい場所に`%s`を置きます。デフォルト値は`"@_%s"`です。
 
@@ -681,7 +693,7 @@ M.parent_name       # => "X::Y"
 
 WARNING: `parent`は上の場合でも`Object`を返します。
 
-NOTE: 定義ファイルの場所は`active_support/core_ext/module/introspection.rb`。
+NOTE: 定義ファイルの場所は`active_support/core_ext/module/introspection.rb`です。
 
 #### `parents`
 
@@ -724,9 +736,9 @@ X::Y.local_constants # => [:Y1, :X1]
 
 NOTE: 定義ファイルの場所は`active_support/core_ext/module/introspection.rb`です。
 
-#### 正規の定数名
+#### ふるぱ定数名
 
-標準のメソッド`const_defined?`、`const_get`、`const_set`では、(修飾されていない)素の定数名を使用します。Active SupportではこのAPIを拡張し、よりフルパスに近い(qualified)定数名を渡せるようにしています。
+標準のメソッド`const_defined?`、`const_get`、`const_set`は素の定数名を受け付けます。Active SupportではこのAPIを拡張し、よりフルパスに近い(qualified)定数名を渡せるようにしています。
 
 新しいメソッドは`qualified_const_defined?`、`qualified_const_get`、`qualified_const_set`です。これらのメソッドに渡す引数は、レシーバからの相対的な修飾済み定数名であることが前提となります。
 
@@ -769,8 +781,7 @@ N.qualified_const_defined?("C::X")        # => true
 
 最後の例でわかるように、`const_defined?`メソッドと同様に2番目の引数はデフォルトでtrueになります。
 
-ビルトインメソッドと一貫させるため、相対パス以外は利用できません。
-`::Math::PI`のような絶対定数名を指定すると`NameError`が発生します。
+ビルトインメソッドと一貫させるため、相対パスのみを受け付けます。`::Math::PI`のような絶対定数名を指定すると`NameError`が発生します。
 
 NOTE: 定義ファイルの場所は`active_support/core_ext/module/qualified_const.rb`です。
 
@@ -784,7 +795,7 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/module/qualified_co
 module M
 end
 
-M.reachable? # => true
+M.reachable?  # => true
 ```
 
 しかし、定数とモジュールが実質上切り離されると、そのモジュールオブジェクトは到着不能 (unreachable) になります。
@@ -799,7 +810,7 @@ orphan = Object.send(:remove_const, :M)
 orphan.name # => "M"
 
 # 定数Mは既に存在してないので、定数Mを経由して到達できない
-orphan.reachable? # => false
+orphan.reachable?  # => false
 
 # "M"という名前のモジュールを再度定義する
 module M
@@ -807,7 +818,7 @@ end
 
 # 定数Mが再度存在し、モジュールオブジェクト"M"を保持しているが
 # 元と異なる新しいインスタンスである
-orphan.reachable? # => false
+orphan.reachable?  # => false
 ```
 
 NOTE: 定義ファイルの場所は`active_support/core_ext/module/reachable.rb`です。
@@ -832,9 +843,9 @@ Module.new.name # => nil
 ```ruby
 module M
 end
-M.anonymous? # => false
+M.anonymous?   # => false
 
-Module.new.anonymous? # => true
+Module.new.anonymous?  # => true
 ```
 
 到達不能 (unreachable) であっても、必ずしも無名 (anonymous) になるとは限りません。
@@ -845,8 +856,8 @@ end
 
 m = Object.send(:remove_const, :M)
 
-m.reachable? # => false
-m.anonymous? # => false
+m.reachable?  # => false
+m.anonymous?  # => false
 ```
 
 逆に無名モジュールは、定義上必ず到達不能になります。
@@ -1147,21 +1158,21 @@ Active Supportには「(html的に) 安全な文字列」という概念があ�
 文字列はデフォルトでは _unsafe_ とマークされます。
 
 ```ruby
-"".html_safe? # => false
+"".html_safe?  # => false
 ```
 
 与えられた文字列に`html_safe`メソッドを適用することで、安全な文字列を得ることができます。
 
 ```ruby
 s = "".html_safe
-s.html_safe? # => true
+s.html_safe?  # => true
 ```
 
 ここで注意しなければならないのは、`html_safe`メソッドそれ自体は何らエスケープを行なっていないということです。安全であるとマーキングしているに過ぎません。
 
 ```ruby
 s = "<script>...</script>".html_safe
-s.html_safe? # => true
+s.html_safe?  # => true
 s            # => "<script>...</script>"
 ```
 
@@ -1228,7 +1239,7 @@ INFO: こうしたメソッドを実行すると、実際に変換が行われ�
 `remove`メソッドを実行すると、すべての該当パターンが削除されます。
 
 ```ruby
-"Hello World".remove(/Hello /) # => "World"
+"Hello World".remove(/Hello /) => "World"
 ```
 
 このメソッドには破壊的なバージョンの`String#remove!`もあります。
@@ -1324,8 +1335,8 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/string/filters.rb`�
 `inquiry`は、文字列を`StringInquirer`オブジェクトに変換します。このオブジェクトを使用すると、等しいかどうかをよりスマートにチェックできます。
 
 ```ruby
-"production".inquiry.production? # => true
-"active".inquiry.inactive?       # => false
+"production".inquiry.production?  # => true
+"active".inquiry.inactive?        # => false
 ```
 
 ### `starts_with?`と`ends_with?`
@@ -1333,7 +1344,7 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/string/filters.rb`�
 Active Supportでは、`String#start_with?`と`String#end_with?`を英語的に自然な三人称(starts、ends)にした別名も定義してあります。
 
 ```ruby
-"foo".starts_with?("f") # => true
+"foo".starts_with?("f")  # => true
 "foo".ends_with?("o")   # => true
 ```
 
@@ -1423,7 +1434,7 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/string/access.rb`�
 "hello".from(0)  # => "hello"
 "hello".from(2)  # => "llo"
 "hello".from(-2) # => "lo"
-"hello".from(10) # => nil
+"hello".from(10) # => "" if < 1.9, nil in 1.9
 ```
 
 NOTE: 定義ファイルの場所は`active_support/core_ext/string/access.rb`です。
@@ -1449,7 +1460,7 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/string/access.rb`�
 
 #### `last(limit = 1)`
 
-`str.last(n)` という呼び出しは、`n` > 0 のとき`str.from(-n)`と等価です。`n` == 0 の場合は空文字列を返します。
+ `str.last(n)` という呼び出しは、`n` > 0 のとき`str.from(-n)`と等価です。`n` == 0 の場合は空文字列を返します。
 
 NOTE: 定義ファイルの場所は`active_support/core_ext/string/access.rb`です。
 
@@ -1481,7 +1492,7 @@ Active Recordでは、モデル名に対応するデフォルトのテーブル�
 # active_record/model_schema.rb
 def undecorated_table_name(class_name = base_class.name)
   table_name = class_name.to_s.demodulize.underscore
-  pluralize_table_names ? table_name.pluralize : table_name
+  pluralize_table_names ?  table_name.pluralize : table_name
 end
 ```
 
@@ -1536,7 +1547,7 @@ def session_store=(store)
 end
 ```
 
-`camelize`メソッドはオプションの引数を受け付けます。使用できるのは`:upper` (デフォルト) または`:lower`です。後者を指定すると、冒頭が小文字になります。
+`camelize`メソッドはオプションの引数を受け付けます。使用できるのは`:upper` (デフォルト) または`:lower`です。. With the latter the first letter becomes lowercase:
 
 ```ruby
 "visual_effect".camelize(:lower) # => "visualEffect"
@@ -1625,7 +1636,7 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/string/inflections.
 # active_model/serializers/xml.rb
 def reformat_name(name)
   name = name.camelize if camelize?
-  dasherize? ? name.dasherize : name
+  dasherize? ?  name.dasherize : name
 end
 ```
 
@@ -1677,7 +1688,7 @@ def qualified_const_set(path, value)
 
   const_name = path.demodulize
   mod_name = path.deconstantize
-  mod = mod_name.empty? ? self : qualified_const_get(mod_name)
+  mod = mod_name.empty? ?  self : qualified_const_get(mod_name)
   mod.const_set(const_name, value)
 end
 ```
@@ -1804,7 +1815,6 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/string/inflections.
 ```
 
 ヘルパーメソッド`full_messages`では、属性名をメッセージに含めるときに`humanize`を使用しています。
-
 
 ```ruby
 def full_messages
@@ -2048,7 +2058,7 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/integer/inflections
 1.ordinalize    # => "1st"
 2.ordinalize    # => "2nd"
 53.ordinalize   # => "53rd"
-2009.ordinalize # => "2009th"
+2009.ordinalize # => "2009th" 
 -21.ordinalize  # => "-21st"
 -134.ordinalize # => "-134th"
 ```
@@ -2140,7 +2150,7 @@ invoices.index_by(&:number)
 
 WARNING: キーは通常はユニークでなければなりません。異なる要素から同じ値が返されると、そのキーのコレクションは作成されません。返された項目のうち、最後の項目だけが使用されます。
 
-NOTE: 定義ファイルの場所は`active_support/core_ext/enumerable.rb`です
+NOTE: 定義ファイルの場所は`active_support/core_ext/enumerable.rb`です。
 
 ### `many?`
 
@@ -2155,7 +2165,7 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/enumerable.rb`で�
 `many?`は、ブロックがオプションとして与えられると、trueを返す要素だけを扱います。
 
 ```ruby
-@see_more = videos.many? {|video| video.category == params[:category]}
+@see_more = videos.many?  {|video| video.category == params[:category]}
 ```
 
 NOTE: 定義ファイルの場所は`active_support/core_ext/enumerable.rb`です。
@@ -2166,17 +2176,6 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/enumerable.rb`で�
 
 ```ruby
 to_visit << node if visited.exclude?(node)
-```
-
-NOTE: 定義ファイルの場所は`active_support/core_ext/enumerable.rb`です。
-
-### `without`
-
-`without`メソッドは、指定した要素を除外したenumerableのコピーを返します。
-
-
-```ruby
-["David", "Rafael", "Aaron", "Todd"].without("Aaron", "Todd") # => ["David", "Rafael"]
 ```
 
 NOTE: 定義ファイルの場所は`active_support/core_ext/enumerable.rb`です。
@@ -2246,7 +2245,7 @@ User.exists?(email: params[:email])
 
 しかし、あるメソッドが受け取る引数の数が固定されておらず、メソッド宣言で`*`が使用されていると、そのような波括弧なしのオプションハッシュは、引数の配列の末尾の要素になってしまい、ハッシュとして認識されなくなってしまいます。
 
-このような場合、`extract_options!`このメソッドは、配列の最後の項目の型をチェックします。それがハッシュの場合、そのハッシュを取り出して返し、それ以外の場合は空のハッシュを返します。
+このような場合、`extract_options!`メソッドを使用することでオプションハッシュを区別して扱えるようになります。このメソッドは、配列の最後の項目の型をチェックします。それがハッシュの場合、そのハッシュを取り出して返し、それ以外の場合は空のハッシュを返します。
 
 `caches_action`コントローラマクロでの定義を例にとって見てみましょう。
 
@@ -2352,7 +2351,7 @@ Contributor.limit(2).order(:rank).to_xml
 #     <author>Joshua Peek</author>
 #     <authored-timestamp type="datetime">2009-09-02T16:44:36Z</authored-timestamp>
 #     <branch>origin/master</branch>
-#     <committed-timestamp type="datetime">2009-09-02T16:44:36Z</committed-timestamp>
+#     <committed-timestamp type="datetime">2009-09-02T16:44:36Z</committed-timestamp> 
 #     <committer>Joshua Peek</committer>
 #     <git-show nil="true"></git-show>
 #     <id type="integer">190316</id>
@@ -2414,7 +2413,7 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/array/conversions.r
 
 特徴:
 
-* 引数が`nil`の場合、空の配列が返されます。
+* 引数が`nil`の場合、空のリストが返されます。
 * 上記以外の場合で、引数が`to_ary`に応答する場合は`to_ary`が呼び出され、`to_ary`の値が`nil`でない場合はその値が返されます。
 * 上記以外の場合、引数を内側に含んだ配列 (要素が1つだけの配列) が返されます。
 
@@ -2426,9 +2425,9 @@ Array.wrap(0)         # => [0]
 
 このメソッドの目的は`Kernel#Array`と似ていますが、いくつかの相違点があります。
 
-* 引数が`to_ary`に応答する場合、このメソッドが呼び出されます。`nil`が返された場合、`Kernel#Array`は`to_a`を適用しようと動作を続けますが、`Array.wrap`はその場で、引数を単一の要素として持つ配列を返します。
+* 引数が`to_ary`に応答する場合、このメソッドが呼び出されます。`nil`が返された場合、`Kernel#Array`は`to_a`を適用しようと動作を続けますが、`Array.wrap`はすぐさま`nil`を返します。
 * `to_ary`から返された値が`nil`でも`Array`オブジェクトでもない場合、`Kernel#Array`は例外を発生しますが、`Array.wrap`は例外を発生せずに単にその値を返します。
-* このメソッドは引数に対して`to_a`を呼び出しませんが、この引数が +to_ary+ に応答しない場合、引数を単一の要素として持つ配列を返します。
+* このメソッドは引数に対して`to_a`を呼び出しませんが、特殊なケースとして`nil`では空の配列を返します。
 
 最後の性質は、列挙型同士を比較する場合に特に便利です。
 
@@ -2518,7 +2517,7 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/array/grouping.rb`�
 ["6", "7", nil]
 ```
 
-この例では、`in_groups`メソッドは一部のグループの後ろを必要に応じて`nil`要素で埋めているのがわかります。1つのグループには、このような余分な要素がグループの一番右側に必要に応じて最大で1つ置かれる可能性があります。また、そのような値を持つグループは、常に全体の中で最後のグループになります。
+この例では、`in_groups`メソッドは一部のグループの後ろを必要に応じて`nil`要素で埋めているのがわかります。1つのグループには、このような余分な要素がグループの一番右側に必要に応じて最大で1つ置かれる可能性があります。 また、そのような値を持つグループは、常に全体の中で最後のグループになります。
 
 空きを埋める値は2番目のオプション引数で指定できます。
 
@@ -2723,7 +2722,7 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/hash/except.rb`で�
 {"a" => 1, a: 2}.transform_keys { |key| key.to_s.upcase }
 # 以下のどちらになるかは一定ではない
 # => {"A"=>2}
-# または
+# or
 # => {"A"=>1}
 ```
 
@@ -2765,7 +2764,7 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/hash/keys.rb`です
 {"a" => 1, a: 2}.stringify_keys
 # 以下のどちらになるかは一定ではない
 # => {"a"=>2}
-# または
+# or
 # => {"a"=>1}
 ```
 
@@ -2809,7 +2808,7 @@ WARNING: 上の例では、3つのキーのうち最後の1つしかシンボル
 {"a" => 1, a: 2}.symbolize_keys
 # 以下のどちらになるかは一定ではない
 # => {:a=>2}
-# または
+# or
 # => {:a=>1}
 ```
 
@@ -2948,11 +2947,11 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/hash/compact.rb`で
 `multiline?`メソッドは、正規表現に`/m`フラグが設定されているかどうかをチェックします。このフラグが設定されていると、ドット (.) が改行にマッチし、複数行を扱えるようになります。
 
 ```ruby
-%r{.}.multiline? # => false
-%r{.}m.multiline? # => true
+%r{.}.multiline?   # => false
+%r{.}m.multiline?  # => true
 
-Regexp.new('.').multiline?                    # => false
-Regexp.new('.', Regexp::MULTILINE).multiline? # => true
+Regexp.new('.').multiline?                     # => false
+Regexp.new('.', Regexp::MULTILINE).multiline?  # => true
 ```
 
 Railsはこのメソッドをある場所で使用しており、ルーティングコードでも使用しています。ルーティングでは正規表現で複数行を扱うことを許していないので、このフラグを使用して制限を加えています。
@@ -3291,7 +3290,7 @@ Date.new(2010, 1, 31).change(month: 2)
 
 ```ruby
 d = Date.current
-# => Mon, 09 Aug 2010
+# => Mon, 09 Aug 2010 
 d + 1.year
 # => Tue, 09 Aug 2011
 d - 3.hours
@@ -3474,8 +3473,8 @@ now.utc                # => Mon, 07 Jun 2010 23:27:52 +0000
 
 ```ruby
 now = DateTime.now # => Mon, 07 Jun 2010 19:30:47 -0400
-now.utc?          # => false
-now.utc.utc?      # => true
+now.utc?            # => false
+now.utc.utc?        # => true
 ```
 
 ##### `advance`
@@ -3662,7 +3661,7 @@ now.all_year
 
 ### 時間コンストラクタ
 
-ユーザータイムゾーンが定義されている場合、Active Supportが定義する`Time.current`の値は`Time.zone.now`の値と同じになります。ユーザータイムゾーンが定義されていない場合は、`Time.now`と同じになります。
+ユーザータイムゾーンが定義されている場合、Active Supportが定義する`Time.current`の値は`Time.zone.now`の値と同じになります。ユーザータイムゾーンが定義されていない場合は、`Time.now`と同じになります。 
 
 ```ruby
 Time.zone_default
@@ -3741,6 +3740,50 @@ WARNING: 引数が`IO`の場合、再試行を可能にするために`rewind`�
 
 NOTE: 定義ファイルの場所は`active_support/core_ext/marshal.rb`です。
 
+`Logger`のかくちょう
+----------------------
+
+### `around_[level]`
+
+引数を2つ取り (`before_message`と`after_message`)。`Logger`インスタンスの現在のログレベルのメソッドを呼び出し、最初に`before_message`、続いて指定されたメッセージ、最後に`after_message`を渡します。
+
+```ruby
+logger = Logger.new("log/development.log")
+logger.around_info("before", "after") { |logger| logger.info("during") }
+```
+
+### `silence
+
+与えられたブロックの動作中、指定されたログレベルより下のログ出力を停止します。指定可能なログレベルはdebug、info、error、fatalです。
+
+```ruby
+logger = Logger.new("log/development.log")
+logger.silence(Logger::INFO) do
+  logger.debug("In space, no one can hear you scream.")
+  logger.info("Scream all you want, small mailman!")
+end
+```
+
+### `datetime_format=`
+
+ロガーに関連付けられているフォーマッタクラスによって出力される日時のフォーマットを変更します。フォーマッタクラスに`datetime_format`メソッドがない場合は無視されます。
+
+```ruby
+class Logger::FormatWithTime < Logger::Formatter
+  cattr_accessor(:datetime_format) { "%Y%m%d%H%m%S" }
+
+  def self.call(severity, timestamp, progname, msg)
+    "#{timestamp.strftime(datetime_format)} -- #{String === msg ? msg : msg.inspect}\n"
+  end
+end
+
+logger = Logger.new("log/development.log")
+logger.formatter = Logger::FormatWithTime
+logger.info("<- is the current time")
+```
+
+NOTE: 定義ファイルの場所は`active_support/core_ext/logger.rb`です。
+
 `NameError`の拡張
 -------------------------
 
@@ -3757,7 +3800,7 @@ def default_helper_module!
   module_name = name.sub(/Controller$/, '')
   module_path = module_name.underscore
   helper module_path
-rescue LoadError => e
+rescue MissingSourceFile => e
   raise e unless e.is_missing? "helpers/#{module_path}_helper"
 rescue NameError => e
   raise e unless e.missing_name? "#{module_name}Helper"
@@ -3769,18 +3812,18 @@ NOTE: 定義ファイルの場所は`active_support/core_ext/name_error.rb`で�
 `LoadError`の拡張
 -------------------------
 
-Active Supportは`is_missing?`を`LoadError`に追加します。
+Active Supportは`LoadError`に`is_missing?`メソッドを追加します。また、後方互換性のためにそのクラスを`MissingSourceFile`定数に割り当てます。
 
 `is_missing?`は、パス名を引数に取り、特定のファイルが原因で例外が発生するかどうかをテストします (".rb"拡張子が原因と思われる場合を除きます)。
 
-たとえば、`ArticlesController`のアクションが呼び出されると、Railsは`articles_helper.rb`を読み込もうとしますが、このファイルは存在しないことがあります。ヘルパーモジュールは必須ではないので、Railsは読み込みエラーを例外扱いせずに黙殺します。しかし、ヘルパーモジュールが存在しないために別のライブラリが必要になり、それがさらに見つからないという場合が考えられます。Railsはそのような場合には例外を再発生させなければなりません。`is_missing?`メソッドは、この2つの場合を区別するために使用されます。
+たとえば、`ArticlesController`のアクションが呼び出されると、Railsは`articles_helper.rb`を読み込もうとしますが、このファイルは存在しないことがあります。ヘルパーモジュールは必須ではないので、Railsは読み込みエラーを例外扱いせずに黙殺します。しかし、ヘルパーモジュールが存在しないために別のライブラリが必要になり、それがさらに見つからないという場合が考えられます。Railsはそのような場合には、改めて例外を発生させなくてはなりません。`is_missing?`メソッドは、この2つの場合を区別するために使用されます。
 
 ```ruby
 def default_helper_module!
   module_name = name.sub(/Controller$/, '')
   module_path = module_name.underscore
   helper module_path
-rescue LoadError => e
+rescue MissingSourceFile => e
   raise e unless e.is_missing? "helpers/#{module_path}_helper"
 rescue NameError => e
   raise e unless e.missing_name? "#{module_name}Helper"
