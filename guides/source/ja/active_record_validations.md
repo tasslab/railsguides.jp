@@ -1,8 +1,7 @@
-﻿
 Active Record バリデーション
-==========================
+=========================
 
-このガイドでは、Active Recordのバリデーション (検証: validation) 機能を使用して、オブジェクトがデータベースに保存される前にオブジェクトの状態を検証する方法について説明します。
+このガイドでは、Active Recordの検証(validation)機能を使用して、オブジェクトがデータベースに保存される前にオブジェクトの状態を検証する方法について説明します。
 
 このガイドの内容:
 
@@ -10,10 +9,10 @@ Active Record バリデーション
 * カスタムのバリデーションメソッドの作成
 * バリデーションプロセスで生成されたエラーメッセージの取り扱い
 
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 バリデーションの概要
----------------------
+--------------------
 
 きわめてシンプルなバリデーションの例を以下に紹介します。
 
@@ -22,8 +21,8 @@ class Person < ActiveRecord::Base
   validates :name, presence: true
 end
 
-Person.create(name: "John Doe").valid? # => true
-Person.create(name: nil).valid? # => false
+Person.create(name: "John Doe").valid?  # => true
+Person.create(name: nil).valid?  # => false
 ```
 
 上からわかるように、このバリデーションでは`Person`に`name`属性がない場合に無効であることを知らせます。2つ目の`Person`はデータベースに保存されません。
@@ -36,7 +35,10 @@ Person.create(name: nil).valid? # => false
 
 データをデータベースに保存する前にバリデーションを実行する方法は、他にもデータベースネイティブの制約機能、クライアント側でのバリデーション、コントローラレベルのバリデーションなど、多くの方法があります。それぞれのメリットとデメリットは以下のとおりです。
 
-* データベース制約やストアドプロシージャを使用すると、バリデーションのメカニズムがデータベースに依存してしまい、テストや保守がその分面倒になります。ただし、データベースが (Rails以外の) 他のアプリケーションからも使用されるのであれば、データベースレベルである程度のバリデーションを行なっておくのはよい方法です。また、データベースレベルのバリデーションの中には、使用頻度がきわめて高いテーブルの一意性バリデーションなど、他の方法では実装が困難なものもあります。
+* Database constraints and/or stored procedures make the validation mechanisms
+  database-dependent and can make testing and maintenance more difficult.
+  However, if your database is used by other applications, it may be a good
+  idea to use some constraints at the database level. また、データベースレベルのバリデーションの中には、使用頻度がきわめて高いテーブルの一意性検証など、他の方法では実装が困難なものもあります。
 * クライアント側でのバリデーションは扱いやすく便利ですが、一般に単独では信頼性が不足します。JavaScriptを使用してバリデーションを実装する場合、ユーザーがJavaScriptをオフにしてしまえばバイパスされてしまいます。ただし、他の方法と併用するのであれば、クライアント側でのバリデーションはユーザーに即座にフィードバックを返すための便利な方法となるでしょう。
 * コントローラレベルのバリデーションは一度はやってみたくなるものですが、たいてい手に負えなくなり、テストも保守も困難になりがちです。アプリケーションの寿命を永らえ、保守作業を苦痛なものにしないようにするためには、コントローラのコード量は可能な限り減らすべきです。
 
@@ -45,7 +47,7 @@ Person.create(name: nil).valid? # => false
 ### バリデーション実行時の動作
 
 Active Recordのオブジェクトには2種類あります。オブジェクトがデータベースの行(row)に対応しているものと、そうでないものです。たとえば、`new`メソッドを使用して新しくオブジェクトを作成しただけでは、オブジェクトはデータベースに属していません。`save`メソッドを呼ぶことで、オブジェクトは適切なデータベースのテーブルに保存されます。Active Recordの`new_record?`インスタンスメソッドを使用して、オブジェクトが既にデータベース上にあるかどうかを確認できます。
-次の単純はActive Recordクラスを例に取ってみましょう。
+次の単純なActive Recordクラスを例に取ってみましょう。
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -55,7 +57,7 @@ end
 `rails console`の出力で様子を観察してみます。
 
 ```ruby
-$ rails console
+$ bin/rails console
 >> p = Person.new(name: "John Doe")
 => #<Person id: nil, name: "John Doe", created_at: nil, updated_at: nil>
 >> p.new_record?
@@ -114,8 +116,8 @@ class Person < ActiveRecord::Base
   validates :name, presence: true
 end
 
-Person.create(name: "John Doe").valid? # => true
-Person.create(name: nil).valid? # => false
+Person.create(name: "John Doe").valid?  # => true
+Person.create(name: nil).valid?  # => false
 ```
 
 Active Recordでバリデーションが行われた後は、`errors.messages`インスタンスメソッドを使用すると、発生したエラーにアクセスできます。このメソッドはエラーのコレクションを返します。
@@ -134,7 +136,7 @@ end
 # => {}
 
 >> p.valid?
-# => false
+ # => false
 >> p.errors.messages
 # => {name:["空欄にはできません"]}
 
@@ -144,7 +146,7 @@ end
 # => {name:["空欄にはできません"]}
 
 >> p.save
-# => false
+ # => false
 
 >> p.save!
 # => ActiveRecord::RecordInvalid: Validation failed: 空欄にはできません
@@ -159,15 +161,15 @@ end
 
 `errors[:attribute]`を使用して、特定のオブジェクトの属性が有効であるかどうかを確認できます。このメソッドは、`:attribute`のすべてのエラーの配列を返します。指定された属性でエラーが発生しなかった場合は、空の配列が返されます。
 
-このメソッドが便利なのは、 _after_ で始まるバリデーションを実行する場合だけです。このメソッドはエラーのコレクションを調べるだけで、バリデーションそのものをトリガしないからです。このメソッドは、前述の`ActiveRecord::Base#invalid?`メソッドとは異なります。このメソッドはオブジェクト全体の正当性については確認しないためです。オブジェクトの個別の属性についてエラーがあるかどうかだけを調べます。
+このメソッドが便利なのは、 _after_ で始まる検証を実行する場合だけです。このメソッドはエラーのコレクションを調べるだけで、検証そのものをトリガしないからです。このメソッドは、前述の`ActiveRecord::Base#invalid?`メソッドとは異なります。このメソッドはオブジェクト全体の正当性については確認しないためです。オブジェクトの個別の属性についてエラーがあるかどうかだけを調べます。
 
 ```ruby
 class Person < ActiveRecord::Base
   validates :name, presence: true
 end
 
->> Person.new.errors[:name].any? # => false
->> Person.create.errors[:name].any? # => true
+>> Person.new.errors[:name].any?  # => false
+>> Person.create.errors[:name].any?  # => true
 ```
 
 より高度なレベルでのバリデーションエラーについては、[バリデーションエラーの取り扱い](#バリデーションエラーに対応する)セクションを参照してください。それまでは、Railsがデフォルトで提供するビルトインのバリデーションヘルパーを中心に解説します。
@@ -203,7 +205,7 @@ end
 
 ### `validates_associated`
 
-モデルが他のモデルに関連付けられていて、両方のモデルに対してバリデーションを実行する必要がある場合はこのヘルパーを使用します。オブジェクトを保存しようとすると、関連付けられているオブジェクトごとに`valid?`が呼び出されます。
+モデルが他のモデルに関連付けられていて、両方のモデルを検証する必要がある場合はこのヘルパーを使用します。オブジェクトを保存しようとすると、関連付けられているオブジェクトごとに`valid?`が呼び出されます。
 
 ```ruby
 class Library < ActiveRecord::Base
@@ -273,6 +275,8 @@ class Product < ActiveRecord::Base
 end
 ```
 
+Alternatively, you can require that the specified attribute does _not_ match the regular expression by using the `:without` option.
+
 デフォルトのエラーメッセージは _"is invalid"_ です。
 
 ### `inclusion`
@@ -283,7 +287,7 @@ end
 ```ruby
 class Coffee < ActiveRecord::Base
   validates :size, inclusion: { in: %w(small medium large),
-message: "%{value} のサイズは無効です" }
+    message: "%{value} のサイズは無効です" }
 end
 ```
 
@@ -316,7 +320,7 @@ end
 ```ruby
 class Person < ActiveRecord::Base
   validates :bio, length: { maximum: 1000,
-too_long: "最大%{count}文字まで使用できます" }
+    too_long: "最大%{count}文字まで使用できます" }
 end
 ```
 
@@ -327,14 +331,14 @@ class Essay < ActiveRecord::Base
   validates :content, length: {
     minimum: 300,
     maximum: 400,
-    tokenizer: lambda { |str| str.scan(/\w+/) },
+    tokenizer: lambda { |str| str.split(/\s+/) },
     too_short: "%{count}語以上必要です",
-too_long: "使用可能な最大語数は%{count}です"
+    too_long: "使用可能な最大語数は%{count}です"
   }
 end
 ```
 
-デフォルトのエラーメッセージは複数形で表現されていることにご注意ください (例: "is too short (minimum is %{count} characters)")。このため、`:minimum`を1に設定するのであればメッセージをカスタマイズして単数形にするか、代りに`presence: true`を使用します。`:in`または`:within`に1よりも小さい値を指定する場合、メッセージをカスタマイズして複数形にするか、`length`より先に`presence`を呼ぶようにします。
+デフォルトのエラーメッセージは複数形で表現されていることにご注意ください (例: "is too short (minimum is %{count} characters)")。このため、`:minimum`を1に設定するのであればメッセージをカスタマイズして単数形にするか)、代りに`presence: true`を使用します。`:in`または`:within`に1よりも小さい値を指定する場合、メッセージをカスタマイズして複数形にするか、`length`より先に`presence`を呼ぶようにします。
 
 ### `numericality`
 
@@ -360,7 +364,7 @@ end
 このヘルパーは、`:only_integer`以外にも以下のオプションを使用して制限を指定できます。
 
 * `:greater_than` - 指定された値よりも大きくなければならないことを指定します。デフォルトのエラーメッセージは _"must be greater than %{count}"_ です。
-* `:greater_than_or_equal_to` - 指定された値と等しいか、それよりも大きくなければならないことを指定します。デフォルトのエラーメッセージは _"must be greater than or equal to %{count}"_ です。
+* `:greater_than_or_equal_to` - 指定された値と等しいか、それよりも大きくなければならないことを指定します。デフォルトのエラーメッセージは _"must be greater than or equal to %{count}"_ 
 * `:equal_to` - 指定された値と等しくなければならないことを示します。デフォルトのエラーメッセージは _"must be equal to %{count}"_ です。
 * `:less_than` - 指定された値よりも小さくなければならないことを指定します。デフォルトのエラーメッセージは _"must be less than %{count}"_.です。
 * `:less_than_or_equal_to` - 指定された値と等しいか、それよりも小さくなければならないことを指定します。デフォルトのエラーメッセージは _"must be less than or equal to %{count}"_ です。
@@ -398,9 +402,17 @@ end
 
 このヘルパーを使用して、`has_one`または`has_many`リレーションシップを経由して関連付けられたオブジェクトが存在することを検証すると、`blank?`でもなく`marked_for_destruction?`(削除するためにマークされている)でもないかどうかがチェックされます。
 
-`false.blank?`は常にtrueなので、真偽値に対してこのメソッドを使用すると正しい結果が得られません。真偽値の存在をチェックしたい場合は、`validates :field_name, inclusion: { in: [true, false] }`を使用する必要があります。
+Since `false.blank?` is true, if you want to validate the presence of a boolean
+field you should use one of the following validations:
 
-デフォルトのエラーメッセージは _"can't be blank"_ です。
+```ruby
+validates :boolean_field_name, presence: true
+validates :boolean_field_name, inclusion: { in: [true, false] }
+validates :boolean_field_name, exclusion: { in: [nil] }
+```
+
+By using one of these validations, you will ensure the value will NOT be `nil`
+which would result in a `NULL` value in most cases.
 
 ### `absence`
 
@@ -536,12 +548,13 @@ end
 
 ### `validates_each`
 
-このヘルパーは、1つのブロックに対して属性を検証します。定義済みのバリデーション関数はありません。このため、ブロックを使用するバリデーションを自分で作成し、`validates_each`に渡す属性がすべてブロックに対してテストされるようにする必要があります。以下の例では、苗字と名前が小文字で始まらないようにしたいと考えています。
+このヘルパーは、1つのブロックに対して属性を検証します。定義済みのバリデーション関数はありません。You should create one using a block, and every attribute
+passed to `validates_each` will be tested against it. 以下の例では、苗字と名前が小文字で始まらないようにしたいと考えています。
 
 ```ruby
 class Person < ActiveRecord::Base
   validates_each :name, :surname do |record, attr, value|
-    record.errors.add(attr, 'must start with upper case') if value =~ /\A[a-z]/
+    record.errors.add(attr, 'must start with upper case') if value =~ /\A[[:lower:]]/
   end
 end
 ```
@@ -573,8 +586,8 @@ class Topic < ActiveRecord::Base
   validates :title, length: { is: 5 }, allow_blank: true
 end
 
-Topic.create(title: "").valid?  # => true
-Topic.create(title: nil).valid? # => true
+Topic.create(title: "").valid?   # => true
+Topic.create(title: nil).valid?  # => true
 ```
 
 ### `:message`
@@ -626,7 +639,7 @@ Person.new.valid?  # => TokenGenerationException: トークンは空欄にでき
 
 特定の条件を満たす場合にのみバリデーションを実行したい場合があります。`:if`オプションや`:unless`オプションを使用することでこのような条件を指定できます。引数にはシンボル、文字列、`Proc`または`Array`を使用できます。`:if`オプションは、特定の条件でバリデーションを行なう **べきである** 場合に使用します。特定の条件ではバリデーションを行なう **べきでない** 場合は、`:unless`オプションを使用します。
 
-### `:if`や`:unless`でシンボルを使用する
+### `:if`や`:unless`でシンボルをしようs
 
 バリデーションの実行直前に呼び出されるメソッド名をシンボルで`:if`や`:unless`オプションに指定することもできます。
 これは最も頻繁に使用されるオプションです。
@@ -684,7 +697,7 @@ end
 ```ruby
 class Computer < ActiveRecord::Base
   validates :mouse, presence: true,
-                    if: ["market.retail?", :desktop?]
+                    if: ["market.retail?", :desktop?],
                     unless: Proc.new { |c| c.trackpad.present? }
 end
 ```
@@ -715,7 +728,11 @@ class Person
 end
 ```
 
-個別の属性を検証するためのカスタムバリデータを追加するには、`ActiveModel::EachValidator`を使用するのが最も簡単で便利です。この場合、このカスタムバリデータクラスは`validate_each`メソッドを実装する必要があります。このメソッドは、そのインスタンスに対応する「レコードと属性と値」、バリデーションを行なう属性、そして渡されたインスタンスの属性の値の3つの引数を取ります。
+個別の属性を検証するためのカスタムバリデータを追加するには、`ActiveModel::EachValidator`を使用するのが最も簡単で便利です。In this case, the custom
+validator class must implement a `validate_each` method which takes three
+arguments: record, attribute, and value. These correspond to the instance, the
+attribute to be validated, and the value of the attribute in the passed
+instance.
 
 ```ruby
 class EmailValidator < ActiveModel::EachValidator
@@ -735,7 +752,10 @@ end
 
 ### カスタムメソッド
 
-モデルの状態を確認し、無効な場合に`errors`コレクションにメッセージを追加するメソッドを作成することができます。これらのメソッドを作成後、バリデーションメソッド名を指すシンボルを渡し、`validate`クラスメソッドを使用して登録する必要があります。
+モデルの状態を確認し、無効な場合に`errors`コレクションにメッセージを追加するメソッドを作成することができます。You must then
+register these methods by using the `validate`
+([API](http://api.rubyonrails.org/classes/ActiveModel/検証(validation)/ClassMethods.html#method-i-validate))
+class method, passing in the symbols for the validation methods' names.
 
 1つのクラスメソッドには複数のシンボルを渡すことができます。バリデーションは、登録されたとおりの順序で実行されます。
 
@@ -787,12 +807,12 @@ class Person < ActiveRecord::Base
 end
 
 person = Person.new
-person.valid? # => false
+person.valid?  # => false
 person.errors.messages
-# => {:name=>["空欄にはできません", "短すぎます (最小3文字)"]}
+ # => {:name=>["空欄にはできません", "短すぎます (最小3文字)"]}
 
 person = Person.new(name: "John Doe")
-person.valid? # => true
+person.valid?  # => true
 person.errors.messages # => {}
 ```
 
@@ -806,17 +826,17 @@ class Person < ActiveRecord::Base
 end
 
 person = Person.new(name: "John Doe")
-person.valid? # => true
+person.valid?  # => true
 person.errors[:name] # => []
 
 person = Person.new(name: "JD")
-person.valid? # => false
-person.errors[:name] # => ["が短すぎます (最小3文字)"]
+person.valid?  # => false
+person.errors[:name] # => ["が短すぎます (最小3もj)"]
 
 person = Person.new
-person.valid? # => false
+person.valid?  # => false
 person.errors[:name]
-# => ["空欄にはできません", "短すぎます (最小3文字)"]
+ # => ["空欄にはできません", "短すぎます (最小3文字)"]
 ```
 
 ### `errors.add`
@@ -833,16 +853,16 @@ end
 person = Person.create(name: "!@#")
 
 person.errors[:name]
-# => ["以下の文字を含むことはできません !@#%*()_-+="]
+ # => ["以下の文字を含むことはできません !@#%*()_-+="]
 
 person.errors.full_messages
-# => ["Name cannot contain the characters !@#%*()_-+="]
+ # => ["Name cannot contain the characters !@#%*()_-+="]
 ```
 
 `[]=`セッターを使用して同じことを行えます。
 
 ```ruby
-class Person < ActiveRecord::Base
+  class Person < ActiveRecord::Base
     def a_method_used_for_validation_purposes
       errors[:name] = "以下の文字を含むことはできません !@#%*()_-+="
     end
@@ -871,7 +891,7 @@ end
 
 ### `errors.clear`
 
-`clear`メソッドは、`errors`コレクションに含まれるメッセージをすべてクリアしたい場合に使用できます。無効なオブジェクトに対して`errors.clear`メソッドを呼び出しても、それだけでオブジェクトが有効になるわけではありませんのでご注意ください。`errors`は空になりますが、`valid?`やオブジェクトをデータベースに保存しようとするメソッドが次回呼び出されたときに、バリデーションが再実行されます。そしていずれかのバリデーションが失敗すると、`errors`コレクションに再びメッセージが格納されます。
+`clear`メソッドは、`errors`コレクションに含まれるメッセージをすべてクリアしたい場合に使用できます。無効なオブジェクトに対して`errors.clear`メソッドを呼び出しても、それだけでオブジェクトが有効になるわけではありませんのでご注意ください。`errors`は空になりますが、`valid?`などのオブジェクトをデータベースに保存しようとするメソッドが次回呼び出されたときに、バリデーションが再実行されます。そしていずれかのバリデーションが失敗すると、`errors`コレクションに再びメッセージが格納されます。
 
 ```ruby
 class Person < ActiveRecord::Base
@@ -879,17 +899,17 @@ class Person < ActiveRecord::Base
 end
 
 person = Person.new
-person.valid? # => false
+person.valid?  # => false
 person.errors[:name]
-# => ["空欄にはできません", "短すぎます (最小3文字)"]
+ # => ["空欄にはできません", "短すぎます (最小3文字)"]
 
 person.errors.clear
-person.errors.empty? # => true
+person.errors.empty?  # => true
 
 p.save # => false
 
 p.errors[:name]
-# => ["空欄にはできません", "短すぎます (最小3文字)"]
+ # => ["空欄にはできません", "短すぎます (最小3文字)"]
 ```
 
 ### `errors.size`
@@ -902,11 +922,11 @@ class Person < ActiveRecord::Base
 end
 
 person = Person.new
-person.valid? # => false
+person.valid?  # => false
 person.errors.size # => 2
 
 person = Person.new(name: "Andrea", email: "andrea@example.com")
-person.valid? # => true
+person.valid?  # => true
 person.errors.size # => 0
 ```
 
@@ -918,15 +938,16 @@ person.errors.size # => 0
 エラーメッセージの表示方法はアプリケーションごとに異なるため、Railsではこれらのメッセージを直接生成するビューヘルパーは含まれていません。
 しかし、Railsでは一般的なバリデーションメソッドが多数提供されているので、カスタムのメソッドを作成するのは比較的簡単です。また、scaffoldを使用して生成を行なうと、そのモデルのエラーメッセージをすべて表示するERBがRailsによって一部の`_form.html.erb`ファイルに追加されます。
 
-`@post`という名前のインスタンス変数に保存されたモデルがあるとすると、以下のようになります。
+Assuming we have a model that's been saved in an instance variable named
+`@article`, it looks like this:
 
 ```ruby
-<% if @post.errors.any? %>
+<% if @article.errors.any? %>
   <div id="error_explanation">
-    <h2><%= pluralize(@post.errors.count, "error") %> はこの投稿の保存を禁止しています:</h2>
+    <h2><%= pluralize(@article.errors.count, "error") %> prohibited this article from being saved:</h2>
 
     <ul>
-    <% @post.errors.full_messages.each do |msg| %>
+    <% @article.errors.full_messages.each do |msg| %>
       <li><%= msg %></li>
     <% end %>
     </ul>
@@ -938,7 +959,7 @@ person.errors.size # => 0
 
 ```
 <div class="field_with_errors">
-<input id="post_title" name="post[title]" size="30" type="text" value="">
+ <input id="article_title" name="article[title]" size="30" type="text" value="">
 </div>
 ```
 
