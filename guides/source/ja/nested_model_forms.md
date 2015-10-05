@@ -1,9 +1,9 @@
-Rails nested model forms
+Rails Nested Model Forms
 ========================
 
 Creating a form for a model _and_ its associations can become quite tedious. Therefore Rails provides helpers to assist in dealing with the complexities of generating these forms _and_ the required CRUD operations to create, update, and destroy associations.
 
-After reading this guide, you will know:
+このガイドの内容:
 
 * do stuff.
 
@@ -54,6 +54,9 @@ class Person < ActiveRecord::Base
 end
 ```
 
+NOTE: For greater detail on associations see [Active Record の関連付け (アソシエーション)](association_basics.html).
+For a complete reference on associations please visit the API documentation for [ActiveRecord::Associations::ClassMethods](http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html).
+
 ### Custom model
 
 As you might have inflected from this explanation, you _don't_ necessarily need an ActiveRecord::Base model to use this functionality. The following examples are sufficient to enable the nested model form behavior:
@@ -100,13 +103,13 @@ Consider the following typical RESTful controller which will prepare a new Perso
 ```ruby
 class PeopleController < ApplicationController
   def new
-    @person = Person.new
+　@person = Person.new
     @person.built_address
     2.times { @person.projects.build }
   end
 
   def create
-    @person = Person.new(params[:person])
+　@person = Person.new(params[:person])
     if @person.save
       # ...
     end
@@ -130,7 +133,7 @@ Start out with a regular RESTful form:
 <% end %>
 ```
 
-This will generate the following html:
+This 上を実行すると以下が生成されます。 the following html:
 
 ```html
 <form action="/people" class="new_person" id="new_person" method="post">
@@ -148,11 +151,9 @@ Now add a nested form for the `address` association:
 
   <%= f.fields_for :address do |af| %>
     <%= af.text_field :street %>
-  <% end %>
-<% end %>
-```
+  <% end %> <% end %>  ```
 
-This generates:
+This 上を実行すると以下が生成されます。:
 
 ```html
 <form action="/people" class="new_person" id="new_person" method="post">
@@ -177,7 +178,7 @@ When this form is posted the Rails parameter parser will construct a hash like t
 }
 ```
 
-That's it. The controller will simply pass this hash on to the model from the `create` action. The model will then handle building the `address` association for you and automatically save it when the parent (`person`) is saved.
+以上でおしまいです。The controller will simply pass this hash on to the model from the `create` action. The model will then handle building the `address` association for you and automatically save it when the parent (`person`) is saved.
 
 #### Nested form for a collection of associated objects
 
@@ -189,11 +190,9 @@ The form code for an association collection is pretty similar to that of a singl
 
   <%= f.fields_for :projects do |pf| %>
     <%= pf.text_field :name %>
-  <% end %>
-<% end %>
-```
+  <% end %> <% end %>  ```
 
-Which generates:
+Which 上を実行すると以下が生成されます。:
 
 ```html
 <form action="/people" class="new_person" id="new_person" method="post">
