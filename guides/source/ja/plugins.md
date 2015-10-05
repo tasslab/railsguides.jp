@@ -1,4 +1,3 @@
-﻿
 Rails プラグイン作成入門
 ====================================
 
@@ -6,7 +5,7 @@ Railsのプラグインは、コアフレームワークを拡張したり変更
 
 * 安定版コードベースに手を加えることなく最先端のアイディアを開発者同士で共有する手段を提供します。
 * アーキテクチャを分割し、それらのコード単位ごとに異なるスケジュールで修正や更新を進められるようにします。
-* コア開発者が価値ある新機能を実装しても、その全てオープンにすることなく共有できるようにします。
+* コア開発者が商品価値のある機能をオープンにすることなく販売できるようにします。
 
 このガイドの内容:
 
@@ -24,7 +23,7 @@ Railsのプラグインは、コアフレームワークを拡張したり変更
 
 --------------------------------------------------------------------------------
 
-設定
+Setup
 -----
 
 以前と異なり、現在Railsのプラグインはgemとしてビルドします。gem形式を取っているので、必要であればRubygemsとBunderを使用してプラグインを他のRailsアプリケーションと共有することもできます。
@@ -35,13 +34,13 @@ Railsのプラグインは、コアフレームワークを拡張したり変更
 RailsにはあらゆるRails拡張機能の開発用スケルトンを作成する`rails plugin new`というコマンドが最初から装備されています。これで作成したスケルトンはダミーのRailsアプリケーションを使用して結合テストを実行することもできます。プラグインを作成するには以下のコマンドを実行します。
 
 ```bash
-$ bin/rails plugin new yaffle
+$ rails plugin new yaffle
 ```
 
 使用法とオプションは以下の方法で表示できます。
 
 ```bash
-$ bin/rails plugin new --help
+$ rails plugin new --help
 ```
 
 新しく生成したプラグインをテストする
@@ -64,7 +63,7 @@ $ bin/rails plugin new --help
 
 この例では、`to_squawk`(ガーガー鳴くの意)という名前のメソッドをStringクラスに追加します。最初に、テストファイルをひとつ作成してそこにアサーションをいくつか追加しましょう。
 
-  ```ruby
+```ruby
 # yaffle/test/core_ext_test.rb
 
 require 'test_helper'
@@ -76,7 +75,7 @@ class CoreExtTest < ActiveSupport::TestCase
 end
 ```
 
-`rake`を実行してテストします。`to_squawk`は実装されていないので、当然テストは失敗します。
+`rake`を実行してテストします。 to run the test. This test should fail because we haven't implemented the `to_squawk` method:
 
 ```bash
     1) Error:
@@ -200,7 +199,7 @@ end
   4 runs, 2 assertions, 0 failures, 2 errors, 0 skips
 ```
 
-この結果から、テストの対象となるモデル (Hickwall and Wickwall) がそもそもないことがわかります。必要なモデルはダミーのRailsアプリケーションで簡単に作成できます。test/dummyディレクトリに移動して以下のコマンドを実行します。
+konoThis tells us that we don't have the necessary models (Hickwall and Wickwall) that we are trying to test. We can easily generate these models in our "dummy" Rails application by running the following commands from the test/dummy directory:
 
 ```bash
 $ cd test/dummy
@@ -208,7 +207,7 @@ $ bin/rails generate model Hickwall last_squawk:string
 $ bin/rails generate model Wickwall last_squawk:string last_tweet:string
 ```
 
-これで必要なデータベーステーブルをテストデータベース内に作成するための準備が整いました。作成は、ダミーアプリケーションのディレクトリに移動してデータベースのマイグレーションを実行することで行います。最初に以下を実行します。
+これで必要なデータベーステーブルをテストデータベース内に作成するための準備が整いました。作成は、ダミーアプリケーションのディレクトリに移動してデータベースマイグレーションを実行することで行います。最初に以下を実行します。
 
 ```bash
 $ cd test/dummy
@@ -267,9 +266,7 @@ ActiveRecord::Base.send :include, Yaffle::ActsAsYaffle
   ActsAsYaffleTest#test_a_wickwalls_yaffle_text_field_should_be_last_tweet:
   NoMethodError: undefined method `yaffle_text_field' for #<Class:0x007fd105e409c0>
     activerecord (4.1.5) lib/active_record/dynamic_matchers.rb:26:in `method_missing'
-    /path/to/yaffle/test/acts_as_yaffle_test.rb:10:in `test_a_wickwalls_yaffle_text_field_should_be_last_tweet'
-
-  4 runs, 2 assertions, 0 failures, 2 errors, 0 skips
+    /path/to/yaffle/test/acts_as_yaffle_test.rb:10:in `test_a_wickwalls_yaffle_text_field_should_be_last_tweet'  4 runs, 2 assertions, 0 failures, 2 errors, 0 skips
 
 ```
 
