@@ -1,4 +1,3 @@
-﻿
 Active Record の関連付け (アソシエーション)
 ==========================
 
@@ -70,7 +69,7 @@ end
 関連付けの種類
 -------------------------
 
-Railsでは、「関連付け(アソシエーション: association)」とは2つのActive Recordモデル同士のつながりを指します。関連付けは、一種のマクロ的な呼び出しとして実装されており、これによってモデル間の関連付けを宣言的に追加することができます。たとえば、あるモデルが他のモデルに従属している(`belongs_to`)と宣言すると、2つのモデルのそれぞれのインスタンス間で「主キー - 外部キー」情報を保持しておくようにRailsに指示が伝わります。Railsでサポートされている関連付けは以下の6種類です。
+Railsでは、「関連付け(アソシエーション: association)」とは2つのActive Recordモデル同士のつながりを指します。関連付けは、一種のマクロ的な呼び出しとして実装されており、これによってモデル間の関連付けを宣言的に追加することがでkたとえば、あるモデルが他のモデルに従属している(`belongs_to`)と宣言すると、2つのモデルのそれぞれのインスタンス間で「主キー - 外部キー」情報を保持しておくようにRailsに指示が伝わります。Railsでサポートされている関連付けは以下の6種類です。
 
 * `belongs_to`
 * `has_one`
@@ -102,13 +101,13 @@ class CreateOrders < ActiveRecord::Migration
   def change
     create_table :customers do |t| 
       t.string :name
-      t.timestamps
+      t.timestamps null: false
     end
 
     create_table :orders do |t|
-      t.belongs_to :customer
+      t.belongs_to :customer, index: true
       t.datetime :order_date
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end
@@ -133,13 +132,13 @@ class CreateSuppliers < ActiveRecord::Migration
   def change
     create_table :suppliers do |t|
       t.string :name
-      t.timestamps
+      t.timestamps null: false
     end
 
     create_table :accounts do |t|
-      t.belongs_to :supplier
+      t.belongs_to :supplier, index: true
       t.string :account_number
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end
@@ -166,13 +165,13 @@ class CreateCustomers < ActiveRecord::Migration
   def change
     create_table :customers do |t| 
       t.string :name
-      t.timestamps
+      t.timestamps null: false
     end
 
     create_table :orders do |t|
-      t.belongs_to :customer
+      t.belongs_to :customer, index:true
       t.datetime :order_date
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end
@@ -208,19 +207,19 @@ class CreateAppointments < ActiveRecord::Migration
   def change
     create_table :physicians do |t|
       t.string :name
-      t.timestamps
+      t.timestamps null: false
     end
 
     create_table :patients do |t|
       t.string :name
-      t.timestamps
+      t.timestamps null: false
     end
 
     create_table :appointments do |t|
-      t.belongs_to :physician
-      t.belongs_to :patient
+      t.belongs_to :physician, index: true
+      t.belongs_to :patient, index: true
       t.datetime :appointment_date
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end
@@ -290,19 +289,19 @@ class CreateAccountHistories < ActiveRecord::Migration
   def change
     create_table :suppliers do |t|
       t.string :name
-      t.timestamps
+      t.timestamps null: false
     end
 
     create_table :accounts do |t|
-      t.belongs_to :supplier
+      t.belongs_to :supplier, index: true
       t.string :account_number
-      t.timestamps
+      t.timestamps null: false
     end
 
     create_table :account_histories do |t|
-      t.belongs_to :account
+      t.belongs_to :account, index: true
       t.integer :credit_rating
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end
@@ -331,17 +330,17 @@ class CreateAssembliesAndParts < ActiveRecord::Migration
   def change
     create_table :assemblies do |t|
       t.string :name
-      t.timestamps
+      t.timestamps null: false
     end
 
     create_table :parts do |t|
       t.string :part_number
-      t.timestamps
+      t.timestamps null: false
     end
 
     create_table :assemblies_parts, id: false do |t|
-      t.belongs_to :assembly
-      t.belongs_to :part
+      t.belongs_to :assembly, index: true
+      t.belongs_to :part, index: true
     end
   end
 end
@@ -369,15 +368,17 @@ end
 class CreateSuppliers < ActiveRecord::Migration
   def change
     create_table :suppliers do |t|
-      t.string :name
-      t.timestamps
+      t.string  :name
+      t.timestamps null: false
     end
 
     create_table :accounts do |t|
       t.integer :supplier_id
       t.string  :account_number
-      t.timestamps
+      t.timestamps null: false
     end
+
+    add_index :accounts, :supplier_id
   end
 end
 ```
@@ -452,8 +453,10 @@ class CreatePictures < ActiveRecord::Migration
       t.string  :name
       t.integer :imageable_id
       t.string  :imageable_type
-      t.timestamps
+      t.timestamps null: false
     end
+
+    add_index :pictures, :imageable_id
   end
 end
 ```
@@ -464,9 +467,9 @@ end
 class CreatePictures < ActiveRecord::Migration
   def change
     create_table :pictures do |t|
-      t.string  :name
-      t.references :imageable, polymorphic: true
-      t.timestamps
+      t.string :name
+      t.references :imageable, polymorphic: true, index: true
+      t.timestamps null: false
     end
   end
 end
@@ -495,8 +498,8 @@ end
 class CreateEmployees < ActiveRecord::Migration
   def change
     create_table :employees do |t|
-      t.references :manager
-      t.timestamps
+      t.references :manager, index: true
+      t.timestamps null: false
     end
   end
 end
@@ -515,7 +518,7 @@ RailsアプリケーションでActive Recordの関連付けを効率的に使�
 
 ### キャッシュ制御
 
-関連付けのメソッドは、すべてキャッシュを中心に構築されています。最後に実行したクエリの結果はキャッシュに保持され、次回以降の操作で使用できます。このキャッシュはメソッド間でも共有されることに注意してください。例:
+関連付けのメソッドは、すべてキャッシュを中心に構築されています。最後に実行したクエリの結果はキャッシュに保持され、次回以降の操作で使用できます。このキャッシュはメソッド間でも共有されることに注意してください。以下に例を示します。
 
 ```ruby
 customer.orders                 # データベースからordersを取得する
@@ -560,6 +563,8 @@ class CreateOrders < ActiveRecord::Migration
       t.string   :order_number
       t.integer  :customer_id
     end
+
+    add_index :orders, :customer_id
   end
 end
 ```
@@ -570,7 +575,7 @@ end
 
 `has_and_belongs_to_many`関連付けを作成した場合は、それに対応する結合(join)テーブルを明示的に作成する必要があります。`:join_table`オプションを使用して明示的に結合テーブルの名前が指定されていない場合、Active Recordは2つのクラス名を辞書の並び順に連結して、適当に結合テーブル名をこしらえます。たとえばCustomerモデルOrderモデルを連結する場合、cはoより辞書で先に出現するので "customers_orders" というデフォルトの結合テーブル名が使用されます。
 
-WARNING: モデル名の並び順は`String`クラスの`<`演算子を使用して計算されます。これは、2つの文字列の長さが異なり、短い方が長い方の途中まで完全に一致しているような場合、長い方の文字列は短い方よりも辞書上の並び順が前として扱われるということです。たとえば、"paper\_boxes" テーブルと "papers" テーブルがある場合、これらを結合すれば "papers\_paper\_boxes" となると推測されます。 "paper\_boxes" の方が長いので、常識的には並び順が後ろになると予測できるからです。しかし実際の結合テーブル名は "paper\_boxes\_papers" になってしまいます。これはアンダースコア '\_' の方が 's' よりも並びが前になっているためです。
+WARNING: モデル名の並び順は`String`クラスの`<`演算子を使用して計算されます。これは、2つの文字列の長さが異なり、短い方が長い方の途中まで完全に一致しているような場合、長い方の文字列は短い方よりも辞書上の並び順が前として扱われるということです。以下に例を示します。 one would expect the tables "paper_boxes" and "papers" to generate a join table name of "papers_paper_boxes" because of the length of the name "paper_boxes", but it in fact 上を実行すると以下が生成されます。 a join table name of "paper_boxes_papers" (because the underscore '_' is lexicographically _less_ than 's' in common encodings).
 
 生成された名前がどのようなものであれ、適切なマイグレーションを実行して結合テーブルを生成する必要があります。以下の関連付けを例にとって考えてみましょう。
 
@@ -593,6 +598,9 @@ class CreateAssembliesPartsJoinTable < ActiveRecord::Migration
       t.integer :assembly_id
       t.integer :part_id
     end
+
+    add_index :assemblies_parts, :assembly_id
+    add_index :assemblies_parts, :part_id
   end
 end
 ```
@@ -601,7 +609,7 @@ end
 
 ### 関連付けのスコープ制御
 
-デフォルトでは、関連付けによって探索されるオブジェクトは、現在のモジュールのスコープ内のものだけです。Active Recordモデルをモジュール内で宣言している場合、この点に注意する必要があります。例：
+デフォルトでは、関連付けによって探索されるオブジェクトは、現在のモジュールのスコープ内のものだけです。Active Recordモデルをモジュール内で宣言している場合、この点に注意する必要があります。以下に例を示します。
 
 ```ruby
 module MyApplication
@@ -735,7 +743,7 @@ c.first_name == o.customer.first_name # => true
 * `create_association(attributes = {})`
 * `create_association!(attributes = {})`
 
-これらのメソッドのうち、`association`の部分はプレースホルダであり、`belongs_to`の最初の引数である関連付け名をシンボルにしたものに置き換えられます。以下の例ではcustomerが宣言されています。
+これらのメソッドのうち、`association`の部分はプレースホルダであり、`belongs_to`の最初の引数である関連付け名をシンボルにしたものに置き換えられます。たとえば以下の宣言を見てみましょう。
 
 ```ruby
 class Order < ActiveRecord::Base
@@ -743,7 +751,7 @@ class Order < ActiveRecord::Base
 end
 ```
 
-これにより、Orderモデルのインスタンスで以下のメソッドが使えるようになります。
+Each instance of the `Order` model will have these methods:
 
 ```ruby
 customer
@@ -939,7 +947,7 @@ end
 
 #### `belongs_to`のスコープ
 
-場合によっては`belongs_to`で使用されるクエリをカスタマイズしたくなることがあります。スコープブロックを使用してこのようなカスタマイズを行うことができます。例：
+場合によっては`belongs_to`で使用されるクエリをカスタマイズしたくなることがあります。スコープブロックを使用してこのようなカスタマイズを行うことができます。以下に例を示します。
 
 ```ruby
 class Order < ActiveRecord::Base
@@ -1011,7 +1019,7 @@ NOTE: 直接の関連付けでは`includes`を使用する必要はありませ�
 
 `select`メソッドを使用すると、関連付けられたオブジェクトのデータ取り出しに使用されるSQLの`SELECT`句を上書きします。Railsはデフォルトではすべてのカラムを取り出します。
 
-TIP: `select`を`belongs_to`関連付けで使用する場合、正しい結果を得るために`:foreign_key`オプションを必ず設定してください。
+ヒント: `select`を`belongs_to`関連付けで使用する場合、正しい結果を得るために`:foreign_key`オプションを必ず設定してください。
 
 #### 関連付けられたオブジェクトが存在するかどうかを確認する
 
@@ -1099,7 +1107,7 @@ NOTE: 新しく作成した`has_one`関連付けまたは`belongs_to`関連付�
 
 上の`create_association`と同じですが、レコードがinvalidの場合に`ActiveRecord::RecordInvalid`がraiseされる点が異なります。
 
-#### `has_one`のオプション
+#### Options for `has_one`
 
 Railsのデフォルトの`has_one`関連付けは、ほとんどの場合カスタマイズ不要ですが、時には関連付けの動作をカスタマイズしたくなることもあると思います。これは、作成するときにオプションを渡すことで簡単にカスタマイズできます。たとえば、以下のようなオプションを関連付けに追加できます。
 
@@ -1125,7 +1133,7 @@ end
 
 ##### `:as`
 
-`:as`オプションに`true`を設定すると、ポリモーフィック関連付けを指定できます。ポリモーフィック関連付けの詳細については<a href="#ポリモーフィック関連付け">このガイドの説明</a>を参照してください。
+`:as`オプションに`true`を設定すると、ポリモーフィック関連付けを指定できます。Polymorphic associations were discussed in detail [earlier in this guide](#polymorphic-associations).
 
 ##### `:autosave`
 
@@ -1155,7 +1163,7 @@ end
 
 ##### `:foreign_key`
 
-Railsの慣例では、相手のモデル上の外部キーを保持しているカラム名については、そのモデル名にサフィックス `_id` を追加した関連付け名が使用されることを前提とします。`:foreign_key`オプションを使用すると外部キーの名前を直接指定することができます。
+Railsの慣例では、外部キーを保持するためのカラム名については、モデル名にサフィックス `_id` を追加した名前が使用されることを前提とします。`:foreign_key`オプションを使用すると外部キーの名前を直接指定することができます。
 
 ```ruby
 class Supplier < ActiveRecord::Base
@@ -1181,7 +1189,7 @@ end
 
 ##### `:primary_key`
 
-Railsの慣例では、モデルの主キーは`id`カラムに保存されていることを前提とします。`:primary_key`オプションで主キーを明示的に指定することでこれを上書きすることができます。
+Railsの慣例ではモデルの主キーは`id`カラムに保存されていることを前提とします。`:primary_key`オプションで主キーを明示的に指定することでこれを上書きすることができます。
 
 ##### `:source`
 
@@ -1193,7 +1201,7 @@ Railsの慣例では、モデルの主キーは`id`カラムに保存されて�
 
 ##### `:through`
 
-`:through`オプションは、<a href="#has-one-through関連付け">このガイドで既に説明した</a>`has_one :through`関連付けのクエリを実行する際に経由する結合モデルを指定します。
+`:through`オプションは、クエリ実行時に経由する結合(join)モデルを指定します。`has_one :through` associations were discussed in detail [earlier in this guide](#the-has-one-through-association).
 
 ##### `:validate`
 
@@ -1201,7 +1209,7 @@ Railsの慣例では、モデルの主キーは`id`カラムに保存されて�
 
 #### `has_one`のスコープについて
 
-場合によっては`has_one`で使用されるクエリをカスタマイズしたくなることがあります。スコープブロックを使用してこのようなカスタマイズを行うことができます。例：
+場合によっては`has_one`で使用されるクエリをカスタマイズしたくなることがあります。スコープブロックを使用してこのようなカスタマイズを行うことができます。以下に例を示します。
 
 ```ruby
 class Supplier < ActiveRecord::Base
@@ -1245,7 +1253,7 @@ class Representative < ActiveRecord::Base
 end
 ```
 
-上の例で、Supplierから代表(Representative)を`@supplier.account.representative`のように直接取り出す機会が頻繁にあるのであれば、SupplierからAccountへの関連付けにRepresentativeをあらかじめincludeしておくことで無駄なクエリを減らし、効率を高めることができます。 
+上の例で、Supplierから代表(Representative)を`@supplier.account.representative`のように直接取り出す機会が頻繁にあるのであれば、SupplierからAccountへの関連付けにRepresentativeをあらかじめincludeしておくことで無駄なクエリを減らし、効率を高めることができます。
 
 ```ruby
 class Supplier < ActiveRecord::Base
@@ -1284,7 +1292,7 @@ end
 
 `has_one`関連付けにオブジェクトをアサインすると、外部キーを更新するためにそのオブジェクトは自動的に保存されます。さらに、置き換えられるオブジェクトは、これは外部キーが変更されたことによってすべて自動的に保存されます。
 
-関連付けられているオブジェクト同士のいずれか一方が検証(validation)のために保存に失敗すると、アサインの状態からは`false`が返され、アサインはキャンセルされます。
+関連付けられているオブジェクト同士のいずれか一方が検証(validation)エラーで保存に失敗すると、アサインの式からは`false`が返され、アサインはキャンセルされます。
 
 親オブジェクト(`has_one`関連付けを宣言している側のオブジェクト)が保存されない場合(つまり`new_record?`が`true`を返す場合)、子オブジェクトは追加時に保存されません。親オブジェクトが保存された場合は、子オブジェクトは保存されます。
 
@@ -1302,15 +1310,15 @@ end
 * `collection<<(object, ...)`
 * `collection.delete(object, ...)`
 * `collection.destroy(object, ...)`
-* `collection=objects` 
+* `collection=(objects)`
 * `collection_singular_ids`
-* `collection_singular_ids=ids`
+* `collection_singular_ids=(ids)`
 * `collection.clear`
 * `collection.empty?`
 * `collection.size`
 * `collection.find(...)`
 * `collection.where(...)`
-* `collection.exists?(...) `
+* `collection.exists?(...)`
 * `collection.build(attributes = {}, ...)`
 * `collection.create(attributes = {})`
 * `collection.create!(attributes = {})`
@@ -1323,16 +1331,16 @@ class Customer < ActiveRecord::Base
 end
 ```
 
-これにより、`Customer`モデルのインスタンスで以下のメソッドが使えるようになります。
+Each instance of the `Customer` model will have these methods:
 
 ```ruby
 orders(force_reload = false)
 orders<<(object, ...)
 orders.delete(object, ...)
 orders.destroy(object, ...)
-orders=objects
+orders=(objects)
 order_ids
-order_ids=ids
+order_ids=(ids)
 orders.clear
 orders.empty?
 orders.size
@@ -1380,7 +1388,7 @@ WARNING: 削除のされ方はこれだけではありません。オブジェ�
 
 WARNING: この場合オブジェクトは_無条件で_データベースから削除されます。このとき、`:dependent`オプションがどのように設定されていても無視して削除が行われます。
 
-##### `collection=objects`
+##### `collection=(objects)`
 
 `collection=`メソッドは、指定したオブジェクトでそのコレクションの内容を置き換えます。元からあったオブジェクトは削除されます。
 
@@ -1392,17 +1400,23 @@ WARNING: この場合オブジェクトは_無条件で_データベースから
 @order_ids = @customer.order_ids
 ```
 
-##### `collection_singular_ids=ids`
+##### `collection_singular_ids=(ids)`
 
 `collection_singular_ids=`メソッドは、指定された主キーidを持つオブジェクトの集まりでコレクションの内容を置き換えます。元からあったオブジェクトは削除されます。
 
 ##### `collection.clear`
 
-`collection.clear`メソッドは、コレクションからすべてのオブジェクトを削除します。`dependent: :destroy`で関連付けられたオブジェクトがある場合は、それらのオブジェクトはdestroyされます。`dependent: :delete_all`で関連付けられたオブジェクトがある場合は、データベースから直接deleteされます。それ以外の場合は単に外部キーが`NULL`に設定されます。
+The `collection.clear` method removes all objects from the collection according to the strategy specified by the `dependent` option. If no option is given, it follows the default strategy. The default strategy for `has_many :through` associations is `delete_all`, and for `has_many` associations is to set the foreign keys to `NULL`.
+
+```ruby
+@customer.orders.clear
+```
+
+WARNING: Objects will be delete if they're associated with `dependent: :destroy`, just like `dependent: :delete_all`.
 
 ##### `collection.empty?`
 
-`collection.empty?`メソッドは、関連付けられたオブジェクトがコレクションの中に1つもない場合に`true`を返します。
+`collection.empty?`メソッドは、関連付けられたオブジェクトがコレクションに含まれていない場合に`true`を返します。
 
 ```erb
 <% if @customer.orders.empty? %>
@@ -1428,16 +1442,15 @@ WARNING: この場合オブジェクトは_無条件で_データベースから
 
 ##### `collection.where(...)`
 
-`collection.where`メソッドは、コレクションに含まれているメソッドを指定された条件に基いて検索します。このメソッドではオブジェクトは遅延読み込み(lazy load)される点にご注意ください。つまり、オブジェクトに実際にアクセスが行われる時にだけデータベースへのクエリが発生します。
-
-```ruby
+`collection.where`メソッドは、コレクションに含まれているメソッドを指定された条件に基いて検索します。このメソッドではオブジェクトは遅延読み込み(lazy load)される点にご注意ください。つまり、オブジェクトに実際にアクセスが行われる時にだけデータベースへのクエリが発生します。```ruby
 @open_orders = @customer.orders.where(open: true) # この時点ではクエリは行われない
 @open_order = @open_orders.first # ここで初めてデータベースへのクエリが行われる
 ```
 
 ##### `collection.exists?(...)`
 
-`collection.exists?`メソッドは、指定された条件に合うオブジェクトがコレクションの中に存在するかどうかをチェックします。このメソッドで使用される文法は、`ActiveRecord::Base.exists?`で使用されているものと同じです。
+`collection.exists?`メソッドは、指定された条件に合うオブジェクトがコレクションの中に存在するかどうかをチェックします。It uses the same syntax and options as
+[`ActiveRecord::Base.exists?`](http://api.rubyonrails.org/classes/ActiveRecord/FinderMethods.html#method-i-exists-3F).
 
 ##### `collection.build(attributes = {}, ...)`
 
@@ -1487,7 +1500,7 @@ end
 
 ##### `:as`
 
-`:as`オプションを設定すると、ポリモーフィック関連付けであることが指定されます。(<a href="#ポリモーフィック関連付け">このガイドの説明</a>を参照)
+Setting the `:as` option indicates that this is a polymorphic association, as discussed [earlier in this guide](#polymorphic-associations).
 
 ##### `:autosave`
 
@@ -1512,8 +1525,6 @@ end
 * `:nullify`を指定すると、外部キーはすべて`NULL`に設定されます。このときコールバックは実行されません。
 * `:restrict_with_exception`を指定すると、関連付けられたレコードが1つでもある場合に例外が発生します。
 * `:restrict_with_error`を指定すると、関連付けられたオブジェクトが1つでもある場合にエラーがオーナーに追加されます。
-
-NOTE: その関連付けで`:through`オプションが指定されている場合、このオプションは無効です。
 
 ##### `:foreign_key`
 
@@ -1566,7 +1577,7 @@ end
 
 ##### `:through`
 
-`:through`オプションは、クエリ実行時に経由する結合(join)モデルを指定します。`has_many :through`関連付けは、多対多の関連付けを実装する方法を提供します(詳細については<a href="#has-many-through関連付け">このガイドの説明</a>を参照)。
+`:through`オプションは、クエリ実行時に経由する結合(join)モデルを指定します。`has_many :through` associations provide a way to implement many-to-many relationships, as discussed [earlier in this guide](#the-has-many-through-association).
 
 ##### `:validate`
 
@@ -1574,7 +1585,7 @@ end
 
 #### `has_many`のスコープについて
 
-場合によっては`has_many`で使用されるクエリをカスタマイズしたくなることがあります。スコープブロックを使用してこのようなカスタマイズを行うことができます。例：
+場合によっては`has_many`で使用されるクエリをカスタマイズしたくなることがあります。スコープブロックを使用してこのようなカスタマイズを行うことができます。以下に例を示します。
 
 ```ruby
 class Customer < ActiveRecord::Base
@@ -1619,7 +1630,7 @@ end
 
 ##### `extending`
 
-`extending`メソッドは、関連付けプロキシを拡張する名前付きモジュールを指定します。関連付けの拡張については<a href="#関連付けの拡張">後述します</a>。
+`extending`メソッドは、関連付けプロキシを拡張する名前付きモジュールを指定します。Association extensions are discussed in detail [later in this guide](#association-extensions).
 
 ##### `group`
 
@@ -1711,54 +1722,60 @@ WARNING: 独自の`select`メソッドを使用する場合には、関連付け
 ```ruby
 class Person < ActiveRecord::Base
   has_many :readings
-  has_many :posts, through: :readings
+  has_many :articles, through: :readings
 end
 
 person = Person.create(name: 'John')
-post   = Post.create(name: 'a1')
-person.posts << post
-person.posts << post
-person.posts.inspect # => [#<Post id: 5, name: "a1">, #<Post id: 5, name: "a1">]
-Reading.all.inspect  # => [#<Reading id: 12, person_id: 5, post_id: 5>, #<Reading id: 13, person_id: 5, post_id: 5>]
+article   = Article.create(name: 'a1')
+person.articles << article
+person.articles << article
+person.articles.inspect # => [#<Article id: 5, name: "a1">, #<Article id: 5, name: "a1">]
+Reading.all.inspect  # => [#<Reading id: 12, person_id: 5, article_id: 5>, #<Reading id: 13, person_id: 5, article_id: 5>]
 ```
 
-上の例の場合、readingが2つあって重複しており、`person.posts`を実行すると、どちらも同じポストを指しているにもかかわらず、両方とも取り出されてしまいます。
+In the above case there are two readings and `person.articles` brings out both of
+them even though these records are pointing to the same article.
 
 今度は`distinct`を設定してみましょう。
 
 ```ruby
 class Person
   has_many :readings
-  has_many :posts, -> { distinct }, through: :readings
+  has_many :articles, -> { distinct }, through: :readings
 end
 
 person = Person.create(name: 'Honda')
-post   = Post.create(name: 'a1')
-person.posts << post
-person.posts << post
-person.posts.inspect # => [#<Post id: 7, name: "a1">]
-Reading.all.inspect  # => [#<Reading id: 16, person_id: 7, post_id: 7>, #<Reading id: 17, person_id: 7, post_id: 7>]
+article   = Article.create(name: 'a1')
+person.articles << article
+person.articles << article
+person.articles.inspect # => [#<Article id: 7, name: "a1">]
+Reading.all.inspect  # => [#<Reading id: 16, person_id: 7, article_id: 7>, #<Reading id: 17, person_id: 7, article_id: 7>]
 ```
 
-上の例でもreadingは2つあって重複しています。しかし今度は`person.posts`の実行結果にはポストは1つだけ含まれるようになりました。これはこのコレクションが一意のレコードだけを読み込むようになったためです。
+上の例でもreadingは2つあって重複しています。However `person.articles` shows
+only one article because the collection loads only unique records.
 
-挿入時にも同様に、現在残っているすべてのレコードが一意であるようにする(関連付けを検査したときに重複レコードが決して発生しないようにする)には、テーブル自体に一意のインデックスを追加する必要があります。たとえば、`person_posts`というテーブルがあり、すべてのポストが一意であるようにしたいのであれば、マイグレーションに以下を追加します。
+挿入時にも同様に、現在残っているすべてのレコードが一意であるようにする(関連付けを検査したときに重複レコードが決して発生しないようにする)には、テーブル自体に一意のインデックスを追加する必要があります。以下に例を示します。 if you have a table named
+`person_articles` and you want to make sure all the articles are unique, you could
+add the following in a migration:
 
 ```ruby
-add_index :person_posts, :post, unique: true
+add_index :person_articles, :article, unique: true
 ```
 
-なお、`include?`などを使用して一意性をチェックすると競合が発生しやすいので注意が必要です。関連付けで強制的に一意になるようにするために`include?`を使用しないでください。たとえば上のpostを例にとると、以下のコードでは競合が発生しやすくなります。これは、複数のユーザーが同時にこのコードを実行する可能性があるためです。
+なお、`include?`などを使用して一意性をチェックすると競合が発生しやすいので注意が必要です。関連付けで強制的に一意になるようにするために`include?`を使用しないでください。For instance, using the article example from above, the
+following code would be racy because multiple users could be attempting this
+at the same time:
 
 ```ruby
-person.posts << post unless person.posts.include?(post)
+person.articles << article unless person.articles.include?(article)
 ```
 
 #### オブジェクトが保存されるタイミング
 
 `has_many`関連付けにオブジェクトをアサインすると、外部キーを更新するためにそのオブジェクトは自動的に保存されます。1つの文で複数のオブジェクトをアサインすると、それらはすべて保存されます。
 
-関連付けられているオブジェクト同士の1つでも検証(validation)のために保存に失敗すると、アサインの状態からは`false`が返され、アサインはキャンセルされます。
+関連付けられているオブジェクトの1つでも検証(validation)エラーで保存に失敗すると、アサインの式からは`false`が返され、アサインはキャンセルされます。
 
 親オブジェクト(`has_many`関連付けを宣言している側のオブジェクト)が保存されない場合(つまり`new_record?`が`true`を返す場合)、子オブジェクトは追加時に保存されません。親オブジェクトが保存されると、関連付けられていたオブジェクトのうち保存されていなかったメンバはすべて保存されます。
 
@@ -1776,15 +1793,15 @@ person.posts << post unless person.posts.include?(post)
 * `collection<<(object, ...)`
 * `collection.delete(object, ...)`
 * `collection.destroy(object, ...)`
-* `collection=objects` 
+* `collection=(objects)`
 * `collection_singular_ids`
-* `collection_singular_ids=ids`
+* `collection_singular_ids=(ids)`
 * `collection.clear`
 * `collection.empty?`
 * `collection.size`
 * `collection.find(...)`
 * `collection.where(...)`
-* `collection.exists?(...) `
+* `collection.exists?(...)`
 * `collection.build(attributes = {})`
 * `collection.create(attributes = {})`
 * `collection.create!(attributes = {})`
@@ -1797,16 +1814,16 @@ class Part < ActiveRecord::Base
 end
 ```
 
-これにより、`Part`モデルのインスタンスで以下のメソッドが使えるようになります。
+Each instance of the `Part` model will have these methods:
 
 ```ruby
 assemblies(force_reload = false)
 assemblies<<(object, ...)
 assemblies.delete(object, ...)
 assemblies.destroy(object, ...)
-assemblies=objects
+assemblies=(objects)
 assembly_ids
-assembly_ids=ids
+assembly_ids=(ids)
 assemblies.clear
 assemblies.empty?
 assemblies.size
@@ -1851,7 +1868,7 @@ NOTE: このメソッドは`collection.concat`および`collection.push`のエ�
 @part.assemblies.delete(@assembly1)
 ```
 
-WARNING: このメソッドを呼び出しても、結合レコードでコールバックはトリガされません。
+警告: このメソッドを呼び出しても、結合レコードでコールバックはトリガされません。
 
 ##### `collection.destroy(object, ...)`
 
@@ -1861,7 +1878,7 @@ WARNING: このメソッドを呼び出しても、結合レコードでコー�
 @part.assemblies.destroy(@assembly1)
 ```
 
-##### `collection=objects`
+##### `collection=(objects)`
 
 `collection=`メソッドは、指定したオブジェクトでそのコレクションの内容を置き換えます。元からあったオブジェクトは削除されます。
 
@@ -1873,7 +1890,7 @@ WARNING: このメソッドを呼び出しても、結合レコードでコー�
 @assembly_ids = @part.assembly_ids
 ```
 
-##### `collection_singular_ids=ids`
+##### `collection_singular_ids=(ids)`
 
 `collection_singular_ids=`メソッドは、指定された主キーidを持つオブジェクトの集まりでコレクションの内容を置き換えます。元からあったオブジェクトは削除されます。
 
@@ -1901,7 +1918,7 @@ WARNING: このメソッドを呼び出しても、結合レコードでコー�
 
 ##### `collection.find(...)`
 
-`collection.find`メソッドは、コレクションに含まれるオブジェクトを検索します。このメソッドで使用される文法は、`ActiveRecord::Base.find`で使用されているものと同じです。このメソッドでは、オブジェクトがコレクション内で従う必要のある追加条件も加味されます。
+`collection.find`メソッドは、コレクションに含まれるオブジェクトを検索します。このメソッドで使用される文法は、`ActiveRecord::Base.find`で使用されているものと同じです。 このメソッドでは、オブジェクトがコレクション内で従う必要のある追加条件も加味されます。
 
 ```ruby
 @assembly = @part.assemblies.find(1)
@@ -1917,7 +1934,8 @@ WARNING: このメソッドを呼び出しても、結合レコードでコー�
 
 ##### `collection.exists?(...)`
 
-`collection.exists?`メソッドは、指定された条件に合うオブジェクトがコレクションの中に存在するかどうかをチェックします。このメソッドで使用される文法は、`ActiveRecord::Base.exists?`で使用されているものと同じです。
+`collection.exists?`メソッドは、指定された条件に合うオブジェクトがコレクションの中に存在するかどうかをチェックします。It uses the same syntax and options as
+[`ActiveRecord::Base.exists?`](http://api.rubyonrails.org/classes/ActiveRecord/FinderMethods.html#method-i-exists-3F).
 
 ##### `collection.build(attributes = {})`
 
@@ -1945,8 +1963,8 @@ Railsのデフォルトの`has_and_belongs_to_many`関連付けは、ほとん�
 
 ```ruby
 class Parts < ActiveRecord::Base
-  has_and_belongs_to_many :assemblies, autosave: true,
-                                       readonly: true
+  has_and_belongs_to_many :assemblies, -> { readonly },
+                                       autosave: true
 end
 ```
 
@@ -1958,13 +1976,12 @@ end
 * `:foreign_key`
 * `:join_table`
 * `:validate`
-* `:readonly`
 
 ##### `:association_foreign_key`
 
 Railsの慣例では、相手のモデルを指す外部キーを保持している結合テーブル上のカラム名については、そのモデル名にサフィックス `_id` を追加した名前が使用されることを前提とします。`:association_foreign_key`オプションを使用すると外部キーの名前を直接指定することができます。
 
-TIP: `:foreign_key`オプションおよび`:association_foreign_key`オプションは、多対多の自己結合を行いたいときに便利です。例：
+TIP: `:foreign_key`オプションおよび`:association_foreign_key`オプションは、多対多の自己結合を行いたいときに便利です。以下に例を示します。
 
 ```ruby
 class User < ActiveRecord::Base
@@ -2004,7 +2021,7 @@ end
 
 ##### `:join_table`
 
-辞書順に基いて生成された結合テーブルのデフォルト名が気に入らない場合、`:join_table`オプションを使用してデフォルトのテーブル名を上書きできます。
+辞書順に基いて生成された結合テーブルのデフォルト名が気に入らない場合、`:join_table`オプションを使用してデフォルトのテーブル名をうわがきできm
 
 ##### `:validate`
 
@@ -2012,7 +2029,7 @@ end
 
 #### `has_and_belongs_to_many`のスコープについて
 
-場合によっては`has_and_belongs_to_many`で使用されるクエリをカスタマイズしたくなることがあります。スコープブロックを使用してこのようなカスタマイズを行うことができます。例：
+場合によっては`has_and_belongs_to_many`で使用されるクエリをカスタマイズしたくなることがあります。スコープブロックを使用してこのようなカスタマイズを行うことができます。以下に例を示します。
 
 ```ruby
 class Parts < ActiveRecord::Base
@@ -2057,7 +2074,7 @@ end
 
 ##### `extending`
 
-`extending`メソッドは、関連付けプロキシを拡張する名前付きモジュールを指定します。関連付けの拡張については<a href="#関連付けの拡張">後述します</a>。
+`extending`メソッドは、関連付けプロキシを拡張する名前付きモジュールを指定します。Association extensions are discussed in detail [later in this guide](#association-extensions).
 
 ##### `group`
 
@@ -2071,9 +2088,7 @@ end
 
 ##### `includes`
 
-`includes`メソッドを使用すると、その関連付けが使用されるときにeager-load (訳注:preloadとは異なる)しておきたい第2関連付けを指定することができます。
-
-##### `limit`
+`includes`メソッドを使用すると、その関連付けが使用されるときにeager-load (訳注:preloadとは異なる)しておきたい第2関連付けを指定することができます。##### `limit`
 
 `limit`メソッドは、関連付けを使用して取得できるオブジェクトの総数を制限するのに使用します。
 
@@ -2115,7 +2130,7 @@ end
 
 `has_and_belongs_to_many`関連付けにオブジェクトをアサインすると、結合テーブルを更新するためにそのオブジェクトは自動的に保存されます。1つの文で複数のオブジェクトをアサインすると、それらはすべて保存されます。
 
-関連付けられているオブジェクト同士の1つでも検証(validation)のために保存に失敗すると、アサインの状態からは`false`が返され、アサインはキャンセルされます。
+関連付けられているオブジェクトの1つでも検証(validation)エラーで保存に失敗すると、アサインの式からは`false`が返され、アサインはキャンセルされます。
 
 親オブジェクト(`has_and_belongs_to_many`関連付けを宣言している側のオブジェクト)が保存されない場合(つまり`new_record?`が`true`を返す場合)、子オブジェクトは追加時に保存されません。親オブジェクトが保存されると、関連付けられていたオブジェクトのうち保存されていなかったメンバはすべて保存されます。
 
@@ -2132,7 +2147,7 @@ end
 * `before_remove`
 * `after_remove`
 
-これらのオプションを関連付けの宣言に追加することで、関連付けコールバックを定義できます。例：
+これらのオプションを関連付けの宣言に追加することで、関連付けコールバックを定義できます。以下に例を示します。
 
 ```ruby
 class Customer < ActiveRecord::Base
@@ -2167,7 +2182,7 @@ end
 
 ### 関連付けの拡張
 
-Railsは自動的に関連付けのプロキシオブジェクトをビルドしますが、開発者はこれをカスタマイズすることができます。無名モジュール(anonymous module)を使用してこれらのオブジェクトを拡張(検索、作成などのメソッドを追加)することができます。例：
+Railsは自動的に関連付けのプロキシオブジェクトをビルドしますが、開発者はこれをカスタマイズすることができます。無名モジュール(anonymous module)を使用してこれらのオブジェクトを拡張(検索、作成などのメソッドを追加)することができます。以下に例を示します。
 
 ```ruby
 class Customer < ActiveRecord::Base
@@ -2179,7 +2194,7 @@ class Customer < ActiveRecord::Base
 end
 ```
 
-拡張を多くの関連付けで共有したい場合は、名前付きの拡張モジュールを使用することもできます。例：
+拡張を多くの関連付けで共有したい場合は、名前付きの拡張モジュールを使用することもできます以下に例を示します。
 
 ```ruby
 module FindRecentExtension
