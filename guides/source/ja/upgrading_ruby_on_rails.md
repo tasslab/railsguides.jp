@@ -1,8 +1,7 @@
-﻿
 Rails アップグレードガイド
 ===================================
 
-本章では、アプリケーションで使用されているRuby on Railsのバージョンを、新しいバージョンにアップグレードする際の手順について示します。アップグレードの手順は、Railsのバージョンごとに個別に記載されています。
+本章では、アプリケーションで使用されているRuby on Railsのバージョンを、新しいバージョンにアップグレードする際の手順について示します。これらの手順は、各バージョンのリリースガイドにも記載されています。[BR][BR]--------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 
@@ -84,7 +83,7 @@ class UsersController < ApplicationController
     end
   end
 end
-``` 
+```
 
 詳細については[#16526](https://github.com/rails/rails/pull/16526)を参照してください。
 
@@ -114,7 +113,7 @@ end
 
 ### シリアル化属性
 
-`serialize :metadata, JSON`などのカスタムコーダーを使用している場合に、シリアル化属性 (serialized attribute) に`nil`を割り当てると、コーダー内で`nil`値を渡すのではなく、データベースに`NULL`として保存されるようになりました (`JSON`コーダーを使用している場合の`"null"`など)。
+[REVIEW]`serialize :metadata, JSON`などのカスタムコーダーを使用している場合に、シリアル化属性 (serialized attribute) に`nil`を割り当てると、コーダー内で`nil`値を渡すのではなく、データベースに`NULL`として保存されるようになりました (`JSON`コーダーを使用している場合の`"null"`など)。
 
 ### Productionログのレベル
 
@@ -134,7 +133,7 @@ Railsテンプレートを使用し、かつすべてのファイルを (Gitな�
 # template.rb
 generate(:scaffold, "person name:string")
 route "root to: 'people#index'"
-$ rake db:migrate
+rake("db:migrate")
 
 git :init
 git add: "."
@@ -199,11 +198,14 @@ class Notifier < ActionMailer::Base
   end
 end
 
-mail = Notifier.notify(user, ...) # Notifier#notifyはこの時点では呼び出されない
+mail = Notifier.notify(user, ...) # Notifier#welcome is not yet called at this point
 mail = mail.deliver_now           # "Called"を出力する
 ```
 
-この変更によって実行結果が大きく異なるアプリケーションはそれほどないと思われます。ただし、メイラー以外のメソッドを同期的に実行したい場合、かつ従来の同期的プロキシ動作に依存している場合は、これらのメソッドをメイラークラスにクラスメソッドとして直接定義する必要があります。
+This should not result in any noticible differnces for most applications.
+However, if you need some non-mailer methods to be exectuted synchronously, and
+you were previously relying on the synchronous proxying behavior, you should
+define them as class methods on the mailer class directly:
 
 ```ruby
 class Notifier < ActionMailer::Base
@@ -212,6 +214,22 @@ class Notifier < ActionMailer::Base
   end
 end
 ```
+
+### Foreign Key Support
+
+The migration DSL has been expanded to support foreign key definitions. If
+you've been using the Foreigner gem, you might want to consider removing it.
+Note that the foreign key support of Rails is a subset of Foreigner. This means
+that not every Foreigner definition can be fully replaced by it's Rails
+migration DSL counterpart.
+
+The migration procedure is as follows:
+
+1. remove `gem "foreigner"` from the Gemfile.
+2. run `bundle install`.
+3. run `bin/rake db:schema:dump`.
+4. make sure that `db/schema.rb` contains every foreign key definition with
+the necessary options.
 
 Rails 4.0からRails 4.1へのアップグレード
 -------------------------------------
@@ -232,7 +250,7 @@ CSRF保護をトリガーするようになります。以下のように書き�
 
 ```ruby
 xhr :get, :index, format: :js
-``` 
+```
 
 `XmlHttpRequest`を明示的にテストしてください。
 
@@ -435,7 +453,7 @@ Rails 4.1からI18nオプション`enforce_available_locales`がデフォルト�
 
 ```ruby
 config.i18n.enforce_available_locales = false
-``` 
+```
 
 available_localesの強制はセキュリティのために行われていることにご注意ください。つまり、アプリケーションが把握していないロケールを持つユーザー入力が、ロケール情報として使用されることのないようにするためのものです。従って、やむを得ない理由がない限りこのオプションはfalseにしないでください。
 
@@ -452,7 +470,7 @@ Author.where(name: 'Hank Moody').compact!
 # 今後のミューテーター呼び出し方法
 authors = Author.where(name: 'Hank Moody').to_a
 authors.compact!
-``` 
+```
 
 ### デフォルトスコープの変更
 
@@ -479,7 +497,7 @@ User.where(state: 'inactive')
 # SELECT "users".* FROM "users" WHERE "users"."state" = 'inactive'
 ```
 
-変更後:
+After:
 
 ```ruby
 class User < ActiveRecord::Base
@@ -519,7 +537,7 @@ User.inactive
 
 ### 文字列からのコンテンツ描出
 
-Rails 4.1の`render`に`:plain`、`:html`、`:body`オプションが導入されました。以下のようにコンテンツタイプを指定できるため、文字列ベースのコンテンツ表示にはこれらのオプションの使用が推奨されます。
+Rails 4.1の`render`に`:plain`、`:html`、`:body`オプションが導入されました。以下のようにコンテンツタイプを指定できるため、文字列ベースのコンテンツ表示にはこれらのオプションの使用が推奨されます。[BR]
 
 * `render :plain`を実行するとcontent typeは`text/plain`に設定される
 * `render :html`を実行するとcontent typeは`text/html`に設定される
@@ -623,7 +641,7 @@ PATCHおよびこの変更が行われた理由についてはRailsブログの 
 def update
   respond_to do |format|
     format.json do
-      # 部分的な変更を行なう
+      # perform a partial update
       @article.update params[:article]
     end
 
@@ -646,12 +664,12 @@ Rails 4.0では`assets`グループがGemfileから削除されました。ア�
 ```ruby
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
-Bundler.require(:default, Rails.env)
-``` 
+Bundler.require(*Rails.groups)
+```
 
 ### vendor/plugins
 
-Rails 4.0 では `vendor/plugins` 読み込みのサポートは完全に終了しました。使用するプラグインはすべてgemに展開してGemfileに追加しなければなりません。理由があってプラグインをgemにしないのであれば、プラグインを`lib/my_plugin/*`に移動し、適切な初期化の記述を`config/initializers/my_plugin.rb`に書いてください。
+Rails 4.0 では `vendor/plugins` 読み込みのサポートは完全に終了しました。使用するプラグインはすべてgemに展開してGemfileに追加しなければなりません。 理由があってプラグインをgemにしないのであれば、プラグインを`lib/my_plugin/*`に移動し、適切な初期化の記述を`config/initializers/my_plugin.rb`に書いてください。
 
 ### Active Record
 
@@ -663,7 +681,7 @@ Rails 4.0 では `vendor/plugins` 読み込みのサポートは完全に終了�
 
 * Rails 4.0の`serialized_attributes`メソッドと`attr_readonly`メソッドは、クラスメソッドとしてのみ使用するように変更されました。これらのメソッドをインスタンスメソッドとして使用することは非推奨となったため、行わないでください。たとえば`self.serialized_attributes`は`self.class.serialized_attributes`のようにクラスメソッドとして使用してください。
 
-* デフォルトのコーダーを使用する場合、シリアル化属性に`nil`を渡すと、YAML全体にわたって (`nil`値を渡す代わりに) `NULL`としてデータベースに保存されます (`"--- \n...\n"`)。
+* [REVIEW] デフォルトのコーダーを使用する場合、シリアル化属性に`nil`を渡すと、YAML全体にわたって (`nil`値を渡す代わりに) `NULL`としてデータベースに保存されます (`"--- \n...\n"`)。
 
 * Rails 4.0ではStrong Parametersの導入に伴い、`attr_accessible`と`attr_protected`が廃止されました。これらを引き続き使用したい場合は、[Protected Attributes gem](https://github.com/rails/protected_attributes) を導入することでスムーズにアップグレードすることができます。
 
@@ -674,7 +692,7 @@ Rails 4.0 では `vendor/plugins` 読み込みのサポートは完全に終了�
 ```ruby
   scope :active, where(active: true)
 
-  # 上のコードは以下のように変更する必要がある
+上のコードは以下のように変更する必要があります。
   scope :active, -> { where active: true }
 ```
 
@@ -687,9 +705,9 @@ Rails 4.0 では `vendor/plugins` 読み込みのサポートは完全に終了�
 * 動的なメソッドは、`find_by_...`と`find_by_...!`を除いて非推奨となりました。
   以下のように変更してください。
 
-      * `find_all_by_...`           に代えて `where(...)` を使用
+      * `find_all_by_...`          に代えて`where(...)を使用
       * `find_last_by_...`          に代えて `where(...).last` を使用
-      * `scoped_by_...`             に代えて `where(...)` を使用
+      * `scoped_by_...`            に代えて`where(...)`を使用
       * `find_or_initialize_by_...` に代えて`find_or_initialize_by(...)`を使用
       * `find_or_create_by_...`   に代えて`find_or_create_by(...)`を使用
 
@@ -698,6 +716,20 @@ Rails 4.0 では `vendor/plugins` 読み込みのサポートは完全に終了�
 * これらの同等なメソッドが実行するSQLは、従来の実装と同じではありません。
 
 * 旧来のfinderを再度有効にしたい場合は、[activerecord-deprecated_finders gem](https://github.com/rails/activerecord-deprecated_finders) を使用できます。
+
+* Rails 4.0 has changed to default join table for `has_and_belongs_to_many` relations to strip the common prefix off the second table name. Any existing `has_and_belongs_to_many` relationship between models with a common prefix must be specified with the `join_table` option. 以下に例を示します。
+
+```ruby
+CatalogCategory < ActiveRecord::Base
+  has_and_belongs_to_many :catalog_products, join_table: 'catalog_categories_catalog_products'
+end
+
+CatalogProduct < ActiveRecord::Base
+  has_and_belongs_to_many :catalog_categories, join_table: 'catalog_categories_catalog_products'
+end
+```
+
+* Note that the the prefix takes scopes into account as well, so relations between `Catalog::Category` and `Catalog::Product` or `Catalog::Category` and `CatalogProduct` need to be updated similarly.
 
 ### Active Resource
 
@@ -712,7 +744,7 @@ Rails 4.0ではActive Resourceがgem化されました。この機能が必要�
 ```ruby
 # Disable root element in JSON by default.
 # ActiveSupport.on_load(:active_record) do
-#   self.include_root_in_json = false
+#   self.include_root_in_json = false 
 # end
 ```
 
@@ -742,6 +774,8 @@ Rails 4.0ではActive Resourceがgem化されました。この機能が必要�
 
 * Rails 4.0からXMLパラメータパーサーが取り除かれました。この機能が必要な場合は`actionpack-xml_parser` gemを追加する必要があります。
 
+* Rails 4.0 changes the default `layout` lookup set using symbols or procs that return nil. To get the "no layout" behavior, return false instead of nil. 
+
 * Rails 4.0のデフォルトのmemcachedクライアントが`memcache-client`から`dalli`に変更されました。アップグレードするには、単に`gem 'dalli'`を`Gemfile`に追加します。
 
 * Rails 4.0ではコントローラでの`dom_id`および`dom_class`メソッドの使用が非推奨になりました (ビューでの使用は問題ありません)。この機能が必要なコントローラでは`ActionView::RecordIdentifier`モジュールをインクルードする必要があります。
@@ -760,10 +794,10 @@ Rails 4.0ではActive Resourceがgem化されました。この機能が必要�
 
 ```ruby
   resources :examples
-  get 'clashing/:id' => 'test#example', as: :example
+  get 'clashing/:id' => 'test#example', as: :example 
 ```
 
-最初の例では、複数のルーティングで同じ名前を使用しないようにすれば回避できます。次の例では、`only`または`except`オプションを`resources`メソッドで使用することで、作成されるルーティングを制限することができます。詳細は [Routing Guide](routing.html#ルーティングの作成を制限する) を参照。
+最初の例では、複数のルーティングで同じ名前を使用しないようにすれば回避できます。次の例では、`only`または`except`オプションを`resources`メソッドで使用することで、作成されるルーティングを制限することができます。詳細は [Routing Guide](routing.html#restricting-the-routes-created) を参照。
 
 * Rails 4.0ではunicode文字のルーティングの描出方法が変更されました。unicode文字を使用するルーティングを直接描出できるようになりました。既にこのようなルーティングを使用している場合は、以下の変更が必要です。
 
@@ -783,10 +817,10 @@ get 'こんにちは', controller: 'welcome', action: 'index'
   # Rails 3.x
   match '/' => 'root#index'
 
-  # 上のコードは以下のように変更する必要があります。
+上のコードは以下のように変更する必要があります。
   match '/' => 'root#index', via: :get
 
-  # または
+  # or
   get '/' => 'root#index'
 ```
 
@@ -803,7 +837,7 @@ config.middleware.insert_before(Rack::Lock, ActionDispatch::BestStandardsSupport
 
 * Rails 4.0のアセットのプリコンパイルでは、`vendor/assets`および`lib/assets`にある非JS/CSSアセットを自動的にはコピーしなくなりました。Railsアプリケーションとエンジンの開発者は、これらのアセットを手動で`app/assets`に置き、`config.assets.precompile`を設定してください。
 
-* Rails 4.0では、リクエストされたフォーマットがアクションで扱えなかった場合に`ActionController::UnknownFormat`が発生するようになりました。デフォルトでは、この例外は406 Not Acceptable応答として扱われますが、この動作をオーバーライドすることができます。Rails 3では常に406 Not Acceptableが返されます。オーバーライドはできません。
+* Rails 4.0では、リクエストされたフォーマットがアクションで扱えなかっt場合に`ActionController::UnknownFormat`が発生するようになりました。デフォルトでは、この例外は406 Not Acceptable応答として扱われますが、この動作をオーバーライドすることができます。Rails 3では常に406 Not Acceptableが返されます。オーバーライドはできません。
 
 * Rails 4.0では、`ParamsParser`がリクエストパラメータをパースできなかった場合に一般的な`ActionDispatch::ParamsParser::ParseError`例外が発生するようになりました。`MultiJson::DecodeError`のような低レベルの例外の代りにこの例外をレスキューすることができます。
 
@@ -846,7 +880,7 @@ config.assets.js_compressor = :uglifier
 Rails 3.1からRails 3.2へのアップグレード
 -------------------------------------
 
-Railsアプリケーションのバージョンが3.1より前の場合、まず3.1へのアップグレードを完了してからRails 3.2へのアップグレードにとりかかってください。
+Railsアプリケーションのバージョンが3.1より前の場合、まず3.1へのアップグレードを完了してからRails 3.2のアップグレードにとりかかってください。
 
 Railsアプリケーションのバージョンが3.1よりも古い場合、まず3.1へのアップグレードを完了してからRails 3.2へのアップグレードを開始してください。
 
@@ -855,7 +889,7 @@ Railsアプリケーションのバージョンが3.1よりも古い場合、ま
 `Gemfile`を以下のように変更します。
 
 ```ruby
-gem 'rails', '3.2.21'
+gem 'rails', '3.2.18'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.6'
@@ -869,8 +903,7 @@ end
 development環境にいくつかの新しい設定を追加する必要があります。
 
 ```ruby
-# Active Recordのモデルをマスアサインメントから保護するために例外を発生する
-config.active_record.mass_assignment_sanitizer = :strict
+# Active Recordのモデルをマスアサインメントから保護するために例外を発生する config.active_record.mass_assignment_sanitizer = :strict
 
 # クエリの実行計画 (クエリプラン) を現在より多く出力する
 # (SQLite、MySQL、PostgreSQLで動作)
@@ -882,8 +915,7 @@ config.active_record.auto_explain_threshold_in_seconds = 0.5
 `mass_assignment_sanitizer`設定を`config/environments/test.rb`にも追加する必要があります。
 
 ```ruby
-# Active Recordのモデルをマスアサインメントから保護するために例外を発生する
-config.active_record.mass_assignment_sanitizer = :strict
+# Active Recordのモデルをマスアサインメントから保護するために例外を発生する config.active_record.mass_assignment_sanitizer = :strict
 ```
 
 ### vendor/plugins
@@ -934,7 +966,7 @@ Railsアプリケーションでリソースのルーティングに"/assets"ル
 ```ruby
 # '/assets'のデフォルト
 config.assets.prefix = '/asset-files'
-``` 
+```
 
 ### config/environments/development.rb
 
@@ -946,9 +978,9 @@ RJS の設定`config.action_view.debug_rjs = true`を削除してください。
 # 開発環境ではアセットを圧縮しない
 config.assets.compress = false
 
-# アセットで読み込んだ行を展開する
+# アセットで読み込んだ行を展開する。
 config.assets.debug = true
-``` 
+```
 
 ### config/environments/production.rb
 
@@ -972,7 +1004,7 @@ config.assets.digest = true
 
 # アプリケーションへのすべてのアクセスを強制的にSSLにし、Strict-Transport-Securityとセキュアクッキーを使用する
 # config.force_ssl = true
-``` 
+```
 
 ### config/environments/test.rb
 
@@ -980,7 +1012,7 @@ config.assets.digest = true
 
 ```ruby
 # Cache-Controlを使用するテストで静的アセットサーバーを構成し、パフォーマンスを向上させる
-config.serve_static_assets = true
+config.serve_static_files = true
 config.static_cache_control = 'public, max-age=3600'
 ```
 
@@ -998,7 +1030,7 @@ ActiveSupport.on_load(:action_controller) do
   wrap_parameters format: [:json]
 end
 
-# JSONのルート要素をデフォルトで無効にする
+# Disable root element in JSON by default.
 ActiveSupport.on_load(:active_record) do
   self.include_root_in_json = false
 end
@@ -1013,7 +1045,7 @@ end
 AppName::Application.config.session_store :cookie_store, key: 'SOMETHINGNEW'
 ```
 
-または
+or
 
 ```bash
 $ bin/rake db:sessions:clear
