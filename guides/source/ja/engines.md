@@ -1,4 +1,3 @@
-﻿
 Rails エンジン入門
 ============================
 
@@ -17,7 +16,7 @@ Rails エンジン入門
 Railsにおけるエンジンの役割
 -----------------
 
-エンジン (engine) とは、アプリケーションのミニチュアのようなものであり、ホストアプリケーションに機能を提供します。Railsアプリケーションは実際にはエンジンに「ターボをかけた」ようなものにすぎず、`Rails::Application`クラスは`Rails::Engine`から多くの振る舞いを継承しています。
+エンジン (engine) とは、アプリケーションのミニチュアのようなものであり、ホストアプリケーションに機能を提供します。Railsアプリケーションは実際にはエンジンに「ターボをかけた」ようなものにすぎず`Rails::Application`クラスは`Rails::Engine`から多くの振る舞いを継承しています。
 
 従って、エンジンとアプリケーションは、細かな違いを除けばほぼ同じものであると考えていただいてよいでしょう。本ガイドでもこの点をたびたび確認します。エンジンとアプリケーションは、同じ構造を共有しています。
 
@@ -39,13 +38,13 @@ Railsにおけるエンジンの役割
 エンジンを生成するには、プラグインジェネレータを実行し、必要に応じてオプションをジェネレータに渡します。"blorgh"の場合はマウント可能なエンジンとして生成するので、ターミナルで以下のコマンドを実行します。
 
 ```bash
-$ bin/rails plugin new blorgh --mountable
+$ rails plugin new blorgh --mountable
 ```
 
 プラグインジェネレータで利用できるオプションの一覧をすべて表示するには、以下を入力します。
 
 ```bash
-$ bin/rails plugin --help
+$ rails plugin --help
 ```
 
 `--mountable`オプションは、マウント可能かつ名前空間で分離されたエンジンを生成する場合に使用します。このジェネレータで生成したプラグインは、`--full`オプションを使用した場合と同じスケルトン構造を持ちます。`--full`オプションは、以下を提供するスケルトン構造を含むエンジンを作成します。
@@ -133,13 +132,13 @@ end
 
 NOTE: `Engine`クラスの定義に含まれる`isolate_namespace`の行を変更/削除しないことを **強く** 推奨します。この行が変更されると、生成されたエンジン内のクラスがアプリケーションと衝突する **可能性があります** 。
 
-名前空間を分離するということは、`bin/rails g model`の実行によって生成されたモデル (ここでは `bin/rails g model article`を実行したとします) は`Article`にならず、名前空間化されて`Blorgh::Article`になるということです。さらにモデルのテーブルも名前空間化され、単なる`articles`ではなく`blorgh_articles`になります。コントローラもモデルと同様に名前空間化されます。`ArticlesController`というコントローラは`Blorgh::ArticlesController`になり、このコントローラのビューは`app/views/articles`ではなく`app/views/blorgh/articles`に置かれます。メイラーも同様に名前空間化されます。
+名前空間を分離するということは、`bin/rails g model`の実行によって生成されたモデル (ここでは `bin/rails g model article`を実行したとします) は`Article`にならず、名前空間化されて`Blorgh::Article`になるということですさらにモデルのテーブルも名前空間化され、単なる`articles`ではなく`blorgh_articles`になります。コントローラもモデルと同様に名前空間化されます。`ArticlesController`というコントローラは`Blorgh::ArticlesController`になり、このコントローラのビューは`app/views/articles`ではなく`app/views/blorgh/articles`に置かれます。メイラーも同様に名前空間化されます。
 
 最後に、ルーティングもエンジン内で分離されます。これは名前空間化の最も肝心な部分であり、これについては本ガイドの[ルーティング](#ルーティング)セクションで後述します。
 
 #### `app`ディレクトリ
 
-エンジンの`app`ディレクトリの中には、通常のアプリケーションでおなじみの標準の`assets`、`controllers`、`helpers`、`mailers`、`models`、`views`ディレクトリが置かれます。このうち`helpers`、`mailers`、`models`ディレクトリにはデフォルトでは何も置かれないので、本セクションでは解説しません。モデルについては、エンジンの作成について解説するセクションで後述します。
+エンジンの`app`ディレクトリの中には、通常のアプリケーションでおなじみの標準の`assets`、`controllers`、`helpers`、`mailers`、`models`、`views`ディレクトリが置かれます。このうち`helpers`、`mailers`、`models`ディレクトリにはデフォルトでは何も置かれないので、本セクションでは解説しません。モデルについては、エンジンの作成について解説するせくしょnで後述します。
 
 エンジンの`app/assets`ディレクトリの下にも、通常のアプリケーションと同様に`images`、`javascripts`、`stylesheets`ディレクトリがそれぞれあります。通常のアプリケーションと異なる点は、これらのディレクトリの下にはさらにエンジン名を持つサブディレクトリがあることです。これは、エンジンが名前空間化されるのと同様、エンジンのアセットも同様に名前空間化される必要があるからです。
 
@@ -198,7 +197,7 @@ invoke  test_unit
 create      test/models/blorgh/article_test.rb
 create      test/fixtures/blorgh/articles.yml
 invoke  resource_route
-route    resources :articles
+ route    resources :articles
 invoke  scaffold_controller
 create    app/controllers/blorgh/articles_controller.rb
 invoke    erb 
@@ -235,7 +234,7 @@ end
 
 このルーティングは、`YourApp::Application`クラスではなく`Blorgh::Engine`オブジェクトにもとづいていることにご注目ください。これにより、エンジンのルーティングがエンジン自身に制限され、[testディレクトリ](#testディレクトリ)セクションで説明したように特定の位置にマウントできるようになります。ここでは、エンジンのルーティングがアプリケーション内のルーティングから分離されていることにもご注目ください。詳細については本ガイドの[ルーティング](#ルーティング)セクションで解説します。
 
-続いて`scaffold_controller`ジェネレータが呼ばれ、`Blorgh::ArticlesController`という名前のコントローラを生成します (生成場所は`app/controllers/blorgh/articles_controller.rb`です)。このコントローラに関連するビューは`app/views/blorgh/articles`となります。このジェネレータは、コントローラ用のテスト (`test/controllers/blorgh/articles_controller_test.rb`) とヘルパー (`app/helpers/blorgh/articles_controller.rb`).も同時に生成します。
+続いて`scaffold_controller`ジェネレータが呼ばれ、`Blorgh::ArticlesController`という名前のコントローラを生成します (生成場所は`app/controllers/blorgh/articles_controller.rb`です)。このコントローラに関連するビューは`app/views/blorgh/articles`となります。このジェネレータは、コントローラ用のテスト (`test/controllers/blorgh/articles_controller_test.rb`) とへるぱ (`app/helpers/blorgh/articles_controller.rb`).も同時に生成します。
 
 このジェネレータによって生成されるものはすべて正しく名前空間化されます。このコントローラのクラスは、以下のように`Blorgh`モジュール内で定義されます。
 
@@ -304,7 +303,7 @@ $ bin/rails generate model Comment article_id:integer text:text
 invoke  active_record
 create    db/migrate/[timestamp]_create_blorgh_comments.rb
 create    app/models/blorgh/comment.rb
-invoke    test_unit
+invoke  test_unit
 create      test/models/blorgh/comment_test.rb
 create      test/fixtures/blorgh/comments.yml
 ```
@@ -380,7 +379,7 @@ $ bin/rails g controller comments
 ```
 create  app/controllers/blorgh/comments_controller.rb
 invoke  erb
-exist    app/views/blorgh/comments
+ exist    app/views/blorgh/comments
 invoke  test_unit
 create    test/controllers/blorgh/comments_controller_test.rb
 invoke  helper
@@ -392,10 +391,10 @@ invoke    css
 create      app/assets/stylesheets/blorgh/comments.css
 ```
 
-このフォームは`POST`リクエストを`/articles/:article_id/comments`に送信します。これに対応するのは`Blorgh::CommentsController`の`create`アクションです。このアクションを作成する必要があります。`app/controllers/blorgh/comments_controller.rb`のクラス定義の中に以下の行を追加します。
+このフォームは`POST`リクエストを`/articles/:article_id/comments`に送信します。これに対応するのは`Blorgh::CommentsController`の`create`アクションでこのアクションを作成する必要があります。`app/controllers/blorgh/comments_controller.rb`のクラス定義の中に以下の行を追加します。
 
 ```ruby
-  def create
+def create
   @article = Article.find(params[:article_id])
   @comment = @article.comments.create(comment_params)
   flash[:notice] = "Comment has been created!"
@@ -411,13 +410,14 @@ private
 いよいよ、コメントフォームが動作するのに必要な最後の手順を行いましょう。コメントはまだ正常に表示できません。この時点でコメントを作成しようとすると、以下のようなエラーが生じるでしょう。
 
 ```
-Missing partial blorgh/comments/comment with {:handlers=>[:erb, :builder],
+Missing partial blorgh/comments/_comment with {:handlers=>[:erb, :builder],
 :formats=>[:html], :locale=>[:en, :en]}. Searched in:   *
 "/Users/ryan/Sites/side_projects/blorgh/test/dummy/app/views"   *
 "/Users/ryan/Sites/side_projects/blorgh/app/views"
 ```
 
-このエラーは、コメントの表示に必要なパーシャルが見つからないためです。Railsはアプリケーションの (`test/dummy`) `app/views`を最初に検索し、続いてエンジンの`app/views`ディレクトリを検索します。見つからない場合はエラーになります。エンジン自身は`blorgh/comments/comment`を検索すべきであることを認識しています。これは、エンジンが受け取るモデルオブジェクトが`Blorgh::Comment`クラスに属しているためです。
+このエラーは、コメントの表示に必要なパーシャルが見つからないためです。Railsはアプリケーションの (`test/dummy`) `app/views`を最初に検索し、続いてエンジンの`app/views`ディレクトリを検索します。見つからない場合はエラーになります。The engine knows to look for `blorgh/comments/_comment` because the
+model object it is receiving is from the `Blorgh::Comment` class.
 
 さしあたって、コメントテキストを出力する役目をこのパーシャルに担ってもらわなければなりません。`app/views/blorgh/comments/_comment.html.erb`ファイルを作成し、以下の記述を追加します。
 
@@ -466,7 +466,7 @@ mount Blorgh::Engine, at: "/blog"
 
 この行を記述することで、エンジンがアプリケーションの`/blog`パスにマウントされます。`rails server`を実行してRailsを起動すること、`http://localhost:3000/blog`にアクセスできるようになります。
 
-NOTE: Deviseなどの他のエンジンではこの点が若干異なり、ルーティングで (`devise_for`などの) カスタムヘルパーを指定するものがあります。これらのヘルパーの動作は完全に同じです。事前に定義されたカスタマイズ可能なパスにエンジンの機能の一部をマウントします。
+NOTE: Deviseなどの他のエンジンではこの点が若干異なり、ルーティングで (`devise_for`などの) カスタムヘルパーを指定するものがあります。[REVIEW]これらのヘルパーの動作は完全に同じです。事前に定義されたカスタマイズ可能なパスにエンジンの機能の一部をマウントします。
 
 ### エンジンの設定
 
@@ -485,8 +485,8 @@ $ rake railties:install:migrations
 このコマンドは、初回実行時にエンジンからすべてのマイグレーションをコピーします。次回以降の実行時には、コピーされていないマイグレーションのみがコピーされます。このコマンドの初回実行時の出力結果は以下のようになります。
 
 ```bash
-Copied migration [timestamp_1]_create_blorgh_articles.rb from blorgh
-Copied migration [timestamp_2]_create_blorgh_comments.rb from blorgh
+Copied migration [timestamp_1]_create_blorgh_articles.blorgh.rb from blorgh
+Copied migration [timestamp_2]_create_blorgh_comments.blorgh.rb from blorgh
 ```
 
 最初のタイムスタンプ (`[timestamp_1]`) が現在時刻、次のタイムスタンプ (`[timestamp_2]`) が現在時刻に1秒追加した値になります。このようになっているのは、エンジンのマイグレーションはアプリケーションの既存のマイグレーションがすべて終わってから実行する必要があるためです。
@@ -566,27 +566,30 @@ $ bin/rails g migration add_author_id_to_blorgh_articles author_id:integer
 
 NOTE: 上のようにコマンドオプションでマイグレーション名とカラムの仕様を指定することで、特定のテーブルに追加しようとしているカラムがRailsによって自動的に認識され、そのためのマイグレーションが作成されます。この他にオプションを指定する必要はありません。
 
-このマイグレーションはアプリケーションに対して実行する必要があります。これを行なうには、最初に以下のコマンドを実行してマイグレーションをエンジンからコピーする必要があります。
+このマイグレーションはアプリケーションに対して実行する必要がありますこれを行なうには、最初に以下のコマンドを実行してマイグレーションをエンジンからコピーする必要があります。
 
 ```bash
 $ rake blorgh:install:migrations
 ```
 
-上のコマンドでコピーされるマイグレーションは _1つ_ だけである点にご注意ください。これは、最初の2つのマイグレーションはこのコマンドが初めて実行されたときにコピー済みであるためです。
+上のコマンドでコピーされたマイグレーションは _1つ_ だけである点にご注意ください。これは、最初の2つのマイグレーションはこのコマンドが初めて実行されたときにコピー済みであるためです。
 
 ```
-NOTE Migration [timestamp]_create_blorgh_articles.rb from blorgh has been skipped. Migration with the same name already exists. NOTE Migration [timestamp]_create_blorgh_comments.rb from blorgh has been skipped. Migration with the same name already exists. Copied migration [timestamp]_add_author_id_to_blorgh_articles.rb from blorgh
+NOTE Migration [timestamp]_create_blorgh_articles.blorgh.rb from blorgh has been skipped. Migration with the same name already exists. NOTE Migration [timestamp]_create_blorgh_comments.blorgh.rb from blorgh has been skipped. Migration with the same name already exists. Copied migration [timestamp]_add_author_id_to_blorgh_articles.blorgh.rb from blorgh
 ```
 
-このマイグレーションを実行するコマンドは以下のとおりです。
+Run the migration using:
 
 ```bash
 $ rake db:migrate
 ```
 
-これですべての部品が定位置に置かれ、ある記事 (article) を、`users`テーブルのレコードで表される作者 (author) に関連付けるアクションが実行されるようになりました。この記事は`blorgh_articles`テーブルで表されます。
+Now with all the pieces in place, an action will take place that will associate
+an author - represented by a record in the `users` table - with an article,
+represented by the `blorgh_articles` table from the engine.
 
-最後に、作者名を記事のページに表示しましょう。以下のコードを`app/views/blorgh/articles/show.html.erb`の"Title"出力の上に追加します。
+最後に以下を実行します。 the author's name should be displayed on the article's page. Add this code
+above the "Title" output inside `app/views/blorgh/articles/show.html.erb`:
 
 ```html+erb
 <p>
@@ -595,13 +598,15 @@ $ rake db:migrate
 </p>
 ```
 
-`<%=`タグを使用して`@article.author`を出力すると、`to_s`メソッドがこのオブジェクトに対して呼び出されます。この出力はデフォルトのままでは整形されていません。
+By outputting `@article.author` using the `<%=` tag, the `to_s` method will be
+called on the object. By default, this will look quite ugly:
 
 ```
 #<User:0x00000100ccb3b0>
 ```
 
-これは期待していた結果ではありません。ここにユーザー名が表示される方がずっとよいでしょう。そのためには、`to_s`メソッドをアプリケーションの`User`クラスに追加します。
+This is undesirable. It would be much better to have the user's name there. To
+do this, add a `to_s` method to the `User` class within the application:
 
 ```ruby
 def to_s
@@ -609,14 +614,16 @@ def to_s
 end
 ```
 
-これでRubyの生のオブジェクト出力が整形され、作者名が表示されるようになります。
+Now instead of the ugly Ruby object output, the author's name will be displayed.
 
 #### アプリケーションのコントローラを使用する
 
 Railsのコントローラでは、認証やセッション変数へのアクセスに関するコードをアプリケーション全体で共有するのが一般的です。従って、このようなコードはデフォルトで`ApplicationController`から継承します。しかし、Railsのエンジンは基本的にメインとなるアプリケーションから独立しているので、エンジンが利用できる`ApplicationController`はスコープで制限されています。名前空間が導入されていることでコードの衝突は回避されますが、エンジンのコントローラからメインアプリケーションの`ApplicationController`のメソッドにアクセスする必要も頻繁に発生します。エンジンのコントローラからメインアプリケーションの`ApplicationController`へのアクセスを提供するには、エンジンが所有するスコープ付きの`ApplicationController`に変更を加え、メインアプリケーションの`ApplicationController`を継承するのが簡単な方法です。Blorghエンジンの場合、`app/controllers/blorgh/application_controller.rb`を以下のように変更します。
 
 ```ruby
-class Blorgh::ApplicationController < ApplicationController
+module Blorgh
+  class ApplicationController < ::ApplicationController
+  end
 end
 ```
 
@@ -632,7 +639,7 @@ end
 
 これより、アプリケーションで`User`を表すクラスをエンジンからカスタマイズ可能にする方法について説明します。カスタマイズしたいクラスは、前述の`User`のようなクラスばかりとは限りません。このクラスの設定をカスタマイズ可能にするには、エンジン内部に`author_class`という名前の設定が必要です。この設定は、親アプリケーション内部でユーザーを表すクラスがどれであるかを指定するためのものです。
 
-この設定を定義するには、エンジンで使用する`Blorgh`モジュール内部に`mattr_accessor`というアクセッサを置く必要があります。エンジンにある`lib/blorgh.rb`に以下の行を追加します。
+この設定を定義するには、エンジンで使用する`Blorgh`モジュール内部に`mattr_accessor`というアクセッサを置く必要があります。エンジンにある`lib/blorgh.rb`に以下の行をついかします
 
 ```ruby
 mattr_accessor :author_class
@@ -660,22 +667,22 @@ def self.author_class
 end
 ```
 
-これにより、`set_author`用の上のコードは以下のようになります。
+[REVIEW]これにより、`set_author`用の上のコードは以下のようになります。
 
 ```ruby
 self.author = Blorgh.author_class.find_or_create_by(name: author_name)
 ```
 
-これにより、記述がやや短くなり、動作がやや明示的でなくなります。この`author_class`メソッドは常に`Class`オブジェクトを返す必要があります。
+[REVIEW]これにより、記述がやや短くなり、動作がやや明示的でなくなります。この`author_class`メソッドは常に`Class`オブジェクトを返す必要があります。
 
-`author_class`メソッドが`String`ではなく`Class`を返すように変更したので、`Blorgh::Article`の`belongs_to`定義もそれに合わせて変更する必要があります。
-
+[REVIEW]`author_class`メソッドが`String`ではなく`Class`を返すように変更したので、`Blorgh::Article`の`belongs_to`定義もそれに合わせて変更する必要があります。
+model:
 
 ```ruby
 belongs_to :author, class_name: Blorgh.author_class.to_s
 ```
 
-この設定をアプリケーション内で行なうには、イニシャライザを使用する必要があります。イニシャライザを使用することで、アプリケーションの設定はアプリケーションが起動してエンジンのモデルを呼び出すまでに完了します。この動作は既存のこの設定に依存する場合があります。
+この設定をアプリケーション内で行なうには、イニシャライザを使用する必要があります。イニシャライザを使用することで、アプリケーションの設定はアプリケーションが起動してエンジンのモデルを呼び出すまでに完了します。この動作は既存の設定に依存する場合があります。●
 
 `blorgh`がインストールされているアプリケーションの`config/initializers/blorgh.rb`にイニシャライザを作成して、以下の記述を追加します。
 
@@ -683,11 +690,19 @@ belongs_to :author, class_name: Blorgh.author_class.to_s
 Blorgh.author_class = "User"
 ```
 
-WARNING: このクラス名は必ず`String`で (=引用符で囲んで) 表してください。クラス自身を使用しないでください。クラス自身が使用されていると、Railsはそのクラスを読み込んで関連するテーブルを参照しようとします。このとき参照先のテーブルが存在しないと問題が発生する可能性があります。このため、クラス名は`String`で表し、後にエンジンが`constantize`でクラスに変換する必要があります。
+WARNING: このクラス名は必ず`String`で (=引用符で囲んで) 表してください。クラス自身を使用しないでください。If you were to use the class, Rails would attempt
+to load that class and then reference the related table. This could lead to
+problems if the table wasn't already existing. Therefore, a `String` should be
+used and then converted to a class using `constantize` in the engine later on.
 
-続いて、新しい記事を1つ作成してみることにしましょう。記事の作成はこれまでとまったく同様に行えます。1つだけ異なるのは、今回はクラスの動作を学ぶために`config/initializers/blorgh.rb`の設定をエンジンで使用する点です。
+Go ahead and try to create a new article. You will see that it works exactly in the
+same way as before, except this time the engine is using the configuration
+setting in `config/initializers/blorgh.rb` to learn what the class is.
 
-使用するクラスがそのためのAPIさえ備えていれば、使用するクラスに厳密に依存することはありません。エンジンで使用するクラスで必須となるメソッドは`find_or_create_by`のみです。このメソッドはそのクラスのオブジェクトを1つ返します。もちろん、このオブジェクトは何らかの形で参照可能な識別子 (id) を持つ必要があります。
+There are now no strict dependencies on what the class is, only what the API for
+the class must be. The engine simply requires this class to define a
+`find_or_create_by` method which returns an object of that class, to be
+associated with an article when it's created. もちろん、このオブジェクトは何らかの形で参照可能な識別子 (id) を持つ必要があります。
 
 #### 一般的なエンジンの設定
 
@@ -709,26 +724,39 @@ WARNING: このクラス名は必ず`String`で (=引用符で囲んで) 表し�
 特に機能テストを作成する際には、テストが実行されるのはエンジンではなく`test/dummy`に置かれるダミーアプリケーション上であるという点に留意する必要があります。このようになっているのは、testing環境がそのように設定されているためです。エンジンの主要な機能、特にコントローラをテストするには、エンジンをホストするアプリケーションが必要です。コントローラの機能は、通常であればたとえば以下のように`GET`をコントローラに送信することでテストするでしょう。
 
 ```ruby
-get :index
+module Blorgh
+  class FooControllerTest < ActionController::TestCase
+    def test_index
+  get :index
+      ...
+    end
+  end
+end
 ```
 
-しかしこれは正常に機能しないでしょう。アプリケーションは、このようなリクエストをエンジンにルーティングする方法を知らないので、明示的にエンジンにルーティングする必要があります。これを行なうには、以下のようにリクエストのパラメータとして`:use_route`オプションを渡す必要があります。
+しかしこれは正常に機能しないでしょう。アプリケーションは、このようなリクエストをエンジンにルーティングする方法を知らないので、明示的にエンジンにルーティングする必要があります。To
+do this, you must set the `@routes` instance variable to the engine's route set
+in your setup code:
 
 ```ruby
-get :index, use_route: :blorgh
+module Blorgh
+  class FooControllerTest < ActionController::TestCase
+    setup do
+  @routes = Engine.routes
+    end
+
+    def test_index
+  get :index
+      ...
+    end
+  end
+end
 ```
 
 上のようにすることで、このコントローラの`index`アクションに対して`GET`リクエストを送信しようとしていることがアプリケーションによって認識され、かつそのためにアプリケーションのルーティングではなくエンジンのルーティングが使用されるようになります。
 
-別の方法として、テスティング設定で`@routes`インスタンス変数に`Engine.routes`を割り当てることもできます。
-
-```ruby
-setup do
-  @routes = Engine.routes
-end
-```
-
-こうすることで、エンジン用のURLヘルパーもテストで期待どおりに動作します。
+This also ensures that the engine's URL helpers will work as expected in your
+tests.
 
 エンジンの機能を改良する
 ------------------------------
@@ -812,7 +840,10 @@ end
 
 #### ActiveSupport::Concernを使用してdecoratorパターンを実装する
 
-`Class#class_eval`は単純な調整には大変便利ですが、クラスの変更が複雑になるのであれば[`ActiveSupport::Concern`] (http://edgeapi.rubyonrails.org/classes/ActiveSupport/Concern.html)をご検討ください。ActiveSupport::Concernは、相互にリンクしている依存モジュールおよび依存クラスの実行時読み込み順序を管理し、コードのモジュール化を高めます。
+Using `Class#class_eval` is great for simple adjustments, but for more complex
+class modifications, you might want to consider using [`ActiveSupport::Concern`]
+(http://api.rubyonrails.org/classes/ActiveSupport/Concern.html).
+ActiveSupport::Concernは、相互にリンクしている依存モジュールおよび依存クラスの実行時読み込み順序を管理し、コードのモジュール化を高めます。
 
 `Article#time_since_created`を**追加**して`Article#summary`を**オーバーライド**する場合:
 
@@ -879,7 +910,7 @@ Railsは出力すべきビューを探索する際に、アプリケーション
 
 たとえば、アプリケーションが`Blorgh::ArticlesController`のindexアクションの結果を出力するためのビューを探索する際には、最初にアプリケーション自身の`app/views/blorgh/articles/index.html.erb`を探索します。そこに見つからない場合は、続いてエンジンの中を探索します。
 
-`app/views/blorgh/articles/index.html.erb`というファイルを作成することで、上の動作を上書きすることができます。こうすることで、通常のビューでの出力結果を完全に変えることができます。
+`app/views/blorgh/articles/index.html.erb`というファイルを作成することで、上の動作を上書きすることができこうすることで、通常のビューでの出力結果を完全に変えることができます。
 
 `app/views/blorgh/articles/index.html.erb`というファイルを作成して以下のコードを追加するとします。
 
@@ -932,7 +963,7 @@ end
 
 ### アセット
 
-エンジンのアセットは、通常のアプリケーションで使用されるアセットとまったく同じように機能します。エンジンのクラスは`Rails::Engine`を継承しているので、アプリケーションはエンジンの'app/assets'ディレクトリと'lib/assets'ディレクトリを探索対象として認識します。
+エンジンのアセットは、通常のアプリケーションで使用されるアセットとまったく同じように機能します。エンジンのクラスは`Rails::Engine`を継承しているの、アプリケーションはエンジンの'app/assets'ディレクトリと'lib/assets'ディレクトリを探索対象として認識します。
 
 エンジン内の他のコンポーネントと同様、アセットも名前空間化される必要があります。たとえば、`style.css`というアセットは、`app/assets/stylesheets/style.css`ではなく`app/assets/stylesheets/[エンジン名]/style.css`に置かれる必要があります。アセットが名前空間化されないと、ホストアプリケーションに同じ名前のアセットが存在する場合にアプリケーションのアセットが使用されてエンジンのアセットが使用されないということが発生する可能性があります。
 
@@ -946,7 +977,7 @@ end
 
 ```
 /*
-*= require blorgh/style
+ *= require blorgh/style
 */
 ```
 
@@ -984,7 +1015,7 @@ s.add_development_dependency "moo"
 
 どちらの依存gemも、アプリケーションで`bundle install`を実行するときにインストールされます。開発時にのみ必要となるgemは、エンジンのテスト実行中にのみ使用されます。
 
-エンジンがrequireされるときに依存gemもすぐにrequireしたい場合は、以下のようエンジンが初期化されるより前にrequireする必要があることにご注意ください。たとえば次のようになります。
+エンジンがrequireされるときに依存gemもすぐにrequireしたい場合は、以下のようエンジンが初期化されるより前にrequireする必要があることにご注意ください。以下に例を示します。
 
 ```ruby
 require 'other_engine/engine'
