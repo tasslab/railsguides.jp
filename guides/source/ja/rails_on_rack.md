@@ -1,4 +1,3 @@
-﻿
 Rails と Rack
 =============
 
@@ -23,12 +22,12 @@ Rackは、Rubyのウェブアプリケーションに対して、最小限でモ
 
 Rackに関する解説はこのガイドの範疇を超えてしまいます。Rackに関する基本的な知識が足らない場合、下記の[リソース](#参考資料) を参照してください。
 
-RailsとRack
+Rails と Rack
 -------------
 
 ### RackアプリケーションとしてのRailsアプリケーション
 
-`Rails.application`はRailsアプリケーションをRackアプリケーションとして実装したものです。Rackに準拠したWebサーバーで、Railsアプリケーションを提供するには、`Rails.application`オブジェクトを使用する必要があります。
+`Rails.application`はRailsアプリケーションをRackアプリケーションとして実装したものです。[REVIEW]Rackに準拠したWebサーバーで、Railsアプリケーションを提供するには、`Rails.application`オブジェクトを使用する必要があります。
 
 ### `rails server`コマンド
 
@@ -66,14 +65,14 @@ def middleware
 end
 ```
 
-`Rails::Rack::Debugger`は主としてdevelopment環境で役に立ちます。読み込まれたミドルウェアの役割は下表のとおりです。
+`Rails::Rack::Debugger`は主としてdevelopment環境で役に立ちます。 environment. 読み込まれたミドルウェアの役割は下表のとおりです。
 
 | ミドルウェア              | 役割                                                                           |
 | ----------------------- | --------------------------------------------------------------------------------- |
 | `Rails::Rack::Debugger` | デバッガを起動する                                                                   |
-| `Rack::ContentLength`   | レスポンスのバイト数を計算し、HTTP Content-Length ヘッダーをセットする |
+| `Rack::ContentLength`   | レスポンスのバイト数を計算し、HTTP  Content-Length ヘッダーをセットする |
 
-### `rackup`コマンド
+### `rackup`
 
 Railsの`rails server`コマンドの代わりに`rackup`コマンドを使用するときは、下記の内容を`config.ru`に記述して、Railsアプリケーションのルートディレクトリに保存します。
 
@@ -98,6 +97,10 @@ $ rackup config.ru
 $ rackup --help
 ```
 
+### Development and auto-reloading
+
+Middlewares are loaded once and are not monitored for changes. You will have to restart the server for changes to be reflected in the running application.
+
 Action Dispatcherのミドルウェアスタック
 ----------------------------------
 
@@ -115,7 +118,7 @@ $ bin/rake middleware
 
 作成したばかりのRailsアプリケーションでは、以下のように出力されるはずです。
 
-  ```ruby
+```ruby
 use Rack::Sendfile
 use ActionDispatch::Static
 use Rack::Lock
@@ -210,7 +213,7 @@ config.middleware.delete "ActionDispatch::Session::CookieStore"
 config.middleware.delete "ActionDispatch::Flash"
 ```
 
-ブラウザ関連のミドルウェアを削除するには次のように書きます。
+[REVIEW]ブラウザ関連のミドルウェアを削除するには次のように書きます。
 
 ```ruby
 # config/application.rb
@@ -227,7 +230,7 @@ Action Controllerの機能の多くはミドルウェアとして実装されて
 
 **`ActionDispatch::Static`**
 
-* 静的ファイルを配信する際に使用します。`config.serve_static_assets`を`false`にするとオフになります。
+* Used to serve static files. Disabled if `config.serve_static_files` is `false`.
 
 **`Rack::Lock`**
 
@@ -251,7 +254,7 @@ Action Controllerの機能の多くはミドルウェアとして実装されて
 
 **`Rails::Rack::Logger`**
 
-* リクエストの処理を開始したことを、ログに書き出します。リクエストが完了すると、すべてのログをフラッシュします。
+* リクエストの処理を開始したことを、ログに書き出します。[REVIEW]リクエストが完了すると、すべてのログをフラッシュします。
 
 **`ActionDispatch::ShowExceptions`**
 
@@ -271,7 +274,7 @@ Action Controllerの機能の多くはミドルウェアとして実装されて
 
 **`ActionDispatch::Callbacks`**
 
-* リクエストの処理を開始する前に、prepareコールバックを起動します(訳注: この説明は原文レベルで間違っており、現在原文の修正を行っています)。
+* Provides callbacks to be executed before and after dispatching the request.
 
 **`ActiveRecord::Migration::CheckPending`**
 
@@ -301,7 +304,7 @@ Action Controllerの機能の多くはミドルウェアとして実装されて
 
 * リクエストからパラメータをパースして、`params`を設定します。
 
-**`ActionDispatch::Head`**
+**`Rack::Head`**
 
 * HEADリクエストを`GET`に変換して処理します。その上でbodyを空にしたレスポンスを返します(訳注: Rails4.0からはRack::Headを使うように変更されています)。
 
