@@ -1,4 +1,3 @@
-﻿
 Rails ガイドのガイドライン
 ===============================
 
@@ -14,69 +13,68 @@ Rails ガイドのガイドライン
 マークダウン (Markdown)
 -------
 
-ガイドは [GitHub Flavored Markdown](http://github.github.com/github-flavored-markdown/) で書かれています。まとまった[Markdownドキュメント](http://daringfireball.net/projects/markdown/syntax)、[チートシート](http://daringfireball.net/projects/markdown/basics)、通常のMarkdownとの違いに関する[追加ドキュメント](http://github.github.com/github-flavored-markdown/) がそれぞれあります。
+Guides are written in [GitHub Flavored マークダウン (Markdown)](https://help.github.com/articles/github-flavored-markdown). There is comprehensive [documentation for マークダウン (Markdown)](http://daringfireball.net/projects/markdown/syntax), as well as a [cheatsheet](http://daringfireball.net/projects/markdown/basics).
 
-プロローグ
+Prologue
 --------
 
-ガイドの冒頭には、読者の開発意欲を高めるような文を置いてください。ガイドの青い部分がこれに該当します。プロローグでは、そのガイドの概要と、ガイドで学ぶ項目について記載してください。例については[ルーティングガイド](routing.html)を参照してください。
+ガイドの冒頭には、読者の開発意欲を高めるような文を置いてください。ガイドの青い部分がこれに該当します。プロローグでは、そのガイドの概要と、ガイドで学ぶ項目について記載してください。As an example, see the [Routing Guide](routing.html).
 
-タイトル
+Headings
 ------
 
-ガイドのタイトルには`h1`、ガイドのセクションには`h2`、ガイドのサブセクションには`h3`をそれぞれ使用してください。なお、実際に生成されるHTMLの見出しは`<h2>`から始まります。
+The title of every guide uses an `h1` heading; guide sections use `h2` headings; subsections use `h3` headings; etc. Note that the generated HTML output will use heading tags starting with `<h2>`.
 
 ```
 ガイドのタイトル
 ===========
 
-セクション
+Section
 -------
 
 ### サブセクション
 ```
 
-冠詞、前置詞、接続詞、be動詞以外の単語は冒頭を大文字にします。
+When writing headings, capitalize all words except for prepositions, conjunctions, internal articles, and forms of the verb "to be":
 
 ```
 #### Middlewareスタックは配列
 #### オブジェクトが保存されるタイミング
 ```
 
-通常のテキストと同じタイポグラフィを使用してください。
+Use the same inline formatting as regular text:
 
 ```
 ##### `:content_type`オプション
 ```
 
-APIドキュメントの書き方
+API ドキュメント作成ガイドライン
 ----------------------------
 
-ガイドとAPIは、必要な箇所が互いに首尾一貫している必要があります。[APIドキュメント作成ガイドライン](api_documentation_guidelines.html)の以下のセクションを参照してください
+ガイドとAPIは、必要な箇所が互いに首尾一貫している必要があります。In particular, these sections of the [API ドキュメント作成ガイドライン](api_documentation_guidelines.html) also apply to the guides:
 
 * [言葉遣い](api_documentation_guidelines.html#語調)
+* [English](api_documentation_guidelines.html#english)
 * [サンプルコード](api_documentation_guidelines.html#サンプルコード)
-* [ファイル名](api_documentation_guidelines.html#ファイル名)
+* [Filenames](api_documentation_guidelines.html#file-names)
 * [フォント](api_documentation_guidelines.html#フォント)
-
-上記のガイドラインは、ガイドについても適用されます。
 
 HTMLガイド
 -----------
 
 ガイドを生成する前に、システムに最新のBundlerがインストールされていることを確認してください。現時点であれば、Bundler 1.3.5がインストールされている必要があります。
 
-最新のBundlerをインストールするには`gem install bundler`コマンドを実行してください。
+To install the latest version of Bundler, run `gem install bundler`.
 
 ### 生成
 
-すべてのガイドを生成するには、`cd`コマンドで`guides`ディレクトリに移動し、`bundle install`を実行してから以下のいずれかを実行します。
+To generate all the guides, just `cd` into the `guides` directory, run `bundle install`, and execute:
 
 ```
 bundle exec rake guides:generate
 ```
 
-または
+or
 
 ```
 bundle exec rake guides:generate:html
@@ -122,7 +120,7 @@ Kindleガイド
 
 ### 生成
 
-Kindle向けにガイドを生成するには、以下のrakeタスクを実行します。
+Kindle向けにガイドを生成するには、以下のrakeタスクを実行します。To generate guides for the Kindle, use the following rake task:
 
 ```
 bundle exec rake guides:generate:kindle
