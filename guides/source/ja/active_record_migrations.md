@@ -1,4 +1,3 @@
-﻿
 Active Record マイグレーション
 ========================
 
@@ -29,7 +28,7 @@ class CreateProducts < ActiveRecord::Migration
       t.string :name
       t.text :description
 
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end
@@ -43,7 +42,7 @@ end
 
 NOTE: ある種のクエリは、トランザクション内で実行できないことがあります。アダプタがDDLトランザクションをサポートしている場合は、`disable_ddl_transaction!`を使用して単一のマイグレーションでこれらを無効にすることができます。
 
-Active Recordで対応できないマイグレーションを行いたい場合は、`reversible`を使用します。
+マイグレーションを逆方向に実行 (ロールバック) する方法が推測できない場合、`reversible` を使用します。
 
 ```ruby
 class ChangeProductsPrice < ActiveRecord::Migration
@@ -148,7 +147,7 @@ class RemovePartNumberFromProducts < ActiveRecord::Migration
 end
 ```
 
-自動で生成できるカラムは1つだけではありません。たとえば次のようになります。
+自動で生成できるカラムは1つだけではありません。以下に例を示します。
 
 ```bash
 $ bin/rails generate migration AddDetailsToProducts part_number:string price:decimal
@@ -165,7 +164,7 @@ class AddDetailsToProducts < ActiveRecord::Migration
 end
 ```
 
-マイグレーション名が"CreateXXX"のような形式であり、その後にカラム名と種類が続く場合、XXXという名前のテーブルが作成され、指定の種類のカラム名がその中に生成されます。たとえば次のようになります。
+マイグレーション名が"CreateXXX"のような形式であり、その後にカラム名と種類が続く場合、XXXという名前のテーブルが作成され、指定の種類のカラム名がその中に生成されます。以下に例を示します。
 
 ```bash
 $ bin/rails generate migration CreateProducts name:string part_number:string
@@ -240,7 +239,7 @@ class CreateProducts < ActiveRecord::Migration
       t.string :name
       t.text :description
 
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end
@@ -288,7 +287,7 @@ end
 
 上によって`products`テーブルが生成され、`name`という名前のカラムがその中に作成されます (`id`というカラムも暗黙で生成されますが、これについては後述します)。
 
-デフォルトでは、`create_table`によって`id`という名前の主キーが作成されます。`:primary_key`オプションを指定することで、主キー名を変更することもできます (その場合は必ず対応するモデル名を変更してください)。 主キーを使用したくない場合は`id: false`オプションを指定することもできます。特定のデータベースで使用するオプションが必要な場合は、`:options`オプションに続けてSQLフラグメントを記述します。たとえば次のようになります。
+デフォルトでは、`create_table`によって`id`という名前の主キーが作成されます。`:primary_key`オプションを指定することで、主キー名を変更することもできます (その場合は必ず対応するモデル名を変更してください)。 主キーを使用したくない場合は`id: false`オプションを指定することもできます。特定のデータベースで使用するオプションが必要な場合は、`:options`オプションに続けてSQLフラグメントを記述します。以下に例を示します。
 
 ```ruby
 create_table :products, options: "ENGINE=BLACKHOLE" do |t|
@@ -314,7 +313,7 @@ create_join_table :products, :categories, column_options: {null: true}
 
 上によって`product_id`と`category_id`が作成され、`:null`が`true`に設定されます。
 
-テーブル名をカスタマイズしたい場合は`:table_name`オプションを渡すこともできます。たとえば次のようになります。
+テーブル名をカスタマイズしたい場合は`:table_name`オプションを渡すこともできます。以下に例を示します。
 
 ```ruby
 create_join_table :products, :categories, table_name: :categorization
@@ -333,7 +332,7 @@ end
 
 ### テーブルを変更する
 
-既存のテーブルを変更する`change_table`は、`create_table`とよく似ています。基本的には`create_table`と同じ要領で使用しますが、ブロックに対してyieldされるオブジェクトではいくつかのテクニックが使用できます。たとえば次のようになります。
+既存のテーブルを変更する`change_table`は、`create_table`とよく似ています。基本的には`create_table`と同じ要領で使用しますが、ブロックに対してyieldされるオブジェクトではいくつかのテクニックが使用できます。以下に例を示します。
 
 ```ruby
 change_table :products do |t|
@@ -378,6 +377,8 @@ TIP: `change_column` (および`change_column_default`) と異なる点は、`ch
 * `null`         カラムで`NULL`値を許可または禁止します。
 * `default`      カラムでのデフォルト値の設定を許可します。dateなどの動的な値を使用している場合は、デフォルト値は最初 (マイグレーションが実行された日付など) にしか計算されないことに注意してください。
 * `index`        カラムにインデックスを追加します。
+* `required`     Adds `required: true` for `belongs_to` associations and
+`null: false` to the column in the migration.
 
 アダプタによってはこの他にも使用できるオプションがあるものもあります。詳細については各アダプタ固有のAPIドキュメントを参照してください。
 
@@ -389,12 +390,12 @@ TIP: `change_column` (および`change_column_default`) と異なる点は、`ch
 add_foreign_key :articles, :authors
 ```
 
-上によって新たな外部キーが`articles`テーブルの`author_id`カラムに追加されます。このキーは`authors`テーブルの`id`カラムを参照します。欲しいカラム名をテーブル名から類推できない場合は、`:column`オプションと`:primary_key`オプションを使用できます。
+上によって新たな外部キーが`articles`テーブルの`author_id`カラムに追加されます。The key references the `id` column of the `authors` table. 欲しいカラム名をテーブル名から類推できない場合は、`:column`オプションと`:primary_key`オプションを使用できます。
 
 Railsでは、すべての外部キーは`fk_rails_`という名前で始まり、その後ろに10文字のランダムな文字列が続きます。
 必要であれば、`:name`オプションを指定することで別の名前を使用できます。
 
-NOTE: Active Recordでは単一カラムの外部キーのみがサポートされています。複合外部キーを使用する場合は`execute`と`structure.sql`が必要です。
+メモ: Active Recordでは単一カラムの外部キーのみがサポートされています。 only supports single column foreign keys. `execute` and `structure.sql` are required to use composite foreign keys.
 
 外部キーの削除も以下のように簡単に行えます。
 
@@ -432,8 +433,8 @@ Product.connection.execute('UPDATE `products` SET `price`=`free` WHERE 1')
 * `add_foreign_key`
 * `create_table`
 * `create_join_table`
-* `drop_table` (must supply a block)
-* `drop_join_table` (must supply a block)
+* `drop_table` (ブロックを渡す必要あり)
+* `drop_join_table` (ブロックを渡す必要あり)
 * `remove_timestamps`
 * `rename_column`
 * `rename_index`
@@ -446,7 +447,7 @@ Product.connection.execute('UPDATE `products` SET `price`=`free` WHERE 1')
 
 ### `reversible`を使用する
 
-マイグレーションが複雑になると、Active Recordがマイグレーションを逆転できないことがあります。`reversible`メソッドを使用することで、マイグレーションを通常どおり実行する場合と逆転する場合の動作を指定できます。たとえば次のようになります。
+マイグレーションが複雑になると、Active Recordがマイグレーションを逆転できないことがあります。`reversible`メソッドを使用することで、マイグレーションを通常どおり実行する場合と逆転する場合の動作を指定できます。以下に例を示します。
 
 ```ruby
 class ExampleMigration < ActiveRecord::Migration
@@ -494,7 +495,7 @@ class ExampleMigration < ActiveRecord::Migration
       t.string :zipcode
     end
 
-        # CHECK制約を追加
+    # CHECK制約を追加
     execute <<-SQL
       ALTER TABLE distributors
         ADD CONSTRAINT zipchk
@@ -541,28 +542,28 @@ end
 
 `revert`はブロックを受け取ることもできます。ブロックには逆転のための命令群が含まれます。
 これは、以前のマイグレーションの一部のみを逆転したい場合に便利です。
-たとえば、`ExampleMigration`がコミット済みになっており、後になって郵便番号を検証するには`CHECK`制約よりもActive Record検証を使う方がよいことに気付いたとしましょう。
+たとえば、`ExampleMigration`がコミット済みになっており、後になって郵便番号を検証するには`CHECK`制約よりもActive Recordのバリデーションを使う方がよいことに気付いたとしましょう。
 
 ```ruby
 class DontUseConstraintForZipcodeValidationMigration < ActiveRecord::Migration
   def change
     revert do
-      # copy-pasted code from ExampleMigration
+      # ExampleMigrationのコードをコピー＆ペースト
       reversible do |dir|
         dir.up do
           # CHECK制約を追加
           execute <<-SQL
             ALTER TABLE distributors
-              ADD CONSTRAINT zipchk
+              ADD CONSTRAINT zipchk 
                 CHECK (char_length(zipcode) = 5);
           SQL
-        end
+　　end
         dir.down do
           execute <<-SQL
             ALTER TABLE distributors
               DROP CONSTRAINT zipchk
           SQL
-        end
+　　end
       end
 
       # 以後のマイグレーションはOK
@@ -571,7 +572,7 @@ class DontUseConstraintForZipcodeValidationMigration < ActiveRecord::Migration
 end
 ```
 
-`revert`を使用せずに同様のマイグレーションを自作することもできますが、その分余計な手間がかかります (`create_table`と`reversible`の順序を逆にし、`create_table`を`drop_table`に置き換え、最後に`up`と`down`を入れ替える)。
+`revert`を使用せずに同様のマイグレーションを自作することもできますが、その分余計な手間がかかります (`create_table`と`reversible`の順序を逆にし、`create_table`を`drop_table`に置き換え、最後に`up`と`down`を入れ替えます)。
 `revert`はこれらを一手に引き受けてくれます。
 
 マイグレーションを実行する
@@ -661,7 +662,7 @@ $ bin/rake db:migrate RAILS_ENV=test
 | メソッド               | 目的
 | -------------------- | -------
 | suppress_messages    | 引数としてブロックを1つ取り、そのブロックによって生成される出力をすべて抑制する。
-| say                  | 引数としてメッセージを1つ受け取り、それをそのまま出力する。2番目の引数として、出力をインデントするかどうかを指定するbooleanを与えられる。
+| say                  | 引数としてメッセージを1つ受け取り、それをそのまま出力する。Takes a message argument and outputs it as is. 2番目の引数として、出力をインデントするかどうかを指定するbooleanを与えられる。
 | say_with_time        | 受け取ったブロックを実行するのにかかった時間を示すテキストを出力する。ブロックが整数を1つ返す場合、影響を受けた行数であるとみなす。
 
 以下のマイグレーションを例に説明します。
@@ -673,7 +674,7 @@ class CreateProducts < ActiveRecord::Migration
     create_table :products do |t|
       t.string :name
       t.text :description
-      t.timestamps
+      t.timestamps null: false
       end
     end
 
@@ -711,7 +712,7 @@ Active Recordから何も出力したくない場合は、`rake db:migrate VERBO
 
 そもそも、既存のマイグレーションを直接変更するのは一般的によい方法とは言えません。既存のマイグレーションを変更すると、自分どころか共同作業者にまで余分な作業を強いることになります。さらに、既存のマイグレーションが本番環境で実行中の場合、ひどい頭痛の種になるでしょう。既存のマイグレーションを直接修正するのではなく、そのためのマイグレーションを新たに作成してそれを実行するのが正しい方法です。これまでコミットされてない (より一般的に言えば、これまでdevelopment環境以外に展開されたことのない) マイグレーションを新たに生成し、それを編集するのが害の少ない方法であると言えます。
 
-`revert`メソッドは、以前のマイグレーション全体またはその一部を取り消すためのマイグレーションを新たに書くときにも便利です (前述の[以前のマイグレーションを逆転する](#以前のマイグレーションを逆転する)を参照)。
+`revert`メソッドは、以前のマイグレーション全体またはその一部を取り消すためのマイグレーションを新たに書くときにも便利です (前述の[以前のマイグレーションを逆転する](#以前のマイグレーションを逆転する)を参照してください)。
 
 スキーマダンプの意義
 ----------------------
@@ -754,7 +755,7 @@ end
 
 このような有用な特性を得られる代りに、1つの代償があります。当然ながら、`db/schema.rb`にはデータベース固有の項目 (トリガーやストアドプロシージャなど) を含めることはできません。マイグレーションにはカスタムSQLを含めることはできますが、スキーマをダンプするときにデータベースからこの構文を再構成することはできないのです。データベース固有の機能を使用するのであれば、スキーマのフォーマットを`:sql`にする必要があります。
 
-この場合、Active Recordのスキーマダンプを使用する代りに、データベース固有のツールを使用してデータベースの構造を`db/structure.sql`にダンプします (`db:structure:dump` Rakeタスクを使用)。たとえばPostgreSQLの場合は`pg_dump`ユーティリティが使用されます。MySQLの場合は、多くのテーブルにおいて`SHOW CREATE TABLE`の出力結果がファイルに含まれます。
+この場合、Active Recordのスキーマダンプを使用する代りに、データベース固有のツールを使用してデータベースの構造を`db/structure.sql`にダンプします (`db:structure:dump` Rakeタスクを使用します)。たとえばPostgreSQLの場合は`pg_dump`ユーティリティが使用されます。MySQLの場合は、多くのテーブルにおいて`SHOW CREATE TABLE`の出力結果がファイルに含まれます。
 
 これらのスキーマの読み込みは、そこに含まれるSQL文を実行するだけの非常にシンプルなものです。定義上、これによってデータベース構造の完全なコピーが作成されます。その代わり、`:sql`スキーマフォーマットを使用した場合は、そのスキーマを作成したRDBMS以外では読み込めないという制限が生じます。
 
