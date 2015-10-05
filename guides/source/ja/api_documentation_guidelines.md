@@ -1,4 +1,3 @@
-﻿
 API ドキュメント作成ガイドライン
 ============================
 
@@ -41,13 +40,13 @@ def attr_internal_reader(*attrs)
 end
 ```
 
-読者に現時点の最新の方法が伝わるように書くこと、それも明示的かつ暗黙に。先進的な分野で推奨されている慣用表現を使用すること。推奨される方法が強調されるようセクションの順序に注意し、必要であれば順序を入れ替えること。作成するドキュメント自身がRailsのベストプラクティスのよいモデルとなるように、そしてRailsの最新かつ模範的な使用法になるように書くこと。
+読者に現時点の最新の方法が伝わるように書くこと、それも明示的かつ暗黙に。[REVIEW]先進的な分野で推奨されている慣用表現を使用すること。推奨される方法が強調されるようセクションの順序に注意し、必要であれば順序を入れ替えること。作成するドキュメント自身がRailsのベストプラクティスのよいモデルとなるように、そしてRailsの最新かつ模範的な使用法になるように書くこと。
 
 ドキュメントは簡潔であり、かつ全体を理解できるものであること。例外的なケースについても調査し、ドキュメントに盛り込むこと。あるモジュールが無名であったらどうなるか。あるコレクションの内容が空であったらどうなるか。引数がnilであったらどうなるか。
 
-Railsのコンポーネント名は語の間にスペースを1つ置く表記を正式なものとする (例: "Active Support")。なお、`ActiveRecord`はRubyモジュール名だが、Active RecordはORMを指す。Railsドキュメント内でコンポーネントを指す場合には常に正式名称を使用すること。ブログ投稿やプレゼンテーションなどでもこの点に留意し、異なる名称で読者などを驚かせないようにすること。
+Railsのコンポーネント名は語の間にスペースを1つ置く表記を正式なものとする (例: "Active Support")なお、`ActiveRecord`はRubyモジュール名だが、Active RecordはORMを指す。[REVIEW]Railsドキュメント内でコンポーネントを指す場合には常に正式名称を使用すること。ブログ投稿やプレゼンテーションなどでもこの点に留意し、異なる名称で読者などを驚かせないようにすること。
 
-正しいスペルを使用すること (Arel、Test::Unit、RSpec、HTML、 MySQL、JavaScript、ERBなど)。大文字小文字にも注意すること。疑わしい場合には公式ドキュメントなど、信頼できる情報源を参照すること。
+正しいスペルを使用すること。Spell names correctly: Arel, Test::Unit, RSpec, HTML, MySQL, JavaScript, ERB. When in doubt, please have a look at some authoritative source like their official documentation.
 
 "SQL" という語の前には冠詞 "an" を付けること (例: "an SQL statement")。同様に、"an SQLite database"のようにすること。
 
@@ -71,7 +70,7 @@ If `return` is needed it is recommended to explicitly define a method.
 * hisまたはhers -> theirsに置き換える
 * himselfまたはherself -> themselvesに置き換える
 
-英語
+English
 -------
 
 アメリカ英語を使用すること ( *color* 、 *center* 、 *modularize* など)。詳細は[アメリカ英語とイギリス英語のスペルの違い](http://en.wikipedia.org/wiki/American_and_British_English_spelling_differences) (英語) を参照してください。
@@ -81,7 +80,7 @@ If `return` is needed it is recommended to explicitly define a method.
 
 意味のあるサンプルコードを選ぶこと。概要と基本を端的に示し、かつ興味深い点や落とし穴も示されているのが理想です。
 
-サンプルコードのインデントにはスペース2文字を使用すること。マークアップ用には左マージンに合わせてスペース2文字を使用します。サンプルコードの例は[Railsコーディングルールに従う](contributing_to_ruby_on_rails.html#rails%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%AB%E3%81%AB%E5%BE%93%E3%81%86)を参照してください。
+[REVIEW]サンプルコードのインデントにはスペース2文字を使用すること。マークアップ用には左マージンに合わせてスペース2文字を使用します。サンプルコードの例は[Railsコーディングルールに従う](contributing_to_ruby_on_rails.html#rails%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%AB%E3%81%AB%E5%BE%93%E3%81%86)を参照してください。
 
 短いドキュメントでは、スニペットを紹介する際に"Examples"と明示的にラベルを付ける必要はない。単にパラグラフに従うようにします。
 
@@ -108,10 +107,10 @@ If `return` is needed it is recommended to explicitly define a method.
 ```ruby
 # For checking if a fixnum is even or odd.
 #
-#   1.even? # => false
-#   1.odd?  # => true
-#   2.even? # => true
-#   2.odd?  # => false
+#   1.even?  # => false
+#   1.odd?   # => true
+#   2.even?  # => true
+#   2.odd?   # => false
 ```
 
 1つの行が長くなりすぎる場合はコメントを次の行に置いてもよい
@@ -138,13 +137,13 @@ If `return` is needed it is recommended to explicitly define a method.
 論理値
 --------
 
-述語やフラグでの論理値の表記は、正確な値表現よりも、論理値の意味を優先すること。
+述語やフラグでの論理値の表記は、正確な値表現よりも、論理値の意味を優先すること。In predicates and flags prefer documenting boolean semantics over exact values.
 
 "true"および"false"をRubyの定義どおりに使用する場合は、通常のフォントで表記すること。シングルトンの`true`および`false`は等幅フォントで表記すること(訳注: シングルトンの`true`および`false`とは、`TrueClass`および`FalseClass`の唯一のインスタンスのことです)。"truthy"のような用語は避けてください。Rubyでは言語レベルでtrueとfalseが定義されているので、これらの用語は技術的に厳密な意味が与えられており、言い方を変える必要はありません。
 
-経験から申し上げると、どうしても必要な場合を除いて、ドキュメントでシングルトンを使用すべきではありません。シングルトンを避けることで、`!!`や三項演算子のような人工的な表現を避けることができ、リファクタリングもしやすくなります。さらに、実装で呼び出されるメソッドが返す値の表現が少しでも違うとコードが正常に動作しないという事態も避けられます。
+経験から申し上げると、どうしても必要な場合を除いて、ドキュメントではシングルトンを使用すべきではありません。シングルトンを避けることで、`!!`や三項演算子のような人工的な表現を避けることができ、リファクタリングもしやすくなります。さらに、実装で呼び出されるメソッドが返す値の表現が少しでも違うとコードが正常に動作しないという事態も避けられます。
 
-以下の例で説明します。
+以下に例を示します。
 
 ```markdown
 `config.action_mailer.perform_deliveries` specifies whether mail will actually be delivered and is true by default (訳: `config.action_mailer.perform_deliveries`は、メールを実際に配信するかどうかを指定します。デフォルト値はtrueです。)
@@ -185,7 +184,7 @@ routes.rb                   # NO
 RAILS_ROOT/config/routes.rb # NO
 ```
 
-フォント
+Fonts
 -----
 
 ### 等幅フォント
@@ -209,7 +208,7 @@ class Array
 end
 ```
 
-WARNING: 等幅フォントを`+...+`というマークアップで表記できるのは、通常のメソッド名、シンボル、パス (通常のスラッシュを使用しているもの) のようなシンプルなものに限られます。これらよりも複雑なものを表記するときには必ず`<tt>...</tt>`でマークアップしてください。特に名前空間を使用しているクラス名やモジュール名では必須です (`<tt>ActiveRecord::Base</tt>`など)。
+警告: 等幅フォントを`+...+`というマークアップで表記するのは、通常のメソッド名、シンボル、パス (通常のスラッシュ) をfor fixed-width font only works with simple content like ordinary method names, symbols, paths (with forward slashes), etc. Please use `<tt>...</tt>` for everything else, notably class or module names with a namespace as in `<tt>ActiveRecord::Base</tt>`.
 
 以下のコマンドで、RDocの出力を手軽に確認できます。
 
@@ -233,7 +232,7 @@ Rubyのキーワードでない、英語としての"true"と"false"にはregula
 # Validations with no <tt>:on</tt> option will run no
 # matter the context. Validations with # some <tt>:on</tt>
 # option will only run in the specified context.
-def valid?(context = nil)
+def valid?(context = nil) 
   ...
 end
 ```
@@ -247,7 +246,7 @@ end
 # * <tt>:allow_nil</tt> - Skip validation if attribute is +nil+.
 ```
 
-説明文は通常の英語として大文字で始め、ピリオドで終わること。
+説明文は通常の英語として大文字で始め、ピリオドで終わること。The description starts in upper case and ends with a full stop-it's standard English.
 
 動的に生成されるメソッド
 -----------------------------
@@ -274,7 +273,7 @@ end
 # def self.find_by_login_and_activated(*args)
 #   options = args.extract_options!
 #   ...
-  # end
+# end
 self.class_eval %{
   def self.#{method_id}(*args)
     options = args.extract_options!
@@ -288,7 +287,7 @@ self.class_eval %{
 
 Railsのドキュメントを作成するにあたり、ユーザー向けのパブリックなAPIと内部APIの違いを理解しておくことが重要です。
 
-多くのライブラリと同様、Railsでも内部APIの定義にprivateキーワードが使用されます。しかし、パブリックなAPIのルールは若干異なります。Railsでは、すべてのpublicなメソッドがユーザーに公開されて使用されるということを前提にしていません。代りに、そのメソッドが内部APIであることを示すために`:nodoc:`ディレクティブを使用します。
+多くのライブラリと同様、RailsもRails, like most libraries, uses the private keyword from Ruby for defining internal API. However, public API follows a slightly different convention. Railsでは、すべてのpublicなメソッドがユーザーに公開されて使用されるということを前提にしていません。代りに、そのメソッドが内部APIであることを示すために`:nodoc:`ディレクティブを使用します。
 
 つまり、Railsでは可視性が`public`のメソッドであっても、ユーザーに公開されているとは限らないのです。
 
