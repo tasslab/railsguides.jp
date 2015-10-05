@@ -1,4 +1,3 @@
-﻿
 Rails の初期化プロセス
 ================================
 
@@ -72,10 +71,10 @@ require 'rails/commands'
 # Set up gems listed in the Gemfile.
 ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
 
-require 'bundler/setup' if File.exist?(ENV['BUNDLE_GEMFILE'])
+require 'bundler/setup' if File.exist?(ENV['BUNDLE_GEMFILE']) 
 ```
 
-標準的なRailsアプリケーションにはGemfileというファイルがあり、アプリケーション内のすべての依存関係がそのファイル内で宣言されています。`config/boot.rb`はGemfileの位置を`ENV['BUNDLE_GEMFILE']`に設定します。Gemfileが存在する場合、`bundler/setup`をrequireします。このrequireは、Gemfileの依存ファイルが置かれている読み込みパスをBundlerで設定する際に使用されます。
+標準的なRailsアプリケーションにはGemfileというファイルがあり、In a standard Rails application, there's a `Gemfile` which declares all dependencies of the application. `config/boot.rb` sets `ENV['BUNDLE_GEMFILE']` to the location of this file. Gemfileが存在する場合、`bundler/setup`をrequireします。このrequireは、Gemfileの依存ファイルが置かれている読み込みパスをBundlerで設定する際に使用されます。
 
 標準的なRailsアプリケーションは多くのgemに依存しますが、特に以下のgemに依存しています。
 
@@ -98,7 +97,7 @@ require 'bundler/setup' if File.exist?(ENV['BUNDLE_GEMFILE'])
 * rack-test
 * rails
 * railties
-rake
+* rake
 * sqlite3
 * thor
 * tzinfo
@@ -136,7 +135,7 @@ TIP: 実際にやってみるとわかるとおり、空のARGVリストが渡�
 `run_command`は、間違ったRailsコマンドが入力された時にエラーメッセージを表示する役割も担います。正しいコマンドの場合は同じ名前のメソッドが呼び出されます。
 
 ```ruby
-COMMAND_WHITELIST = %(plugin generate destroy console server dbconsole application runner new version help)
+COMMAND_WHITELIST = %w(plugin generate destroy console server dbconsole application runner new version help)
 
 def run_command!(command)
   command = parse_command(command)
@@ -202,7 +201,7 @@ def initialize(*)
 end
 ```
 
-最初に`super`が呼び出され、そこから`Rack::Server`の`initialize`メソッドを呼び出します。
+[REVIEW]最初に`super`が呼び出され、そこから`Rack::Server`の`initialize`メソッドを呼び出します。
 
 ### Rack: `lib/rack/server.rb`
 
@@ -462,7 +461,7 @@ require File.expand_path('../application', __FILE__)
 require File.expand_path('../boot', __FILE__)
 ```
 
-それまでにboot.rbがrequireされていなかった場合に限り、`rails server`の場合にはboot.rbがrequireされます。ただしPassengerを使用する場合にはboot.rbがrequire**されません**。
+[REVIEW]それまでにboot.rbがrequireされていなかった場合に限り、`rails server`の場合にはboot.rbがrequireされます。ただしPassengerを使用する場合にはboot.rbがrequire**されません**。
 
 ここからいよいよ面白くなってきます。
 
@@ -547,7 +546,7 @@ end
 ...
 private
   def build_app_and_options_from_config
-    if !::File.exist?options[:config]
+    if !::File.exist? options[:config]
       abort "configuration #{options[:config]} not found"
     end
 
