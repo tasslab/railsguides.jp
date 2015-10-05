@@ -1,4 +1,3 @@
-﻿
 Rails のコマンドラインツール
 ======================
 
@@ -37,22 +36,22 @@ INFO: まだRailsをインストールしていない場合、`gem install rails
 
 ```bash
 $ rails new commandsapp
-    create
-    create README.rdoc
-    create Rakefile
-    create config.ru
-    create .gitignore
-    create Gemfile
-    create app
-    ...
-    create  tmp/cache
-    ...
-        run bundle install
+　create
+　create  README.rdoc
+　create  Rakefile
+　create  config.ru
+　create  .gitignore
+　create  Gemfile
+　create  app
+　...
+　create  tmp/cache
+　...
+　　run  bundle install
 ```
 
 このような短いコマンドをうつだけで、Railsは非常に多くのものを用意してくれます。たったこれだけで、完璧なRailsのディレクトリ構成と、アプリケーションに必要なコードがすべて手に入りました。
 
-### `rails server`
+### `rails server`コマンド
 
 `rails server`コマンドを実行すると、WEBrickという小規模のwebサーバーが起動します(WEBrickはRubyに標準添付されています)。Webブラウザからアプリケーションにアクセスしたいときは、このコマンドを使用します。
 
@@ -62,7 +61,7 @@ $ rails new commandsapp
 $ cd commandsapp
 $ bin/rails server
 => Booting WEBrick
-=> Rails 4.2.0 application starting in development on http://0.0.0.0:3000
+=> Rails 4.2.0 application starting in development on http://localhost:3000
 => Call with -d to detach
 => Ctrl-C to shutdown server
 [2013-08-07 02:00:01] INFO  WEBrick 1.3.1
@@ -80,7 +79,7 @@ INFO: サーバーを起動する際には`rails s`のように"s"というエ�
 $ bin/rails server -e production -p 4000
 ```
 
-`-b`オプションを使用するとRailsを特定のIPにバインドできます。デフォルトでは0.0.0.0です。`-d`オプションを使用することで、デーモンとしてサーバーを起動することができます。
+The `-b` option binds Rails to the specified IP, by default it is localhost. `-d`オプションを使用することで、デーモンとしてサーバーを起動することができます。
 
 ### `rails generate`
 
@@ -117,10 +116,10 @@ INFO: Railsのすべてのコマンドにはヘルプがついています。多
 $ bin/rails generate controller
 Usage: rails generate controller NAME [action action] [options]
 
-    ...
-    ...
+...
+...
 
-    Description:
+Description:
     ...
 
     To create a controller within a module, specify the controller name as a path like 'parent_module/controller_name'.
@@ -133,40 +132,40 @@ Example:
     Credit card controller with URLs like /credit_cards/debit.
         Controller: app/controllers/credit_cards_controller.rb
         Test:       test/controllers/credit_cards_controller_test.rb
-        Views:      app/views/credit_cards/debit.html.erb [...]
-        Helper:     app/helpers/credit_cards_helper.rb
+        Views:    app/views/credit_cards/debit.html.erb [...]
+        Helper:    app/helpers/credit_cards_helper.rb
 ```
 
 コントローラジェネレータには`generate controller ControllerName action1 action2`という形式でパラメータを渡します。**hello**アクションを実行すると、すてきなメッセージを返してくれる`Greetings`コントローラを作ってみましょう。
 
 ```bash
 $ bin/rails generate controller Greetings hello
-     create  app/controllers/greetings_controller.rb
+　create  app/controllers/greetings_controller.rb
       route  get "greetings/hello"
      invoke    erb 
-     create    app/views/greetings
-     create    app/views/greetings/hello.html.erb
+　create  app/views/greetings
+　create  app/views/greetings/hello.html.erb
      invoke  test_unit
-     create    test/controllers/greetings_controller_test.rb
+　create    test/controllers/greetings_controller_test.rb
      invoke  helper
-     create    app/helpers/greetings_helper.rb
+　create  app/helpers/greetings_helper.rb
      invoke  assets
      invoke    coffee
-     create      app/assets/javascripts/greetings.js.coffee
+　create  app/assets/javascripts/greetings.js.coffee
      invoke    scss
-     create      app/assets/stylesheets/greetings.css.scss
+　create  app/assets/stylesheets/greetings.css.scss
 ```
 
 どのようなものが作成されたのでしょう？いくつかのディレクトリがアプリケーションに存在することを確認し、コントローラファイル、ビューファイル、機能テストのファイル、ビューのヘルパー、JavaScriptファイルそしてスタイルシートファイルを作成しました。
 
 コントローラ(`app/controllers/greetings_controller.rb`)を確認し、少し編集してみましょう。
 
-  ```ruby
+```ruby
 class GreetingsController < ApplicationController
   def hello
     @message = "Hello, how are you today?"
-  end 
-end 
+  end
+end
 ```
 
 メッセージを表示するためにビュー(`app/views/greetings/hello.html.erb`)を編集します。
@@ -225,24 +224,24 @@ $ bin/rails generate scaffold HighScore game:string score:integer
     invoke  scaffold_controller
     create    app/controllers/high_scores_controller.rb
     invoke    erb 
-    create      app/views/high_scores
-    create      app/views/high_scores/index.html.erb
-    create      app/views/high_scores/edit.html.erb
-    create      app/views/high_scores/show.html.erb
-    create      app/views/high_scores/new.html.erb
-    create      app/views/high_scores/_form.html.erb
+    create    app/views/high_scores
+    create    app/views/high_scores/index.html.erb
+    create    app/views/high_scores/edit.html.erb
+    create    app/views/high_scores/show.html.erb
+    create    app/views/high_scores/new.html.erb
+    create    app/views/high_scores/_form.html.erb
     invoke  test_unit
     create      test/controllers/high_scores_controller_test.rb
     invoke  helper
-    create      app/helpers/high_scores_helper.rb
+    create    app/helpers/high_scores_helper.rb
     invoke    jbuilder
-    create      app/views/high_scores/index.json.jbuilder
-    create      app/views/high_scores/show.json.jbuilder
+    create    app/views/high_scores/index.json.jbuilder
+    create    app/views/high_scores/show.json.jbuilder
     invoke  assets
     invoke    coffee
-    create      app/assets/javascripts/high_scores.js.coffee
+    create    app/assets/javascripts/high_scores.js.coffee
     invoke    scss
-    create      app/assets/stylesheets/high_scores.css.scss
+    create    app/assets/stylesheets/high_scores.css.scss
     invoke    scss
    identical    app/assets/stylesheets/scaffolds.css.scss
 ```
@@ -346,11 +345,11 @@ INFO: `rails d`のように、"d"というエイリアスを使ってdestroyコ�
 ```bash
 $ bin/rails generate model Oops
       invoke  active_record
-      create    db/migrate/20120528062523_create_oops.rb
-      create    app/models/oops.rb
+　create    db/migrate/20120528062523_create_oops.rb
+　create  app/models/oops.rb
       invoke  test_unit
-      create      test/models/oops_test.rb
-      create      test/fixtures/oops.yml
+　create      test/models/oops_test.rb
+　create      test/fixtures/oops.yml
 ```
 ```bash
 $ bin/rails destroy model Oops
@@ -369,8 +368,7 @@ RakeはRuby版のMakeです。Unixの 'make' に代わるような独立したRu
 
 `rake --tasks`とタイプすると、実行可能なRakeタスクの一覧が表示されます。カレントディレクトリによって、表示される内容が変化します。各タスクには説明がついているので、必要なタスクを見つけるのに役立つはずです。
 
-```--trace```を使うことで、タスクを実行する際のバックトレースをすべて表示することができます (訳注: バックトレースには、依存するタスクの呼び出しと実行順序が表示されます)。
-例えば ```rake db:create --trace``` のようにしてタスクを実行します。
+```--trace```を使うことで、タスクを実行する際のバックトレースをすべて表示することができます (訳注: バックトレースには、依存するタスクの呼び出しと実行順序が表示されます)。 例えば ```rake db:create --trace``` のようにしてタスクを実行します。
 
 ```bash
 $ bin/rake --tasks
@@ -395,17 +393,12 @@ INFO: ```rake -T```でもタスクの一覧を表示することができます�
 ```bash
 $ bin/rake about
 About your application's environment
+Rails version             4.2.0
 Ruby version              1.9.3 (x86_64-linux)
 RubyGems version          1.3.6
 Rack version              1.3
-Rails version             4.2.0
 JavaScript Runtime        Node.js (V8)
-Active Record version     4.2.0
-Action Pack version       4.2.0
-Action View version       4.2.0
-Action Mailer version     4.2.0
-Active Support version    4.2.0
-Middleware                Rack::Sendfile, ActionDispatch::Static, Rack::Lock, #<ActiveSupport::Cache::Strategy::LocalCache::Middleware:0x007ffd131a7c88>, Rack::Runtime, Rack::MethodOverride, ActionDispatch::RequestId, Rails::Rack::Logger, ActionDispatch::ShowExceptions, ActionDispatch::DebugExceptions, ActionDispatch::RemoteIp, ActionDispatch::Reloader, ActionDispatch::Callbacks, ActiveRecord::Migration::CheckPending, ActiveRecord::ConnectionAdapters::ConnectionManagement, ActiveRecord::QueryCache, ActionDispatch::Cookies, ActionDispatch::Session::CookieStore, ActionDispatch::Flash, ActionDispatch::ParamsParser, Rack::Head, Rack::ConditionalGet, Rack::ETag
+Middleware                Rack::Sendfile, ActionDispatch::Static, Rack::Lock, #<ActiveSupport::Cache::Strategy::LocalCache::Middleware:0x007ffd131a7c88>, Rack::Runtime, Rack::MethodOverride, ActionDispatch::RequestId, Rails::Rack::Logger, ActionDispatch::Show例外, ActionDispatch::Debug例外, ActionDispatch::RemoteIp, ActionDispatch::Reloader, ActionDispatch::Callbacks, ActiveRecord::Migration::CheckPending, ActiveRecord::ConnectionAdapters::ConnectionManagement, ActiveRecord::QueryCache, ActionDispatch::Cookies, ActionDispatch::セッション::CookieStore, ActionDispatch::Flash, ActionDispatch::ParamsParser, Rack::Head, Rack::ConditionalGet, Rack::ETag
 Application root          /home/foobar/commandsapp
 Environment               development
 Database adapter          sqlite3
@@ -450,7 +443,7 @@ app/models/school.rb:
 
 検索するファイルの拡張子を追加するには、`config.annotations.register_extensions`オプションを使います。このオプションは拡張子の一覧と、マッチするべき行 を表す正規表現を引数にとります。
 
-  ```ruby
+```ruby
 config.annotations.register_extensions("scss", "sass", "less") { |annotation| /\/\/\s*(#{annotation}):?\s*(.*)$/ }
 ```
 
@@ -501,7 +494,7 @@ RailsにはMinitestと呼ばれるテストスイートが付属しています�
 
 ### `tmp`
 
-`Rails.root/tmp`ディレクトリは、(*nix系でいう/tmpディレクトリのような) 一時ファイルを保存するためのディレクトリです。一時ファイルには、(ファイルを利用してセッションの管理を行っている場合) セッションのためのファイルやプロセスIDのファイル、アクションキャッシュのためのファイルなどがあります (訳注: 最近のRailsではセッションをファイルで管理することは稀です)。
+The `Rails.root/tmp` directory is, like the *nix /tmp directory, the holding place for temporary files like sessions (if you're using a file store for sessions), process id files, and cached actions.
 
 `tmp:`という名前空間には、`Rails.root/tmp`ディレクトリを作成、削除するためのタスクが入っています。
 
@@ -523,31 +516,31 @@ RailsにはMinitestと呼ばれるテストスイートが付属しています�
 `Rails.root/lib/tasks`配下に保存します。また、独自のタスクを作成することができる
 `bin/rails generate task`というコマンドもあります。
 
-  ```ruby
+```ruby
 desc "I am short, but comprehensive description for my cool task"
 task task_name: [:prerequisite_task, :another_task_we_depend_on] do
   # All your magic here
   # Any valid Ruby code is allowed
-end 
+end
 ```
 
 タスクに引数を渡すには以下のようにします。
 
-  ```ruby
+```ruby
 task :task_name, [:arg_1] => [:pre_1, :pre_2] do |t, args|
   # You can use args from here
-end 
+end
 ```
 
 名前空間内でタスクを定義することで、タスクをグルーピングできます。
 
-  ```ruby
-namespace :db do 
+```ruby
+namespace :db do
   desc "This task does nothing"
   task :nothing do
     # Seriously, nothing
-  end 
-end 
+  end
+end
 ```
 
 そして、以下のようにしてタスクを呼び出します。
@@ -574,26 +567,26 @@ Railsの高度なコマンドライン
 ```bash
 $ mkdir gitapp
 $ cd gitapp
-$ git init 
+$ git init
 Initialized empty Git repository in .git/
 $ rails new . --git --database=postgresql
       exists
-      create  app/controllers
-      create  app/helpers
-      ...
-      ...
-      create  tmp/cache
-      create  tmp/pids
-      create Rakefile
-      add 'Rakefile'
-      create README.rdoc
-      add 'README.rdoc'
-      create app/controllers/application_controller.rb
-      add 'app/controllers/application_controller.rb'
-      create app/helpers/application_helper.rb
-      ...
-      create  log/test.log
-      add 'log/test.log'
+　create  app/controllers
+　create  app/helpers
+...
+...
+　create  tmp/cache
+　create  tmp/pids
+[W6]create  Rakefile
+[W6]add 'Rakefile'
+[W6]create  README.rdoc
+[W6]add 'README.rdoc'
+[W6]create  app/controllers/application_controller.rb
+[W6]add 'app/controllers/application_controller.rb'
+[W6]create  app/helpers/application_helper.rb
+...
+　create  log/test.log
+[W6]add 'log/test.log'
 ```
 
 Railsがgitのリポジトリ内にファイルを作成する前に、**gitapp**ディレクトリを作成し、空のgitリポジトリを初期化する必要があります。Railsがどのようなデータベースの設定ファイルを作ったか見てみましょう。
