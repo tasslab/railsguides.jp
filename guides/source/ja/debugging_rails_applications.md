@@ -1,6 +1,3 @@
-﻿
-
-
 Rails アプリケーションのデバッグ
 ============================
 
@@ -179,19 +176,19 @@ end
 
 上のコントローラのアクションを実行すると、以下のようなログが生成されます。
 
-``` 
+```
 Processing ArticlesController#create (for 127.0.0.1 at 2008-09-08 11:52:54) [POST]
   Session ID: BAh7BzoMY3NyZl9pZCIlMDY5MWU1M2I1ZDRjODBlMzkyMWI1OTg2NWQyNzViZjYiCmZsYXNoSUM6J0FjdGl
 vbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7AAY6CkB1c2VkewA=--b18cd92fba90eacf8137e5f6b3b06c4d724596a4
   Parameters: {"commit"=>"Create", "article"=>{"title"=>"Debugging Rails",
-"body"=>"I'm learning how to print in logs!!!", "published"=>"0"},
-"authenticity_token"=>"2059c1286e93402e389127b1153204e0d1e275dd", "action"=>"create", "controller"=>"articles"}
+ "body"=>"I'm learning how to print in logs!!!", "published"=>"0"},
+ "authenticity_token"=>"2059c1286e93402e389127b1153204e0d1e275dd", "action"=>"create", "controller"=>"articles"}
 新しい記事: {"updated_at"=>nil, "title"=>"Debugging Rails", "body"=>"I'm learning how to print in logs!!!",
-"published"=>false, "created_at"=>nil}
+ "published"=>false, "created_at"=>nil}
 記事が正しいかどうか: true
   Article Create (0.000443)   INSERT INTO "articles" ("updated_at", "title", "body", "published",
-"created_at") VALUES('2008-09-08 14:52:54', 'Debugging Rails',
-'I''m learning how to print in logs!!!', 'f', '2008-09-08 14:52:54')
+ "created_at") VALUES('2008-09-08 14:52:54', 'Debugging Rails',
+ 'I''m learning how to print in logs!!!', 'f', '2008-09-08 14:52:54')
 記事は正常に保存され、ユーザーをリダイレクト中...
 Redirected to # Article:0x20af760>
 Completed in 0.01224 (81 reqs/sec) | DB: 0.00044 (3%) | 302 Found [http://localhost/articles]
@@ -248,23 +245,23 @@ $ gem install byebug
 
 後はRailsアプリケーション内で`byebug`メソッドを呼び出せばいつでもデバッガーを起動できます。
 
-以下に例を示します。
+例: 
 
 ```ruby
 class PeopleController < ApplicationController
   def new
     byebug
-    @person = Person.new
+　@person = Person.new
   end
 end
-``` 
+```
 
 ### シェル
 
 アプリケーションで`byebug`を呼び出すと、アプリケーションサーバーを実行しているターミナルウィンドウ内のデバッガーシェルで即座にデバッガーが起動し、`(byebug)`というプロンプトが表示されます。
 実行しようとしている行の前後のコードがプロンプトの前に表示され、'=>'で現在の行が示されます。以下に例を示します。
 
-``` 
+```
 [1, 10] in /PathTo/project/app/controllers/articles_controller.rb
     3:
     4:   # GET /articles
@@ -286,9 +283,9 @@ end
 
 ```bash
 => Booting WEBrick
-=> Rails 5.0.0 application starting in development on http://0.0.0.0:3000
+=> Rails 4.2.0 application starting in development on http://0.0.0.0:3000
 => Run `rails server -h` for more startup options
-=> Notice: server is listening on all interfaces (0.0.0.0). Consider using 127.0.0.1 (--binding option)
+=> Notice: server is listening on all interfaces (0.0.0.0). Consider using 127.0.0.1 (--binding option) 
 => Ctrl-C to shutdown server
 [2014-04-11 13:11:47] INFO  WEBrick 1.3.1
 [2014-04-11 13:11:47] INFO  ruby 2.1.1 (2014-02-24) [i686-linux]
@@ -316,7 +313,7 @@ Processing by ArticlesController#index as HTML
 
 それではアプリケーションの奥深くにダイブしてみましょう。まずはデバッガーのヘルプを表示してみるのがよいでしょう。`help`と入力します。
 
-``` 
+```
 (byebug) help
 
 byebug 2.7.0
@@ -331,7 +328,7 @@ condition  down     finish  irb        p       quit      show     trace
 continue   edit     frame   kill       pp      reload    skip     undisplay
 ```
 
-TIP: 個別のコマンドのヘルプを表示するには、デバッガーのプロンプトで`help <コマンド名>`と入力します。（例: _`help list`_）デバッグ用コマンドは、他のコマンドと区別できる程度に短縮できます。たとえば`list`コマンドの代わりに`l`と入力することもできます。
+TIP: 個別のコマンドのヘルプを表示するには、デバッガーのプロンプトd`help <コマンド名>`と入力します。（例: _`help list`_）デバッグ用コマンドは、他のコマンドと区別できる程度に短縮できます。たとえば`list`コマンドの代わりに`l`と入力することもできます。
 
 前の10行を表示するには、`list-` (または `l-`) と入力します。
 
@@ -385,11 +382,11 @@ TIP: 個別のコマンドのヘルプを表示するには、デバッガーの
 --> #0  ArticlesController.index
       at /PathTo/project/test_app/app/controllers/articles_controller.rb:8
     #1  ActionController::ImplicitRender.send_action(method#String, *args#Array)
-      at /PathToGems/actionpack-5.0.0/lib/action_controller/metal/implicit_render.rb:4
+      at /PathToGems/actionpack-4.2.0/lib/action_controller/metal/implicit_render.rb:4
     #2  AbstractController::Base.process_action(action#NilClass, *args#Array)
-      at /PathToGems/actionpack-5.0.0/lib/abstract_controller/base.rb:189
+      at /PathToGems/actionpack-4.2.0/lib/abstract_controller/base.rb:189
     #3  ActionController::Rendering.process_action(action#NilClass, *args#NilClass)
-      at /PathToGems/actionpack-5.0.0/lib/action_controller/metal/rendering.rb:10
+      at /PathToGems/actionpack-4.2.0/lib/action_controller/metal/rendering.rb:10
 ...
 ```
 
@@ -398,7 +395,7 @@ TIP: 個別のコマンドのヘルプを表示するには、デバッガーの
 ```
 (byebug) frame 2
 
-[184, 193] in /PathToGems/actionpack-5.0.0/lib/abstract_controller/base.rb
+[184, 193] in /PathToGems/actionpack-4.2.0/lib/abstract_controller/base.rb
    184:       # is the intended way to override action dispatching.
    185:       #
    186:       # Notice that the first argument is the method to be dispatched
@@ -424,7 +421,7 @@ TIP: 個別のコマンドのヘルプを表示するには、デバッガーの
 * `thread`は現在のスレッドを表示します。
 * `thread list`はすべてのスレッドのリストをステータス付きで表示します。現在実行中のスレッドは「+」記号と数字で示されます。
 * `thread stop `_n_ はスレッド _n_ を停止します。
-* `thread resume `_n_ はスレッド _n_ を再開します。
+* `thread resume `_n_ はスレッド _n_ をさいかいします
 * `thread switch `_n_ は現在のスレッドコンテキストを _n_ に切り替えます。
 
 このコマンドは他の場合にも非常に便利です。同時実行スレッドのデバッグ中に、競合状態が発生していないかどうかを確認する必要がある場合にも使えます。
@@ -485,7 +482,7 @@ TIP: `irb`コマンドを使用することで、**irb**モードで実行でき
 これにより、呼び出し中のコンテキスト内でirbセッションが開始されます。ただし、この機能はまだ実験中の段階です。
 
 変数と値のリストを表示するのに便利なのは何と言っても`var`メソッドでしょう。
-`byebug`でこのメソッドを使ってみましょう。
+Let's let `byebug` to help us with it.
 
 ```
 (byebug) help var
@@ -585,7 +582,7 @@ Processing by ArticlesController#index as HTML
 ```
 (byebug) step
 
-[50, 59] in /PathToGems/activesupport-5.0.0/lib/active_support/core_ext/numeric/time.rb
+[50, 59] in /PathToGems/activesupport-4.2.0/lib/active_support/core_ext/numeric/time.rb
    50:     ActiveSupport::Duration.new(self * 24.hours, [[:days, self]])
    51:   end
    52:   alias :day :days
@@ -684,9 +681,10 @@ quitを実行すると、事実上すべてのスレッドを終了しようと�
 
 `byebug`の振る舞いを変更するためのオプションがいくつかあります。
 
-* `set autoreload`: ソースコードが変更されると再読み込みします (デフォルト: true)。
-* `set autolist`: すべてのブレークポイントで`list`コマンドを実行します (デフォルト: true)。
-* `set listsize _n_`: リスト表示の行数をデフォルトから_n_ に変更します (デフォルト: 10)。
+* `set autoreload`: Reload source code when changed (default: true).
+* `set autolist`: Execute `list` command on every breakpoint (default: true).
+* `set listsize _n_`: Set number of source lines to list by default to _n_
+(default: 10)
 * `set forcestep`: `next`や`step`コマンドを実行すると常に新しい行に移動するようにします。
 
 すべてのオプションを表示するには`help set`を実行します。特定の`set`コマンドを調べるには`help set `_subcommand_ を実行します。
@@ -698,51 +696,6 @@ TIP: これらの設定は、ホームディレクトリの`.byebugrc`ファイ�
 set forcestep
 set listsize 25
 ```
-
-`web-console` gemを使用するデバッグ
-------------------------------------
-
-Web Consoleは`byebug`と似ていますが、ブラウザ上で動作する点が異なります。開発中のどのページでも、ビューやコントローラのコンテキストでコンソールをリクエストできます。コンソールは、HTMLコンテンツの隣に表示されます。
-
-### Console
-
-`console`メソッドを呼び出すことで、任意のコントローラのアクションやビューでいつでもコンソールを呼び出せます。
-
-たとえば、コントローラで以下のように呼び出せます。
-
-```ruby
-class PostsController < ApplicationController
-  def new
-    console
-    @post = Post.new
-  end
-end
-```
-
-ビューでも以下のように呼び出せます。
-
-```html+erb
-<% console %>
-
-<h2>New Post</h2>
-```
-
-上のコードは、ビューの内部でコンソールを出力します。`console`を呼び出す位置を気にする必要はありません。コンソールは、呼び出し位置にかかわらず、HTMLコンテンツの隣りに出力されます。
-
-コンソールでは純粋なRubyコードを実行できます。ここでカスタムクラスの定義やインスタンス化を行ったり、新しいモデルを作成したり、変数を検査したりすることができます。
-
-NOTE: 一回のリクエストで出力できるコンソールは1つだけです。`console`呼び出しを2回以上行うと`web-console`でエラーが発生します。
-
-### 変数の検査
-
-`instance_variables`を呼び出すと、コンテキストで利用可能なインスタンス変数をすべてリスト表示できます。すべてのローカル変数をリスト表示したい場合は、`local_variables`を使用します。
-
-### 設定
-
-* `config.web_console.whitelisted_ips`: 認証済みの IPv4/IPv6アドレスとネットワークのリストです (デフォルト値: `127.0.0.1/8、::1`).
-* `config.web_console.whiny_requests`: コンソール出力が抑制されている場合にメッセージをログ出力します (デフォルト値: `true`).
-
-`web-console`はサーバー上の純粋なRubyコードをリモート評価できるので、production環境では絶対に使用しないください。
 
 メモリーリークのデバッグ
 ----------------------
@@ -765,7 +718,8 @@ Valgrindのインストール方法とRuby内での使用方法については�
 アプリケーションのエラーを検出し、デバッグするためのRailsプラグインがあります。デバッグ用に便利なプラグインのリストを以下にご紹介します。
 
 * [Footnotes](https://github.com/josevalim/rails-footnotes): すべてのRailsページに脚注を追加し、リクエスト情報を表示したり、TextMateでソースを開くためのリンクを表示したりします。
-* [Query Trace](https://github.com/ruckus/active-record-query-trace/tree/master): ログにクエリ元のトレースを追加します。
+* [Query Trace](https://github.com/ntalbott/query_trace/tree/master) Adds query
+origin tracing to your logs.
 * [Query Reviewer](https://github.com/nesquena/query_reviewer): このRailsプラグインは、開発中のselectクエリの前に"EXPLAIN"を実行します。また、ページごとにDIVセクションを追加して、分析対象のクエリごとの警告の概要をそこに表示します。
 * [Exception Notifier](https://github.com/smartinez87/exception_notification/tree/master): Railsアプリケーションでのエラー発生時用の、メイラーオブジェクトとメール通知送信テンプレートのデフォルトセットを提供します。
 * [Better Errors](https://github.com/charliesome/better_errors): Rails標準のエラーページを新しい表示に置き換えて、ソースコードや変数検査などのコンテキスト情報を見やすくしてくれます。
@@ -778,7 +732,6 @@ db時間、レンダリング時間、トータル時間、パラメータリス
 * [ruby-debugホームページ](http://bashdb.sourceforge.net/ruby-debug/home-page.html)(英語)
 * [debuggerホームページ](https://github.com/cldwalker/debugger)(英語)
 * [byebugホームページ](https://github.com/deivid-rodriguez/byebug)(英語)
-* [web-consoleホームページ](https://github.com/rails/web-console)(英語)
 * [記事: ruby-debugでRailsアプリケーションをデバッグする](http://www.sitepoint.com/debug-rails-app-ruby-debug/)(英語)
 * [Ryan Batesのスクリーンキャスト: Rubyデバッグ(改訂版)](http://railscasts.com/episodes/54-debugging-ruby-revised)(英語)
 * [Ryan Batesのスクリーンキャスト: スタックトレース](http://railscasts.com/episodes/24-the-stack-trace)(英語)
