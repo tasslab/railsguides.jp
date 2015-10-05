@@ -1,4 +1,3 @@
-﻿
 Active Record コールバック
 =======================
 
@@ -15,7 +14,7 @@ Active Record コールバック
 オブジェクトのライフサイクル
 ---------------------
 
-Railsアプリケーションを普通に操作すると、その内部でオブジェクトが作成されたり、更新されたりdestoryされたりします。Active Recordはこの<em>オブジェクトライフサイクル</em>へのフックを提供しており、これを使用してアプリケーションやデータを制御できます。
+Railsアプリケーションを普通に操作すると、その内部でオブジェクトが作成されたり、更新されたりdestoryされたりします。Active Record provides hooks into this *object life cycle* so that you can control your application and its data.
 
 コールバックは、オブジェクトの状態が切り替わる「前」または「後」にロジックをトリガします。
 
@@ -92,6 +91,7 @@ Active Recordで利用可能なコールバックの一覧を以下に示しま�
 * `around_create`
 * `after_create`
 * `after_save`
+* `after_commit/after_rollback`
 
 ### オブジェクトの更新
 
@@ -103,14 +103,16 @@ Active Recordで利用可能なコールバックの一覧を以下に示しま�
 * `around_update`
 * `after_update`
 * `after_save`
+* `after_commit/after_rollback`
 
 ### オブジェクトのdestroy
 
 * `before_destroy`
 * `around_destroy`
 * `after_destroy`
+* `after_commit/after_rollback`
 
-WARNING: `after_save`は作成と更新の両方で呼び出されますが、コールバックマクロの呼び出し順にかかわらず、必ず、より具体的な`after_create`および`after_update`より _後_ に呼び出されます。
+WARNING: `after_save`は作成と更新の両方で呼び出されますが、コールバックマクロの呼び出し順にかかわらず、必ず、より具体的な`after_create`および`after_updateより _後_ に呼び出されます。
 
 ### `after_initialize`と`after_find`
 
@@ -211,7 +213,7 @@ Employeeにタッチされました
 * `update!`
 * `valid?`
 
-また、`after_find`コールバックは以下のfinderメソッドを実行すると呼び出されます。
+また、`after_find`こーるばっkは以下のfinderメソッドを実行すると呼び出されます。
 
 * `all`
 * `first`
@@ -224,7 +226,7 @@ Employeeにタッチされました
 
 `after_initialize`コールバックは、そのクラスの新しいオブジェクトが初期化されるたびに呼び出されます。
 
-NOTE: `find_by_*`メソッドと`find_by_*!`メソッドは、属性ごとに自動的に生成される動的なfinderメソッドです。詳細については[動的finderのセクション](active_record_querying.html#動的ファインダ)を参照してください。
+メモ: `find_by_*`メソッドと`find_by_*!`メソッドは、属性ごとに自動的に生成される動的なfinderメソッドです。詳細については[動的finderのセクション](active_record_querying.html#動的ファインダ)を参照してください。
 
 コールバックをスキップする
 ------------------
@@ -258,27 +260,27 @@ WARNING: `ActiveRecord::Rollback`を除いて、コールバック連鎖後にRa
 リレーションシップのコールバック
 --------------------
 
-コールバックはモデルのリレーションシップを経由して動作できます。また、リレーションシップを使用してコールバックを定義することすらできます。1人のユーザーが多数のポストを持っている状況を例に取ります。あるユーザーが所有するポストは、そのユーザーがdestroyされたらdestroyされる必要があります。`User`モデルに`after_destroy`コールバックを追加し、このコールバックで`Post`モデルへのリレーションシップを経由すると以下のようになります。
+コールバックはモデルのリレーションシップを経由して動作できます。また、リレーションシップを使用してコールバックを定義することすらできます。Suppose an example where a user has many articles. A user's articles should be destroyed if the user is destroyed. Let's add an `after_destroy` callback to the `User` model by way of its relationship to the `Article` model:
 
 ```ruby
 class User < ActiveRecord::Base
-  has_many :posts, dependent: :destroy
+  has_many :articles, dependent: :destroy
 end
 
-class Post < ActiveRecord::Base
+class Article < ActiveRecord::Base
   after_destroy :log_destroy_action
 
   def log_destroy_action
-    puts 'Post destroyed'
+    puts 'Article destroyed'
   end
 end
 
 >> user = User.first
 => #<User id: 1>
->> user.posts.create!
-=> #<Post id: 1, user_id: 1>
+>> user.articles.create!
+=> #<Article id: 1, user_id: 1>
 >> user.destroy
-Post destroyed
+Article destroyed
 => #<User id: 1>
 ```
 
@@ -325,7 +327,7 @@ end
 ```ruby
 class Comment < ActiveRecord::Base
   after_create :send_email_to_author, if: :author_wants_emails?,
-    unless: Proc.new { |comment| comment.post.ignore_comments? }
+    unless: Proc.new { |comment| comment.article.ignore_comments? }
 end
 ```
 
