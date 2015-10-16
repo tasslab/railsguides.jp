@@ -1,4 +1,3 @@
-﻿
 Action Controller の概要
 ==========================
 
@@ -73,7 +72,7 @@ publicなメソッドでないとアクションとして呼び出すことは�
 class ClientsController < ApplicationController
   # このアクションではクエリ文字列パラメータが使用されています
   # 送信側でHTTP GETリクエストが使用されているためです
-  # ただしパラメータにアクセスするうえでは下との違いは生じません
+  # ただしパラメータにアクセスするうえでは下との違いは生じませんThe URL fo
   # 有効な顧客リストを得るため、このアクションへのURLは以下のようになっています
   # clients: /clients?status=activated
   def index
@@ -85,7 +84,7 @@ class ClientsController < ApplicationController
   end
 
   # このアクションではPOSTパラメータが使用されています。このパラメータは通常
-  # ユーザーが送信したHTMLフォームが元になります。
+  # ユーザーが送信したHTMLフォームが元になります。The URL fo
   # これはRESTfulなアクセスであり、URLは"/clients"となります。
   # データはURLではなくリクエストのbodyの一部として送信されます。
   def create
@@ -113,9 +112,7 @@ NOTE: "["と"]"はURLで使用できない文字なので、この例の実際�
 
 これで、受け取った`params[:ids]`の値は`["1", "2", "3"]`になりました。もう一つ知っておいて欲しいのは、パラメータの値はすべて「文字列型」であることです。Railsはパラメータの型を推測することもしなければ、型変換も行いませんので、必要であれば自分で型を変換する必要があります。パラメータの数字を`to_i`で整数に変換するのはよく行われます。
 
-NOTE: `params`の中に`[]`、`[nil]`、`[nil, nil, ...]`という値があると、すべて自動的に`nil`に置き換えられます。この動作は、デフォルトのセキュリティ上の理由にもとづいています。詳細については [セキュリティガイド](security.html#安全でないクエリ生成) を参照してください。
-
-フォームから、中かっこ[]の中にキー名を含めたハッシュを送信するには以下のようにします。
+NOTE: `params`の中に`[]`、`[nil]`、`[nil, nil, ...]`という値があると、すべて自動的に`nil`に置き換えられます。この動作は、デフォルトのセキュリティ上の理由にもとづいています。詳細については[セキュリティガイド](security.html#安全でないクエリ生成)を参照してください。フォームから、中かっこ[]の中にキー名を含めたハッシュを送信するには以下のようにします。
 
 ```html
 <form accept-charset="UTF-8" action="/clients" method="post">
@@ -223,7 +220,7 @@ end
 
 #### 許可されたスカラー値
 
-以下の例では
+Given
 
 ```ruby
 params.permit(:id)
@@ -245,7 +242,8 @@ params.permit(id: [])
 params.require(:log_entry).permit!
 ```
 
-こうすることで、`:log_entry`パラメータハッシュとすべてのサブハッシュが「許可」としてマーキングされます。ただし、`permit!`は属性を一括で許可してしまうものなので、くれぐれも慎重に使用してください。現在のモデルはもちろんのこと、将来属性が追加されたときにそこにマスアサインメントの脆弱性が生じる可能性があるからです。
+This will mark the `:log_entry` parameters hash and any sub-hash of it
+permitted. ただし、`permit!`は属性を一括で許可してしまうものなので、くれぐれも慎重に使用してください。現在のモデルはもちろんのこと、将来属性が追加されたときにそこにマスアサインメントの脆弱性が生じる可能性があるからです。
 
 #### ネストしたパラメータ
 
@@ -345,7 +343,7 @@ Rails.application.config.session_store :cookie_store, key: '_your_app_session', 
 Railsはセッションデータの署名に使用する秘密鍵を (CookieStore用に) 設定します。この秘密鍵は`config/secrets.yml`で変更できます。
 
 ```ruby
-# Be sure to restart your server when you modify this file.
+# このファイルを変更後サーバーを必ず再起動してください。
 
 # Your secret key is used for verifying the integrity of signed cookies.
 # If you change this key, all old signed cookies will become invalid!
@@ -464,7 +462,7 @@ redirect_to root_url, flash: { referral_code: 1234 }
 
     <!-- 以下略 -->
   </body>
-</html> 
+</html>
 ```
 
 このように、アクションで通知(notice)や警告(alert)メッセージを設置すると、レイアウト側で自動的にそのメッセージが表示されます。
@@ -585,7 +583,7 @@ end
 ```
 
 cookieには文字列や数字などの単純なデータだけを保存することをお勧めします。
-cookieに複雑なオブジェクトを保存しなければならない場合は、後続のリクエストでcookieから値を読み出す場合の変換については自分で面倒を見る必要があります。
+cookieに複雑なオブジェクトを保存しなければならない場合は、後続のリクエストでcookiesから値を読み出す場合の変換については自分で面倒を見る必要があります。
 
 cookieセッションストアを使用する場合、`session`や`flash`ハッシュについてもこのことは該当します。
 
@@ -681,7 +679,7 @@ end
 
 最も一般的なフィルタの使用法は、privateメソッドを作成し、*_action を使用してそのメソッドを追加することですが、同じ結果を得られるフィルタ使用法が他にも2とおりあります。
 
-1番目は、*\_action メソッドに対して直接ブロックを与えることです。このブロックはコントローラを引数として受け取ります。さきほどの`require_login`フィルタを書き換えて、ブロックを使用するようにします。
+The first is to use a block directly with the *\_action methods. このブロックはコントローラを引数として受け取ります。さきほどの`require_login`フィルタを書き換えて、ブロックを使用するようにします。
 
 ```ruby
 class ApplicationController < ActionController::Base
@@ -775,9 +773,9 @@ Railsでは、[formヘルパー](form_helpers.html)を使用して生成され�
 
 #### `path_parameters`、`query_parameters`、`request_parameters`
 
-Railsは、リクエストに関連する`params`ハッシュに集約してくれます。 collects all of the parameters sent along with the request in the `params` hash, whether they are sent as part of the query string or the post body. requestオブジェクトには3つのアクセサがあり、パラメータの由来に応じたアクセスを行なうこともできます。`query_parameters`ハッシュにはクエリ文字列として送信されたパラメータが含まれます。`request_parameters`ハッシュにはPOST bodyの一部として送信されたパラメータが含まれます。`path_parameters`には、ルーティング機構によって特定のコントローラとアクションへのパスの一部であると認識されたパラメータが含まれます。
+Railsは、送信されたリクエストに関連するすべてのパラメータを`params`ハッシュに集約してくれます。このとき、クエリ文字列であったパラメータも、POSTで送信されたパラメータも区別なく`params`ハッシュに保存されます。requestオブジェクトには3つのアクセサがあり、パラメータの由来に応じたアクセスを行なうこともできます。`query_parameters`ハッシュにはクエリ文字列として送信されたパラメータが含まれます。`request_parameters`ハッシュにはPOST bodyの一部として送信されたパラメータが含まれます。`path_parameters`には、ルーティング機構によって特定のコントローラとアクションへのパスの一部であると認識されたパラメータが含まれます。
 
-### The `response`オブジェクト
+### `response`オブジェクト
 
 responseオブジェクトはアクションが実行されるときに構築され、クライアントに送り返されるデータを描画 (レンダリング) するものなので、responseオブジェクトを直接使用することは通常ありません。しかし、たとえばafter filter内などでresponseオブジェクトを直接操作できれば便利です。responseオブジェクトのアクセサメソッドがセッターを持っていれば、これを使用してresponseオブジェクトの値を直接変更できます。
 
@@ -963,7 +961,9 @@ end
 
 今あなたはカラオケマシンを開発中です。ユーザーは曲の歌詞を見たいと思っています。それぞれの`Song`には特定の数の行があり、その行1つ1つに、「曲が終わるまで後何拍あるか」を表す`num_beats`が記入されています。
 
-歌詞を「カラオケスタイル」でユーザーに表示したいので、直前の歌詞を歌い終わってから次の歌詞を表示することになります。そこで、以下のように`ActionController::Live`を使用します。
+If we wanted to return the lyrics in Karaoke fashion (only sending the line when
+the singer has finished the previous line), then we could use `ActionController::Live`
+as follows:
 
 ```ruby
 class LyricsController < ActionController::Base
@@ -1000,7 +1000,7 @@ Railsのログファイルは、環境ごとに`log`フォルダの下に出力�
 
 ### パラメータをフィルタする
 
-Railsアプリケーションの設定ファイル config.filter_parameters に、特定のリクエストパラメータをログ出力時にフィルタする設定を追加することができます。フィルタされたパラメータはログ内で [FILTERED] という文字に置き換えられます。
+You can filter out sensitive request parameters from your log files by appending them to `config.filter_parameters` in the application configuration. フィルタされたパラメータはログ内で [FILTERED] という文字に置き換えられます。
 
 ```ruby
 config.filter_parameters << :password
@@ -1008,7 +1008,7 @@ config.filter_parameters << :password
 
 ### リダイレクトをフィルタする
 
-アプリケーションからのリダイレクト先となるURLのいくつかは、場合によってはログに出力しない方がよいことがあります。
+Sometimes it's desirable to filter out from log files some sensitive locations your application is redirecting to.
 設定の`config.filter_redirect`オプションを使用して、リダイレクト先をログに出力しないようにすることができます。
 
 ```ruby
@@ -1072,7 +1072,7 @@ class ClientsController < ApplicationController
   # ユーザーがクライアントにアクセスする権限を持っているかどうかをチェックする
   before_action :check_authorization
 
-  # このアクション内で認証周りを心配する必要がない
+  # このアクション内で認証周りをほとんど心配する必要がないことに注目
   def edit
     @client = Client.find(params[:id])
   end
@@ -1085,6 +1085,8 @@ class ClientsController < ApplicationController
     end
 end
 ```
+
+WARNING: You shouldn't do `rescue_from Exception` or `rescue_from StandardError` unless you have a particular reason as it will cause serious side-effects (e.g. you won't be able to see exception details and tracebacks during development).
 
 NOTE: `ApplicationController`クラスでは特定の例外についてはrescueできないものがあります。その理由は、コントローラが初期化されてアクションが実行される前に発生する例外があるからです。詳細については、Pratik Naikによる[記事](http://m.onkey.org/2008/7/20/rescue-from-dispatching)を参照してください。
 
@@ -1104,7 +1106,7 @@ end
 ```ruby
 class DinnerController
   force_ssl only: :cheeseburger
-  # または
+  # or
   force_ssl except: :cheeseburger
 end
 ```
