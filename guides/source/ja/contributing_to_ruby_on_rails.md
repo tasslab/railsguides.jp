@@ -1,7 +1,4 @@
-﻿
-
-
-Ruby on Rails に貢献する方法
+Ruby on Railsに貢献する方法
 =============================
 
 本ガイドでは、Ruby on Railsの開発に「あなた」が参加する方法について説明します。
@@ -27,25 +24,15 @@ NOTE: Ruby on Railsの最新リリースで見つけたバグは最も注目を�
 
 ### バグレポートを作成する
 
-Ruby on Railsで何らかの問題を発見し、それがセキュリティ上の問題でなければ、まずGithubの[issue](https://github.com/rails/rails/issues)を検索して、既にレポートがあがっているかどうかを確認してみましょう。該当する問題がissueで見つからないことが確認できたら、[新しいissueを作成](https://github.com/rails/rails/issues/new)します。セキュリティ上のissueをレポートする方法については次のセクションで説明します。
+Ruby on Railsで何らかの問題を発見し、それがセキュリティ上の問題でなければ、まずGithubの[Issues](https://github.com/rails/rails/issues)を検索して、既にレポートがあがっているかどうかを確認してみましょう。該当する問題がissuesにまだあがっていない場合は、[新しいissueを作成](https://github.com/rails/rails/issues/new)します。セキュリティ上のissueをレポートする方法については次のセクションで説明します。
 
 issueレポートには、最低でもタイトルとissueの明快な説明が必要です。できるだけ多くの関連情報を含めるようにしてください。また、少なくとも問題を再現できるコードサンプルも合わせて投稿してください。期待される動作が行われていないことを示す単体テストも含めてもらえるとさらに助かります。バグの再現と修正点の把握を、他の人達にとっても自分自身にとってもやりやすくすることを目指してください。
 
 そして、issueの扱いについて過度な期待を抱かないことも肝心です。「地球滅亡クラス」の重大な問題でもない限り、レポートしてもらったissueは他のissueと同様に、解決に向けて共同作業が行われるようになります。issueレポートが自動的に修正担当者を見つけてくれることもありませんし、他の開発者が自分の作業を差し置いてまで修正してくれることもありません。issueを作成するということはほとんどの場合、自分にとっては問題修正のスタートラインに着くことであり、他の開発者にとっては「こちらでも同じ問題が起きてます」と確認およびコメントを追加する場所ができたということに過ぎません。
 
-### 実行可能なテストケースを作成する
+### Active RecordとAction Controllerのissueに関する自己完結gistを作成する
 
-自分のissueを再現する方法を用意することは、他の開発者がissueを確認、調査、そして修正する上で大変役立ちます。そのための方法は、実行可能なテストケースを提供することです。この作業を少しでも簡単にするために、Railsチームはバグレポートのテンプレートを多数用意しています。これを元に作業を開始できます。
-
-* Active Record (モデル、データベース) issue用テンプレート: [gem](https://github.com/rails/rails/blob/master/guides/bug_report_templates/active_record_gem.rb) / [master](https://github.com/rails/rails/blob/master/guides/bug_report_templates/active_record_master.rb)
-* Action Pack (コントローラ、ルーティング) issue用テンプレート: [gem](https://github.com/rails/rails/blob/master/guides/bug_report_templates/action_controller_gem.rb) / [master](https://github.com/rails/rails/blob/master/guides/bug_report_templates/action_controller_master.rb)
-* その他の一般的なissue用テンプレート: [gem](https://github.com/rails/rails/blob/master/guides/bug_report_templates/generic_gem.rb) / [master](https://github.com/rails/rails/blob/master/guides/bug_report_templates/generic_master.rb)
-
-テンプレートには「ボイラープレート(boilerplate)」と呼ばれる一種のひな形コードが含まれており、これを使用してRailsのリリースバージョン(`*_gem.rb`)やedge Rails (`*_master.rb`)に対するテストケースを設定することができます。
-
-該当するテンプレートの内容をコピーして`.rb`ファイルに貼り付けて適宜変更を行い、issueを再現できるようにします。このコードを実行するには、ターミナルで`ruby the_file.rb`を実行します。テストコードが正しく作成されていれば、このテストケースはバグがあることによって失敗する (failと表示される) はずです。
-
-続いて、この実行可能テストケースをGithubの[gist](https://gist.github.com)で共有するか、issueの説明に貼り付けます。
+バグレポートを報告する際は次のようにお願いします: パブリッシュ済みのgemで見つけたバグについては[Active Record template for gems](https://github.com/rails/rails/blob/master/guides/bug_report_templates/active_record_gem.rb)または[Action Controller template for gems](https://github.com/rails/rails/blob/master/guides/bug_report_templates/action_controller_gem.rb)で報告してください。masterブランチで見つけたバグは[Active Record template for master](https://github.com/rails/rails/blob/master/guides/bug_report_templates/active_record_master.rb)または[Action Controller template for master](https://github.com/rails/rails/blob/master/guides/bug_report_templates/action_controller_master.rb)で報告してください。
 
 ### セキュリティissueの特殊な取り扱い方法について
 
@@ -157,14 +144,6 @@ $ git checkout -b my_new_branch
 
 このブランチの名前はローカルコンピュータの自分のリポジトリ上でしか使われないので、どんな名前でも構いません。この名前がRails Gitリポジトリにそのまま取り込まれることはありません。
 
-### Bundle install
-
-必要なgemをインストールします。
-
-```bash
-$ bundle install
-```
-
 ### ローカルブランチでアプリケーションを実行する
 
 ダミーのRailsアプリで変更をテストする必要がある場合は、`rails new`に`--dev`フラグを追加すると、ローカルブランチを使用するアプリケーションが生成されます。
@@ -190,27 +169,29 @@ TIP: 表面的なものにとどまる変更や、Railsの安定性/機能性/�
 
 #### Railsコーディングルールに従う
 
-Railsのコーディングを行う場合は、以下のシンプルなスタイルガイドに従います。
+Rails follows a simple set of coding style conventions:
 
-* インデントはスペース2つを使用する。タブ文字は使用しないこと。
-* 行末にスペースを置かないこと。空行に余分なスペースを置かないこと。
-* privateやprotectedの後の行はインデントする。
-* ハッシュの記法は Ruby 1.9 以降の書式を使用する。つまり「`{ :a => :b }`」よりも「`{ a: :b }`」が望ましい。
-* 「`and`/`or`」よりも「`&&`/`||`」が望ましい。
-* クラスメソッドは「self.method」よりも「class << self」が望ましい。
-* 引数の記述はかっこ+スペース「`my_method( my_arg )`」やかっこなし「`my_method my_arg`」ではなく、スペース無しかっこ「`my_method(my_arg)`」を使用すること。
-* 等号の前後にはスペースを置く。「`a=b`」ではなく「`a = b`」とすること。
-* refuteではなくassert_notを使用すること。
-* 単一行ブロックはスペース無しの「`method{do_stuff}`」よりもスペースありの「`method { do_stuff }`」が望ましい。
+* Two spaces, no tabs (for indentation).
+* No trailing whitespace. Blank lines should not have any spaces.
+* Indent after private/protected.
+* Use Ruby >= 1.9 syntax for hashes. Prefer `{ a: :b }` over `{ :a => :b }`.
+* Prefer `&&`/`||` over `and`/`or`.
+* Prefer class << self over self.method for class methods.
+* Use `MyClass.my_method(my_arg)` not `my_method( my_arg )` or `my_method my_arg`.
+* Use `a = b` and not `a=b`.
+* Use assert_not methods instead of refute.
+* Prefer `method { do_stuff }` instead of `method{do_stuff}` for single-line blocks.
 * その他、Railsのコードにある既存の書式に従うこと。
 
-上はあくまでガイドラインであり、最適な使用方法については各自でご判断ください。
+The above are guidelines - please use your best judgment in using them.
 
-### ベンチマークを行う
+### Benchmark Your Code
 
-自分の書いたコードによってRailsのパフォーマンスが低下するのであれば、比較のために[benchmark-ips](https://github.com/evanphx/benchmark-ips) gemを使用してベンチマークの結果も添えてください。
+If your change has an impact on the performance of Rails, please use the
+[benchmark-ips](https://github.com/evanphx/benchmark-ips) gem to provide
+benchmark results for comparison.
 
-benchmark-ipsの実行例を以下に示します。
+Here's an example of using benchmark-ips:
 
 ```ruby
 require 'benchmark/ips'
@@ -221,20 +202,20 @@ Benchmark.ips do |x|
 end
 ```
 
-このコードによって以下の情報を含むレポートが生成されます。
+This 上を実行すると以下が生成されます。 a report with the following information:
 
 ```
 Calculating -------------------------------------
-            addition   132.013k i/100ms
-  addition with send   125.413k i/100ms
+            addition     69114 i/100ms
+  addition with send     64062 i/100ms
 -------------------------------------------------
-            addition      9.677M (± 1.7%) i/s -     48.449M
-  addition with send      6.794M (± 1.1%) i/s -     33.987M
+            addition  5307644.4 (±3.5%) i/s -   26539776 in   5.007219s
+  addition with send  3702897.9 (±3.5%) i/s -   18513918 in   5.006723s
 ```
 
-詳細については、benchmark/ips の [README](https://github.com/evanphx/benchmark-ips/blob/master/README.md)を参照してください。
+Please see the benchmark/ips [README](https://github.com/evanphx/benchmark-ips/blob/master/README.md) for more information.
 
-### テストを実行する
+### Running Tests
 
 Railsでは、変更をプッシュする時にテストスイートをフル実行するという慣習があるわけではありません。おすすめのワークフーロー[rails-dev-box](https://github.com/rails/rails-dev-box)で説明しているように、railtiesのテストは特に時間がかかり、ソースコードを`/vagrant`にマウントするとさらに時間がかかります。
 
@@ -264,15 +245,13 @@ Rubyで単一のテストを実行することができます。たとえば次�
 
 ```bash
 $ cd actionmailer
-$ ruby -w -Itest test/mail_layout_test.rb -n test_explicit_class_layout
+$ bundle exec ruby -w -Itest test/mail_layout_test.rb -n test_explicit_class_layout
 ```
 
 `-n`オプションを指定すると、ファイル全体ではなく指定した単一のメソッドだけを実行します。
+file.
 
-
-#### Active Recordをテストする
-
-最初に、必要なデータベースを作成します。MySQLやPostgreSQLを使用するのであれば、SQL文「`create database activerecord_unittest`」と「`create database activerecord_unittest2`」で十分です。SQLite3の場合は不要です。
+##### Active Recordをテストする
 
 SQLite3 のみ、Active Recordのテストで以下を実行します。
 
@@ -325,9 +304,9 @@ $ RUBYOPT=-W0 bundle exec rake test
 
 CHANGELOGはすべてのリリースで重要な位置を占めます。Railsの各バージョンの変更点をここに記録します。
 
-機能の追加や削除、バグ修正のコミット、非推奨通知の追加を行ったら、必ず修正したフレームワークのCHANGELOGの**冒頭に**エントリを追加してください。リファクタリングやドキュメント変更の場合はCHANGELOGを変更しないでください。
+You should add an entry to the CHANGELOG of the framework that you modified if you're adding or removing a feature, committing a bug fix or adding deprecation notices. リファクタリングやドキュメント変更の場合はCHANGELOGを変更しないでください。
 
-CHANGELOGのエントリには変更内容を的確に要約したものを記入し、最後に作者の名前を書きます。必要であれば複数行にわたってエントリを記入したり、スペース4つのインデントを置いたコード例を記入したりすることもできます。変更が特定のissueに関連する場合は、issue番号も記入してください。CHANGELOGエントリの例を以下に示します ( **訳注: 実際は英語で書きます** )。
+A CHANGELOG entry should summarize what was changed and should end with author's name and it should go on top of a CHANGELOG. 必要であれば複数行にわたってエントリを記入したり、スペース4つのインデントを置いたコード例を記入したりすることもできます。変更が特定のissueに関連する場合は、issue番号も記入してください。CHANGELOGエントリの例を以下に示します ( **訳注: 実際は英語で書きます** )。
 
 ```
 *  (変更内容の要約を記入します)(複数行の
@@ -337,22 +316,25 @@ CHANGELOGのエントリには変更内容を的確に要約したものを記�
           def bar
             puts 'baz'
           end
-        end
+　　end
 
     （コード例に続けてエントリを書くこともできます。issue番号はここに書きます）GH#1234
 
     *自分の名前*
 ```
 
-コード例や複数行エントリを使用しない場合、名前はエントリの最後に続けて記入してエントリを1行に収めてください。その他の場合は、最後の行に名前だけを記入してください。
+Your name can be added directly after the last word if you don't provide any code examples or don't need multiple paragraphs. Otherwise, it's best to make as a new paragraph.
 
 ### Gemfile.lockを更新する
 
-変更内容によっては、依存関係もアップグレードしなければならないことがあります。そのような場合は、`bundle update` を実行して正しい依存関係バージョンを反映し、変更の`Gemfile.lock`ファイルにコミットしてください。
+Some changes requires the dependencies to be upgraded. そのような場合は、`bundle update` を実行して正しい依存関係バージョンを反映し、変更の`Gemfile.lock`ファイルにコミットしてください。
 
 ### 健全性チェック
 
-コードに目を通したのが自分以外にいない状態でコードを送信するのはよくありません。身近にRails使いがいる場合は、送信前にコードを詳しくチェックしてもらいましょう。身近にRails使いがいない場合は、IRCルームやrails-coreメーリングリストでお問い合わせください。パッチをプッシュする前に内輪でコードをチェックすることを、そのパッチの「スモークテスト」と呼びます。書いたコードを他の開発者が見て美しいと思ってもらえないのであれば、Railsコアチームもおそらく同じ感想を持つでしょう。
+コードに目を通したのが自分以外にいない状態でコードを送信するのはよくありません。身近にRails使いがいる場合は、送信前にコードを詳しくチェックしてもらいましょう。身近にRails使いがいない場合は、IRCルームやrails-coreメーリングリストでお問い合わせください。Doing this in
+private before you push a patch out publicly is the "smoke test" for a patch:
+if you can't convince one other developer of the beauty of your code, you’re
+unlikely to convince the core team either.
 
 ### 変更をコミットする
 
@@ -362,37 +344,36 @@ CHANGELOGのエントリには変更内容を的確に要約したものを記�
 $ git commit -a
 ```
 
-上を実行すると、コミットメッセージを作成するためのエディタが開きます。メッセージを作成したら保存して続行します。
+At this point, your editor should be fired up and you can write a message for this commit. Well formatted and descriptive commit messages are extremely helpful for the others, especially when figuring out why given change was made, so please take the time to write it.
 
-コミットメッセージの書式をきちんと整え、わかりやすく記述してもらえると、他のメンバーが変更内容を理解する上で大変助かります。コミットメッセージは十分時間をかけて書いてください。
-
-よいコミットメッセージは以下のような感じになります。
+Good commit message should be formatted according to the following example:
 
 ```
 短い要約文 (50 文字以下だと理想的)
 
-もちろん、必要であればもっと詳しく書いてください。メッセージは72文字目で改行してください。メッセージはできるだけ詳しく書くようにします。コミット内容が自明に思えるとしても、他の人にとってもそうであるとは限りません。関連する issue で言及されている記述もすべて追加し、履歴を探しにいかなくても良いようにすべきです。
+もちろん、必要であればもっと詳しく書いてください。メッセージは72文字目で改行してください。Try to be as descriptive as you can, even if you think that
+the commit content is obvious, it may not be obvious to others. You
+should add such description also if it's already present in bug tracker,
+it should not be necessary to visit a webpage to check the history.
 
-記述は複数のパラグラフにわたってもかまいません。
-
-コード例を記述に埋め込む際は、4つのスペースでインデントしてください。
+Description can have multiple paragraphs and you can use code examples
+inside, just indent it with 4 spaces:
 
     class ArticlesController
       def index
-        render json: Article.limit(10)
+        render json: Article.limit(10) 
       end
     end
 
-箇条書きの点を追加することもできます。
+箇条書きの点 を追加することもできます。
 
-- 箇条書きはダッシュ (-) または
- アスタリスク (*) で始めます
+- you can use dashes or asterisks
 
-- 行は72文字目で折り返し、読みやすさのために
-  追加行の冒頭にスペース2つを置いてインデントします
+- also, try to indent next line of a point for readability, if it's too
+  long to fit in 72 characters
 ```
 
-TIP: コミットが複数にわたっている場合は、必ず 1 つのコミットにスカッシュ(squash)しておいてください。これにより、今後のcherry pickがやりやすくなり、Gitのログも煩雑にならずに済みます。
+TIP: コミットが複数にわたっている場合は、必ず 1 つのコミットにスカッシュ(squash)しておいてください。This simplifies future cherry picks, and also keeps the git log clean.
 
 ### ブランチを更新する
 
@@ -565,9 +546,9 @@ $ git apply ~/my_changes.patch
 
 コンフリクトをすべて解消してすべてのテストがパスすることを確認できたら、変更をプッシュして、バックポート用のプルリクエストを別に作成します。なお、古いブランチではビルドのターゲットがmasterと異なるセットになっている場合がありますのでご注意ください。できれば、`.travis.yml`に記載されているバージョンのRubyを使用してバックポートをローカルでテストしてからプルリクエストを送信するようにしてください。
 
-以上で解説はおしまいです。次はどんな貢献をしようか楽しみつつ考えるとしましょう。
+以上で解説はおしまいです。次はどんな貢献をしようか楽しみ考えるとしましょう。
 
 Railsコントリビュータ
 ------------------
 
-masterやdocrailsへの貢献が認められた方々は[Railsコントリビュータ](http://contributors.rubyonrails.org)にその名を連ねています。
+All contributions, either via master or docrails, get credit in [Railsコントリビュータ](http://contributors.rubyonrails.org).
