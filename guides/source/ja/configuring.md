@@ -1,4 +1,3 @@
-﻿
 Rails アプリケーションを設定する
 ==============================
 
@@ -57,15 +56,13 @@ Rails全般に対する設定を行うには、`Rails::Railtie`オブジェク�
     end
     ```
 
-* `config.asset_host`はアセットを置くホストを設定します。この設定は、アセットの置き場所がCDN (Contents Delivery Network) の場合や、別のドメインエイリアスを使用するとブラウザの同時実行制限にひっかかるのを避けたい場合に便利です。このメソッドは`config.action_controller.asset_host`を短縮したものです。
+* `config.asset_host`はアセットを置くホストを設定します。Useful when CDNs are used for hosting assets, or when you want to work around the concurrency constraints built-in in browsers using different domain aliases. このメソッドは`config.action_controller.asset_host`を短縮したものです。
 
 * `config.autoload_once_paths`は、サーバーへのリクエストごとにクリアされない定数を自動読込するパスの配列を引数に取ります。この設定は`config.cache_classes`がfalseの場合に影響を受けます。`config.cache_classes`はdevelopmentモードでは`config.cache_classes`はデフォルトでオフです。`config.cache_classes`がtrueの場合、すべての`config.autoload_once_paths`自動読み込みは一度しか行われません。`config.autoload_once_paths`の配列に含まれる要素は、次で説明する`autoload_paths`にもまったく同じように含めておく必要があります。`config.autoload_once_paths`のデフォルト値は、空の配列です。
 
 * `config.autoload_paths`はRailsが定数を自動読込するパスを含む配列を引数に取ります。`config.autoload_paths`のデフォルト値は、`app`以下のすべてのディレクトリです(訳注: Rails3からはautoload_pathの設定はデフォルトでは無効です)。
 
-* `config.cache_classes`は、アプリケーションのクラスやモジュールをリクエストごとに再読み込みするか(=キャッシュしないかどうか)どうかを指定します。config.cache_classes`のデフォルト値は、developmentモードではfalseなのでコードの更新がすぐ反映され、testモードとproductionモードではtrueなので動作が高速になります。同時に`threadsafe!`をオンにすることもできます。
-
-* `config.action_view.cache_template_loading`は、リクエストのたびにビューテンプレートを再読み込みするか(=キャッシュしないか)を指定します。
+* `config.cache_classes`は、アプリケーションのクラスやモジュールをリクエストごとに再読み込みするか(=キャッシュしないかどうか)どうかを指定します。config.cache_classes`のデフォルト値は、developmentモードではfalseなのでコードの更新がすぐ反映され、testモードとproductionモードではtrueなので動作が高速になります。* `config.action_view.cache_template_loading`は、リクエストのたびにビューテンプレートを再読み込みするか(=キャッシュしないか)を指定します。Defaults to whatever is set for `config.cache_classes`.
 
 * `config.beginning_of_week`は、アプリケーションにおける週の初日を設定します。引数には、曜日を表す正しいシンボルを渡します(`:monday`など)。
 
@@ -86,9 +83,7 @@ Rails全般に対する設定を行うには、`Rails::Railtie`オブジェク�
     end
     ```
 
-* `config.dependency_loading`をfalseに設定すると、定数自動読み込み設定をオフにします。このオプションが効くのは`config.cache_classes`がtrueの場合のみです(`config.cache_classes`はproductionモードではデフォルトでtrueです)。`config.threadsafe!`を使用するとこのフラグはfalseになります。
-
-* `config.eager_load`をtrueにすると、`config.eager_load_namespaces`に登録された事前一括読み込み(eager loading)用の名前空間をすべて読み込みます。ここにはアプリケーション、エンジン、Railsフレームワークを含むあらゆる登録済み名前空間が含まれます。
+* `config.dependency_loading`をfalseに設定すると、定数自動読み込み設定をオフにします。このオプションが効くのは`config.cache_classes`がtrueの場合のみです(`config.cache_classes`はproductionモードではデフォルトでtrueです)。* `config.eager_load`をtrueにすると、`config.eager_load_namespaces`に登録された事前一括読み込み(eager loading)の名前空間をすべて読み込みます。ここにはアプリケーション、エンジン、Railsフレームワークを含むあらゆる登録済み名前空間が含まれます。
 
 * `config.eager_load_namespaces`を使用して登録した名前は、`config.eager_load`がtrueのときに読み込まれます。登録された名前空間は、必ず`eager_load!`メソッドに応答しなければなりません。
 
@@ -106,19 +101,19 @@ Rails全般に対する設定を行うには、`Rails::Railtie`オブジェク�
 
 * `config.log_formatter`はRailsロガーのフォーマットを定義します。このオプションは、デフォルトでは`ActiveSupport::Logger::SimpleFormatter`のインスタンスを使用します。ただしproductionモードの場合のみ`Logger::Formatter`がデフォルトになります。
 
-* `config.log_level`は、Railsのログ出力をどのぐらい詳細にするかを指定します。デフォルトでは`:debug`が指定されます。productionモードのみデフォルトで`:info`が指定されます。
+* `config.log_level`は、Railsのログ出力をどのぐらい詳細にするかを指定します。This option defaults to `:debug` for all environments.
 
 * `config.log_tags`は、`request`オブジェクトが応答するメソッドのリストを引数に取ります。これは、ログの行にデバッグ情報をタグ付けする場合に便利です。たとえばサブドメインやリクエストidを指定することができ、これらはマルチユーザーのproductionモードアプリケーションをデバッグするのに便利です。
 
-* `config.logger`は、ロガーを指定します。指定されるロガーは、Log4rまたはRubyのデフォルトの`Logger`クラスのインターフェイスに従います。デフォルトでは`ActiveSupport::Logger`のログが指定されます。これはproductionモードでは自動的にログを出力します。
+* `config.logger`は、ロガーを指定します。指定されるロガーは、Log4rまたはRubyのデフォルトの`Logger`クラスのインターフェイスに従います。Defaults to an instance of `ActiveSupport::Logger`.
 
-* `config.middleware`は、アプリケーションで使用するミドルウェアをカスタマイズできます。詳細については[ミドルウェアを設定する](#ミドルウェアを設定する)の節を参照してください。
+* `config.middleware`は、アプリケーションで使用するミドルウェアをカスタマイズできます。This is covered in depth in the [Configuring Middleware](#configuring-middleware) section below.
 
 * `config.reload_classes_only_on_change`は、監視しているファイルが変更された場合にのみクラスを再読み込みするかどうかを指定します。デフォルトでは、autoload_pathで指定されたすべてのファイルが監視対象となり、デフォルトでtrueが設定されます。`config.cache_classes`がオンの場合はこのオプションは無視されます。
 
 `secrets.secret_key_base`メソッドは、改竄防止のために、アプリケーションのセッションを既知の秘密キーと照合するためのキーを指定するときに使います。アプリケーションは`secrets.secret_key_base`を使用して、`config/secrets.yml`などに保存されるキーをランダムに初期化します。
 
-* `config.serve_static_assets`は、静的アセットを扱うかどうかを指定します。デフォルトではtrueが設定されますが、production環境ではアプリケーションを実行するNginxやApacheなどのサーバーが静的アセットを扱う必要があるので、オフになります。デフォルトの設定とは異なり、WEBrickを使用してアプリケーションをproductionモードで実行したり(これは絶対にやらないでください)テストする場合はtrueに設定されます。そうでないと、ページキャッシュが有効にならず、publicディレクトリ以下に常駐する静的ファイルへのリクエストが毎回Railsアプリケーションを経由してしまいます。
+* `config.serve_static_files` configures Rails itself to serve static files. Defaults to true, but in the production environment is turned off as the server software (e.g. NGINX or Apache) used to run the application should serve static assets instead. デフォルトの設定とは異なり、WEBrickを使用してアプリケーションをproductionモードで実行したり(これは絶対にやらないでください)テストする場合はtrueに設定されます。そうでないと、ページキャッシュが有効にならず、publicディレクトリ以下に常駐する静的ファイルへのリクエストが毎回Railsアプリケーションを経由してしまいます。
 
 * `config.session_store`は、通常は`config/initializers/session_store.rb`で設定されるものであり、セッションを保存するクラスを指定します。指定できる値は`:cookie_store`(デフォルト)、`:mem_cache_store`、`:disabled`です。`:disabled`を指定すると、Railsでセッションが扱われなくなります。カスタムセッションストアを指定することもできます。
 
@@ -134,7 +129,7 @@ Rails全般に対する設定を行うには、`Rails::Railtie`オブジェク�
 
 * `config.assets.enabled`は、アセットパイプラインを有効にするかどうかを指定します。デフォルトはtrueです。
 
-* `config.assets.raise_runtime_errors`を`true`に設定すると、ランタイムエラーチェックが追加で有効になります。このオプションは`production`環境で使用するとデプロイ時に思わぬ動作をする可能性がありますので、development環境(`config/environments/development.rb`)で使用することをお勧めします。
+* `config.assets.raise_runtime_errors` Set this flag to `true` to enable additional runtime error checking. このオプションは`production`環境で使用するとデプロイ時に思わぬ動作をする可能性がありますので、development環境(`config/environments/development.rb`)で使用することをお勧めします。
 
 * `config.assets.compress`は、コンパイル済みアセットを圧縮するかどうかを指定するフラグです。`config/environments/production.rb`では明示的にtrueに設定されています。
 
@@ -148,11 +143,13 @@ Rails全般に対する設定を行うには、`Rails::Railtie`オブジェク�
 
 * `config.assets.prefix`はアセットを置くディレクトリを指定します。デフォルトは`/assets`です。
 
-* `config.assets.digest`は、アセット名に使用するMD5フィンガープリントを有効にするかどうかを指定します。`production.rb`ではデフォルトで`true`に設定されます。
+* `config.assets.manifest` defines the full path to be used for the asset precompiler's manifest file. Defaults to a file named `manifest-<random>.json` in the `config.assets.prefix` directory within the public folder.
+
+* `config.assets.digest` enables the use of MD5 fingerprints in asset names. Set to `true` by default in `production.rb` and `development.rb`.
 
 * `config.assets.debug`は、デバッグ用にアセットの連結と圧縮をやめるかどうかを指定します。`development.rb`ではデフォルトで`true`に設定されます。
 
-* `config.assets.cache_store`は、Sprocketsで使用するキャッシュストアを定義します。デフォルトではRailsのファイルストアが使用されます。
+* `config.assets.cache_store`は、Sprocketsで使用するキャッシュストアを定義します。デフォルトは以下のとおりです。 the Rails file store.
 
 * `config.assets.version`はMD5ハッシュ生成に使用されるオプション文字列です。この値を変更すると、すべてのアセットファイルが強制的にリコンパイルされます。
 
@@ -173,17 +170,13 @@ end
 
 ブロックで使用可能なメソッドの完全なリストは以下のとおりです。
 
-* `assets`は、scaffoldを生成するかどうかを指定します。デフォルトは`true`です。
-* `force_plural`は、モデル名を複数形にするかどうかを指定します。デフォルトは`false`です。
-* `helper`はヘルパーを生成するかどうかを指定します。デフォルトは`true`です。
-* `integration_tool`は、使用する統合ツールを定義します。デフォルトは`nil`です。
-* `javascripts`は、生成時にJavaScriptファイルへのフックをオンにするかどうかを指定します。この設定は`scaffold`ジェネレータの実行中に使用されます。デフォルトは`true`です。
-* `javascript_engine`は、アセット生成時に(coffeeなどで)使用するエンジンを設定します。デフォルトは`nil`です。
+* `assets`は、scaffoldを生成するかどうかを指定します。デフォルトは`true`です。* `force_plural`は、モデル名を複数形にするかどうかを指定します。デフォルトは`false`です。
+* `helper`はヘルパーを生成するかどうかを指定します。デフォルトは`true`です。* `integration_tool`は、使用する統合ツールを定義します。デフォルトは`nil`です。
+* `javascripts`は、生成時にJavaScriptファイルへのフックをオンにするかどうかを指定します。この設定は`scaffold`ジェネレータの実行中に使用されます。デフォルトは`true`です。* `javascript_engine`は、アセット生成時に(coffeeなどで)使用するエンジンを設定します。デフォルトは`nil`です。
 * `orm`は、使用するORM (オブジェクトリレーショナルマッピング) を指定します。デフォルトは`false`であり、この場合はActive Recordが使用されます。
 * `resource_controller`は、`rails generate resource`の実行時にどのジェネレータを使用してコントローラを生成するかを指定します。デフォルトは`:controller`です。
-* `scaffold_controller`は`resource_controller`と同じではありません。`scaffold_controller`は _scaffold_ でどのジェネレータを使用してコントローラを生成するか(`rails generate scaffold`の実行時)を指定します。デフォルトは`:scaffold_controller`です。
-* `stylesheets`は、ジェネレータでスタイルシートのフックを行なうかどうかを指定します。この設定は`scaffold`ジェネレータの実行時に使用されますが。このフックは他のジェネレータでも使用されます。デフォルトは`true`です。
-* `stylesheet_engine`は、アセット生成時に使用される、sassなどのスタイルシートエンジンを指定します。デフォルトは`:css`です。
+* `scaffold_controller` different from `resource_controller`, defines which generator to use for generating a _scaffolded_ controller when using `rails generate scaffold`. デフォルトは`:scaffold_controller`です。
+* `stylesheets`は、ジェネレータでスタイルシートのフックを行なうかどうかを指定します。この設定は`scaffold`ジェネレータの実行時に使用されますが。このフックは他のジェネレータでも使用されます。デフォルトは`true`です。* `stylesheet_engine`は、アセット生成時に使用される、sassなどのスタイルシートエンジンを指定します。デフォルトは`:css`です。
 * `test_framework`は、使用するテストフレームワークを指定します。デフォルトは`false`であり、この場合はTest::Unitが使用されます。
 * `template_engine`はビューのテンプレートエンジン(ERBやHamlなど)を指定します。デフォルトは`:erb`です。
 
@@ -192,7 +185,7 @@ end
 どのRailsアプリケーションの背後にも、いくつかの標準的なミドルウェアが配置されています。development環境では、以下の順序でミドルウェアを使用します。
 
 * `ActionDispatch::SSL`はすべてのリクエストにHTTPSプロトコルを強制します。これは`config.force_ssl`を`true`にすると有効になります。渡すオプションは`config.ssl_options`で設定できます。
-* `ActionDispatch::Static`は静的アセットで使用されます。`config.serve_static_assets`を`false`にするとオフになります。
+* `ActionDispatch::Static`は静的アセットで使用されます。Disabled if `config.serve_static_files` is `false`.
 * `Rack::Lock`は、アプリケーションをミューテックスでラップし、1度に1つのスレッドでしか呼び出されないようにします。このミドルウェアは、`config.cache_classes`が`false`に設定されている場合のみ有効になります。
 * `ActiveSupport::Cache::Strategy::LocalCache`は基本的なメモリバックアップ式キャッシュとして機能します。このキャッシュはスレッドセーフではなく、単一スレッド用の一時メモリキャッシュとして機能することのみを意図していることにご注意ください。
 * `Rack::Runtime`は`X-Runtime`ヘッダーを設定します。このヘッダーには、リクエストの実行にかかる時間(秒)が含まれます。
@@ -209,7 +202,7 @@ end
 * `ActionDispatch::Flash`は`flash`キーを設定します。これは、`config.action_controller.session_store`に値が設定されている場合にのみ有効です。
 * `ActionDispatch::ParamsParser`は、リクエストからパラメータを切り出して`params`に保存します。
 * `Rack::MethodOverride`は、`params[:_method]`が設定されている場合にメソッドを上書きできるようにします。これは、HTTPでPATCH、PUT、DELETEメソッドを使用できるようにするミドルウェアです。
-* `ActionDispatch::Head`は、HEADリクエストをGETリクエストに変換し、HEADリクエストが機能するようにします。
+* `Rack::Head` converts HEAD requests to GET requests and serves them as so.
 
 `config.middleware.use`メソッドを使用すると、上記以外に独自のミドルウェアを追加することもできます。
 
@@ -220,13 +213,13 @@ config.middleware.use Magical::Unicorns
 上の指定により、`Magical::Unicorns`ミドルウェアがスタックの最後に追加されます。あるミドルウェアの前に別のミドルウェアを追加したい場合は`insert_before`を使用します。
 
 ```ruby
-config.middleware.insert_before ActionDispatch::Head, Magical::Unicorns
+config.middleware.insert_before Rack::Head, Magical::Unicorns
 ```
 
 あるミドルウェアの後に別のミドルウェアを追加したい場合は`insert_after`を使用します。
 
 ```ruby
-config.middleware.insert_after ActionDispatch::Head, Magical::Unicorns
+config.middleware.insert_after Rack::Head, Magical::Unicorns
 ```
 
 これらのミドルウェアは、まったく別のものに差し替えることもできます。
@@ -285,8 +278,6 @@ config.middleware.delete "Rack::MethodOverride"
 
 * `config.active_record.partial_writes`は、部分書き込みを行なうかどうか(「dirty」とマークされた属性だけを更新するか)を指定する論理値です。データベースで部分書き込みを使用する場合は、`config.active_record.lock_optimistically`で楽観的ロックも使用する必要があります。これは、同時更新が行われた場合に、読み出しの状態が古い情報に基づいて属性に書き込まれる可能性があるためです。デフォルト値は`true`です。
 
-* `config.active_record.attribute_types_cached_by_default`は、`ActiveRecord::AttributeMethods`が読み出し時にデフォルトでキャッシュする属性の種類を指定します。デフォルトは`[:datetime, :timestamp, :time, :date]`です。
-
 * `config.active_record.maintain_test_schema`は、テスト実行時にActive Recordがテスト用データベーススキーマを`db/schema.rb`(または`db/structure.sql`)に基いて最新の状態にするかどうかを指定します。デフォルト値は`true`です。
 
 * `config.active_record.dump_schema_after_migration`は、マイグレーション実行時にスキーマダンプ(`db/schema.rb`または`db/structure.sql`)を行なうかどうかを指定します。このオプションは、Railsが生成する`config/environments/production.rb`ではfalseに設定されます。このオプションが無指定の場合は、デフォルトのtrueが指定されます。
@@ -323,6 +314,8 @@ MySQLアダプターを使用すると、以下の設定オプションが1つ�
 
 * `config.action_controller.action_on_unpermitted_parameters`は、明示的に許可されていないパラメータが見つかった場合にログ出力または例外発生を行なうかどうかを指定します。このオプションは、`:log`または`:raise`を指定すると有効になります。test環境とdevelopment環境でのデフォルトは`:log`であり、それ以外の環境では`false`が設定されます。
 
+* `config.action_controller.always_permitted_parameters` sets a list of whitelisted parameters that are permitted by default. The default values are `['controller', 'action']`.
+
 ### Action Dispatchを設定する
 
 * `config.action_dispatch.session_store`はセッションデータのストア名を設定します。デフォルトのストア名は`:cookie_store`です。この他に`:active_record_store`、`:mem_cache_store`、またはカスタムクラスの名前を指定できます。
@@ -348,6 +341,30 @@ MySQLアダプターを使用すると、以下の設定オプションが1つ�
 * `config.action_dispatch.encrypted_signed_cookie_salt`は、署名暗号化済みcookie用のsalt値を設定します。デフォルトは`'signed encrypted cookie'`です。
 
 * `config.action_dispatch.perform_deep_munge`は、パラメータに対して`deep_munge`メソッドを実行すべきかどうかを指定します。詳細については[セキュリティガイド](security.html#安全でないクエリ生成)を参照してください。デフォルトはtrueです。
+
+* `config.action_dispatch.rescue_responses` configures what exceptions are assigned to an HTTP status. It accepts a hash and you can specify pairs of exception/status. このオプションは、デフォルトでは以下のように設定されます。
+
+  ```ruby
+  config.action_dispatch.rescue_responses = {
+    'ActionController::RoutingError'              => :not_found,
+    'AbstractController::ActionNotFound'          => :not_found,
+    'ActionController::MethodNotAllowed'          => :method_not_allowed,
+    'ActionController::UnknownHttpMethod'         => :method_not_allowed,
+    'ActionController::NotImplemented'            => :not_implemented,
+    'ActionController::UnknownFormat'             => :not_acceptable,
+    'ActionController::InvalidAuthenticityToken'  => :unprocessable_entity,
+    'ActionController::InvalidCrossOriginRequest' => :unprocessable_entity,
+    'ActionDispatch::ParamsParser::ParseError'    => :bad_request,
+    'ActionController::BadRequest'                => :bad_request,
+    'ActionController::ParameterMissing'          => :bad_request,
+    'ActiveRecord::RecordNotFound'                => :not_found,
+    'ActiveRecord::StaleObjectError'              => :conflict,
+    'ActiveRecord::RecordInvalid'                 => :unprocessable_entity,
+    'ActiveRecord::RecordNotSaved'                => :unprocessable_entity
+  }
+  ```
+
+  Any exceptions that are not configured will be mapped to 500 Internal Server Error.
 
 * `ActionDispatch::Callbacks.before`には、リクエストより前に実行したいコードブロックを1つ引数として与えます。
 
@@ -375,13 +392,13 @@ MySQLアダプターを使用すると、以下の設定オプションが1つ�
 
 * `config.action_view.embed_authenticity_token_in_remote_forms`は、フォームで`:remote => true`を使用した場合の`authenticity_token`のデフォルトの動作を設定します。デフォルトではfalseであり、この場合リモートフォームには`authenticity_token`フォームが含まれません。これはフォームでフラグメントキャッシュを使用している場合に便利です。リモートフォームは`meta`タグから認証を受け取るので、JavaScriptの動作しないブラウザをサポートしなければならないのでなければトークンの埋め込みは不要です。JavaScriptが動かないブラウザのサポートが必要な場合は、`:authenticity_token => true`をフォームオプションとして渡すか、この設定を`true`にします。
 
-* `config.action_view.prefix_partial_path_with_controller_namespace`は、名前空間化されたコントローラから出力されたテンプレートにあるサブディレクトリから、パーシャル(部分テンプレート)を探索するかどうかを指定します。たとえば、`Admin::PostsController`というコントローラがあり、以下のテンプレートを出力するとします。
+* `config.action_view.prefix_partial_path_with_controller_namespace`は、名前空間化されたコントローラから出力されたテンプレートにあるサブディレクトリから、パーシャル(部分テンプレート)を探索するかどうかを指定します。For example, consider a controller named `Admin::ArticlesController` which renders this template:
 
     ```erb
-    <%= render @post %>
+    <%= render @article %>
     ```
 
-このデフォルト設定は`true`であり、`/admin/posts/_post.erb`にあるパーシャルを使用しています。この値を`false`にすると、`/posts/_post.erb`が描画されます。この動作は、`PostsController`などの名前空間化されていないコントローラで描画した場合と同じです。
+    The default setting is `true`, which uses the partial at `/admin/articles/_article.erb`. Setting the value to `false` would render `/articles/_article.erb`, which is the same behavior as rendering from a non-namespaced controller such as `ArticlesController`.
 
 * `config.action_view.raise_on_missing_translations`は、i18nで訳文が失われている場合にエラーを発生させるかどうかを指定します。
 
@@ -438,19 +455,31 @@ MySQLアダプターを使用すると、以下の設定オプションが1つ�
     config.action_mailer.interceptors = ["MailInterceptor"]
     ```
 
+* `config.action_mailer.preview_path` specifies the location of mailer previews.
+
+```ruby
+    config.action_mailer.preview_path = "#{Rails.root}/lib/mailer_previews"
+    ```
+
+* `config.action_mailer.show_previews` enable or disable mailer previews. By default this is `true` in development.
+
+```ruby
+    config.action_mailer.show_previews = false
+    ```
+
 ### Active Supportを設定する
 
 Active Supportにもいくつかの設定オプションがあります。
 
 * `config.active_support.bareは、Rails起動時に`active_support/all`の読み込みを行なうかどうかを指定します。デフォルトは`nil`であり、この場合`active_support/all`は読み込まれます。
 
+* `config.active_support.test_order` sets the order that test cases are executed. Possible values are `:sorted` and `:random`. Currently defaults to `:sorted`. In Rails 5.0, the default will be changed to `:random` instead.
+
 * `config.active_support.escape_html_entities_in_json`は、JSONシリアライズに含まれるHTMLエンティティをエスケープするかどうかを指定します。デフォルトは`false`です。
 
-* `config.active_support.use_standard_json_time_format`は、ISO 8601フォーマットに従った日付のシリアライズを行なうかどうかを指定します。デフォルトは`true`です。
+* `config.active_support.use_standard_json_time_format`は、ISO 8601フォーマットに従った日付のシリアライズを行なうかどうかを指定します。デフォルトは`true`です。* `config.active_support.time_precision`は、JSONエンコードされた時間値の精度を指定します。デフォルトは`3`です。
 
-* `config.active_support.time_precision`は、JSONエンコードされた時間値の精度を指定します。デフォルトは`3`です。
-
-* `ActiveSupport::Logger.silencer`を`false`に設定すると、ブロック内でのログ出力を抑制する機能がオフになります。 デフォルト値は`true`です。
+* `ActiveSupport::Logger.silencer` is set to `false` to disable the ability to silence logging in a block. デフォルト値は`true`です。
 
 * `ActiveSupport::Cache::Store.logger`は、キャッシュストア操作で使用するロガーを指定します。
 
@@ -539,7 +568,7 @@ development:
 $ echo $DATABASE_URL
 postgresql://localhost/my_database
 
-$ rails runner 'puts ActiveRecord::Base.configurations'
+$ bin/rails runner 'puts ActiveRecord::Base.configurations'
 {"development"=>{"adapter"=>"postgresql", "host"=>"localhost", "database"=>"my_database"}}
 ```
 
@@ -556,7 +585,7 @@ development:
 $ echo $DATABASE_URL
 postgresql://localhost/my_database
 
-$ rails runner 'puts ActiveRecord::Base.configurations'
+$ bin/rails runner 'puts ActiveRecord::Base.configurations'
 {"development"=>{"adapter"=>"postgresql", "host"=>"localhost", "database"=>"my_database", "pool"=>5}}
 ```
 
@@ -572,7 +601,7 @@ development:
 $ echo $DATABASE_URL
 postgresql://localhost/my_database
 
-$ rails runner 'puts ActiveRecord::Base.configurations'
+$ bin/rails runner 'puts ActiveRecord::Base.configurations'
 {"development"=>{"adapter"=>"sqlite3", "database"=>"NOT_my_database"}}
 ```
 
@@ -713,11 +742,47 @@ config.relative_url_root = "/app1"
 
 #### Passengerを使用する
 
-Passengerを使用すると、アプリケーションをサブディレクトリで実行するのが容易になります。設定方法の詳細については、[passengerマニュアル](http://www.modrails.com/documentation/Users%20guide%20Apache.html#deploying_rails_to_sub_uri)を参照してください。
+Passengerを使用すると、アプリケーションをサブディレクトリで実行するのが容易になります。You can find the relevant configuration in the [Passenger manual](http://www.modrails.com/documentation/Users%20guide%20Apache.html#deploying_rails_to_sub_uri).
 
 #### リバースプロキシを使用する
 
-TODO
+Deploying your application using a reverse proxy has definite advantages over traditional deploys. They allow you to have more control over your server by layering the components required by your application.
+
+Many modern web servers can be used as a proxy server to balance third-party elements such as caching servers or application servers.
+
+One such application server you can use is [Unicorn](http://unicorn.bogomips.org/) to run behind a reverse proxy.
+
+In this case, you would need to configure the proxy server (NGINX, Apache, etc) to accept connections from your application server (Unicorn). By default Unicorn will listen for TCP connections on port 8080, but you can change the port or configure it to use sockets instead.
+
+You can find more information in the [Unicorn readme](http://unicorn.bogomips.org/README.html) and understand the [philosophy](http://unicorn.bogomips.org/PHILOSOPHY.html) behind it.
+
+Once you've configured the application server, you must proxy requests to it by configuring your web server appropriately. For example your NGINX config may include:
+
+```
+upstream application_server {
+  server 0.0.0.0:8080
+}
+
+server {
+  listen 80;
+  server_name localhost;
+
+  root /root/path/to/your_app/public;
+
+  try_files $uri/index.html $uri.html @app;
+
+  location @app {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+    proxy_pass http://application_server;
+  }
+
+  # some other configuration
+}
+```
+
+Be sure to read the [NGINX documentation](http://nginx.org/en/docs/) for the most up-to-date information.
 
 #### サブディレクトリにデプロイする場合の検討事項
 
@@ -731,7 +796,7 @@ TODO
 Rails環境の設定
 --------------------------
 
-一部の設定については、Railsの外部から環境変数を与えることで行なうこともできます。以下の環境変数は、Railsの多くの部分で認識されます。
+一部の設定については、Railsの外部から環境変数を与えることで行なうこともできます。The following environment variables are recognized by various parts of Rails:
 
 * `ENV["RAILS_ENV"]`は、Railsが実行される環境 (production、development、testなど) を定義します。
 
@@ -844,7 +909,7 @@ Railsにあるイニシャライザのリストを以下にまとめました。
 
 * `action_controller.compile_config_methods`: 指定された設定用メソッドを初期化し、より高速にアクセスできるようにします。
 
-* `active_record.initialize_timezone`: `ActiveRecord::Base.time_zone_aware_attributes`をtrueに設定し、`ActiveRecord::Base.default_timezone`をUTCに設定します。属性がデータベースから読み込まれた場合、それらの属性は`Time.zone`で指定されたタイムゾーンに変換されます。
+* `active_record.initialize_timezone`: `ActiveRecord::Base.time_zone_aware_attributes`をtrueに設定し、`ActiveRecord::Base.default_timezone`をUTCに設定します。
 
 * `active_record.logger`: `Rails.logger`に対する設定が行われていない場合に`ActiveRecord::Base.logger`を設定します。
 
@@ -926,3 +991,24 @@ ActiveRecord::ConnectionTimeoutError - could not obtain a database connection wi
 上のエラーが発生するような場合は、`database.yml`の`pool`オプションの数値を増やして接続プールのサイズを増やすことで対応できます。
 
 NOTE: アプリケーションをマルチスレッド環境で実行している場合、多くのスレッドが多くの接続に同時アクセスする可能性があります。現時点のリクエストの負荷によっては、限られた接続数を多数のスレッドが奪い合うようなことになるかもしれません。
+
+
+Custom configuration
+--------------------
+
+You can configure your own code through the Rails configuration object with custom configuration under the `config.x` property. It works like this:
+
+```ruby
+  config.x.payment_processing.schedule = :daily
+  config.x.payment_processing.retries  = 3
+  config.x.super_debugger = true
+  ```
+
+These configuration points are then available through the configuration object:
+
+  ```ruby
+  Rails.configuration.x.payment_processing.schedule # => :daily
+  Rails.configuration.x.payment_processing.retries  # => 3
+  Rails.configuration.x.super_debugger              # => true
+  Rails.configuration.x.super_debugger.not_set      # => nil
+  ```
