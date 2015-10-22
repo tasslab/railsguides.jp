@@ -1,4 +1,3 @@
-﻿
 Action Controller の概要
 ==========================
 
@@ -73,7 +72,7 @@ publicなメソッドでないとアクションとして呼び出すことは�
 class ClientsController < ApplicationController
   # このアクションではクエリ文字列パラメータが使用されています
   # 送信側でHTTP GETリクエストが使用されているためです
-  # ただしパラメータにアクセスするうえでは下との違いは生じません
+  # ただしパラメータにアクセスするうえでは下との違いは生じませんThe URL for
   # 有効な顧客リストを得るため、このアクションへのURLは以下のようになっています
   # clients: /clients?status=activated
   def index
@@ -85,11 +84,11 @@ class ClientsController < ApplicationController
   end
 
   # このアクションではPOSTパラメータが使用されています。このパラメータは通常
-  # ユーザーが送信したHTMLフォームが元になります。
+  # ユーザーが送信したHTMLフォームが元になります。The URL for
   # これはRESTfulなアクセスであり、URLは"/clients"となります。
   # データはURLではなくリクエストのbodyの一部として送信されます。
   def create
-    @client = Client.new(params[:client])
+  @client = Client.new(params[:client])
     if @client.save
       redirect_to @client
     else
@@ -101,7 +100,7 @@ class ClientsController < ApplicationController
 end
 ```
 
-### ハッシュと配列のパラメータ
+### Hash and Array パラメータ
 
 `params`ハッシュは、一次元のキー・値ペアしか格納できないということはありません。配列や、ネストしたハッシュを格納することもできます。値の配列をフォームから送信したい場合は、以下のように空の角かっこ[]をキー名に追加してください。
 
@@ -111,7 +110,7 @@ GET /clients?ids[]=1&ids[]=2&ids[]=3
 
 NOTE: "["と"]"はURLで使用できない文字なので、この例の実際のURLは "/clients?ids%5b%5d=1&ids%5b%5d=2&ids%5b%5d=3"のようになります。これについては、ブラウザが自動的に面倒を見てくれ、さらにRailsはパラメータ受け取り時に自動的に復元してくれるので、通常は気にする必要はありません。ただし、何らかの理由でサーバーにリクエストを手動送信しなければならない場合には、このことを思い出す必要があります。
 
-これで、受け取った`params[:ids]`の値は`["1", "2", "3"]`になりました。もう一つ知っておいて欲しいのは、パラメータの値はすべて「文字列型」であることです。Railsはパラメータの型を推測することもしなければ、型変換も行いませんので、必要であれば自分で型を変換する必要があります。パラメータの数字を`to_i`で整数に変換するのはよく行われます。
+The value of `params[:ids]` will now be `["1", "2", "3"]`. もう一つ知っておいて欲しいのは、パラメータの値はすべて「文字列型」であることです。Railsはパラメータの型を推測することもしなければ、型変換も行いませんので、必要であれば自分で型を変換する必要があります。パラメータの数字を`to_i`で整数に変換するのはよく行われます。
 
 NOTE: `params`の中に`[]`、`[nil]`、`[nil, nil, ...]`という値があると、すべて自動的に`nil`に置き換えられます。この動作は、デフォルトのセキュリティ上の理由にもとづいています。詳細については [セキュリティガイド](security.html#安全でないクエリ生成) を参照してください。
 
@@ -158,7 +157,7 @@ Webサービスアプリケーションを開発していると、パラメー�
 
 NOTE: 従来のXMLパラメータ解析のサポートは、`actionpack-xml_parser`というgemに書き出されました。
 
-### ルーティングパラメータ
+### Routing パラメータ
 
 `params`ハッシュに必ず含まれるキーは`:controller`キーと`:action`キーです。ただしこれらの値には直接アクセスせず、`controller_name`と`action_name`という専用のメソッドを使用してください。ルーティングで定義されるその他の値パラメータ (`id`など) にもアクセスできます。例として、「有効」と「無効」のいずれかで表される顧客のリストについて考えてみましょう。「プリティな」URLに含まれる`:status`パラメータを捉えるためのルートを1つ追加してみましょう。
 
@@ -170,7 +169,7 @@ get '/clients/:status' => 'clients#index', foo: 'bar'
 
 ### `default_url_options`
 
-コントローラで`default_url_options`という名前のメソッドを定義すると、URL生成用のグローバルなデフォルトパラメータを設定できます。このようなメソッドは、必要なデフォルト値を持つハッシュを返さねばならず、キーはシンボルでなければなりません。
+You can set global default parameters for URL generation by defining a method called `default_url_options` in your controller. このようなメソッドは、必要なデフォルト値を持つハッシュを返さねばならず、キーはシンボルでなければなりません。
 
 ```ruby
 class ApplicationController < ActionController::Base
@@ -180,13 +179,15 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-これらのオプションはURL生成の開始点として使用でき、`url_for`呼び出しで渡されるオプションで上書きすることもできます。
+These options will be used as a starting point when generating URLs, so it's possible they'll be overridden by the options passed in `url_for` calls.
 
-`ApplicationController`で`default_url_options`を定義すると、上の例で示したように、すべてのURL生成で使用されるようになります。このメソッドを特定のコントローラで定義すれば、そのコントローラで生成されるURLにだけ影響します。
+If you define `default_url_options` in `ApplicationController`, as in the example above, it would be used for all URL generation. このメソッドを特定のコントローラで定義すれば、そのコントローラで生成されるURLにだけ影響します。
 
-### Strong Parameters
+### Strong パラメータ
 
-strong parametersを使用することで、Action ControllerのパラメータがActive Modelのマスアサインメントに利用されることを禁止できます。ホワイトリストに追記したもののみ使用できます。これは、多くの属性を一度に更新したいときに、どの属性の更新を許可し、どの属性の更新を禁止するかを明示的に決定しなければならないことを意味します。大雑把にすべての属性の更新をまとめて許可してしまうと、外部に公開する必要のない属性まで誤って公開されてしまう可能性が生じますので、そのような事態を防ぐために行います。
+With strong parameters, Action Controller parameters are forbidden to
+be used in Active Model mass assignments until they have been
+whitelisted. これは、多くの属性を一度に更新したいときに、どの属性の更新を許可し、どの属性の更新を禁止するかを明示的に決定しなければならないことを意味します。大雑把にすべての属性の更新をまとめて許可してしまうと、外部に公開する必要のない属性まで誤って公開されてしまう可能性が生じますので、そのような事態を防ぐために行います。
 
 さらに、パラメータの属性には「必須 (required)」を指定することもでき、事前に定義したraise/rescueフローを実行して400 Bad Requestで終了するようにすることもできます。
 
@@ -211,19 +212,19 @@ class PeopleController < ActionController::Base
   end
 
   private
-    # privateメソッドを使用して、許可するパラメータをカプセル化します。
+    # Using a private method to encapsulate the permissible parameters
     # これは非常によい手法であり、createとupdateの両方で使いまわすことで
     # 同じ許可を与えることができます。また、許可する属性をユーザーごとにチェックするよう
     # このメソッドを特殊化することもできます。
     def person_params
-      params.require(:person).permit(:name, :age)
+  params.require(:person).permit(:name, :age)
     end
 end
 ```
 
 #### 許可されたスカラー値
 
-以下の例では
+Given
 
 ```ruby
 params.permit(:id)
@@ -245,9 +246,10 @@ params.permit(id: [])
 params.require(:log_entry).permit!
 ```
 
-こうすることで、`:log_entry`パラメータハッシュとすべてのサブハッシュが「許可」としてマーキングされます。ただし、`permit!`は属性を一括で許可してしまうものなので、くれぐれも慎重に使用してください。現在のモデルはもちろんのこと、将来属性が追加されたときにそこにマスアサインメントの脆弱性が生じる可能性があるからです。
+This will mark the `:log_entry` parameters hash and any sub-hash of it
+permitted. ただし、`permit!`は属性を一括で許可してしまうものなので、くれぐれも慎重に使用してください。現在のモデルはもちろんのこと、将来属性が追加されたときにそこにマスアサインメントの脆弱性が生じる可能性があるからです。
 
-#### ネストしたパラメータ
+#### Nested パラメータ
 
 ネストしたパラメータに対しても以下のように許可を与えることができます。
 
@@ -265,7 +267,7 @@ params.permit(:name, { emails: [] },
 
 ```ruby
 # `fetch`を使用することでデフォルト値を提供し、
-# Strong Parameters APIを使用することができます。
+# the Strong パラメータ API from there.
 params.fetch(:blog, {}).permit(:title, :author)
 ```
 
@@ -287,7 +289,7 @@ params.require(:author).permit(:name, books_attributes: [:title, :id, :_destroy]
 params.require(:book).permit(:title, chapters_attributes: [:title])
 ```
 
-#### Strong Parametersのスコープ外
+#### Outside the Scope of Strong パラメータ
 
 strong parameter APIは、最も一般的な使用状況を念頭に置いて設計されています。つまり、あらゆるホワイトリスト化問題を扱えるような万能性があるわけではないということです。しかし、このAPIを自分のコードに混在させることで、状況に対応しやすくすることはできます。
 
@@ -304,10 +306,10 @@ end
 
 Railsアプリケーションにはユーザーごとにセッションが設定されます。前のリクエストの情報を次のリクエストでも利用するためにセッションに少量のデータが保存されます。セッションはコントローラとビューでのみ使用可能です。また、以下のように複数のストレージから選ぶことができます。
 
-* `ActionDispatch::Session::CookieStore` - すべてのセッションをクライアント側のブラウザのcookieに保存する
-* `ActionDispatch::Session::CacheStore` - データをRailsのキャッシュに保存する
-* `ActionDispatch::Session::ActiveRecordStore` - Active Recordを使用してデータベースに保存する (`activerecord-session_store` gemが必要)
-* `ActionDispatch::Session::MemCacheStore` - データをmemcachedクラスタに保存する (この実装は古いのでCacheStoreを検討すべき)
+* `ActionDispatch::セッション::CookieStore` - Stores everything on the client.
+* `ActionDispatch::セッション::CacheStore` - Stores the data in the Rails cache.
+* `ActionDispatch::セッション::ActiveRecordStore` - Stores the data in a database using Active Record. (require `activerecord-session_store` gem).
+* `ActionDispatch::セッション::MemCacheStore` - Stores the data in a memcached cluster (this is a legacy implementation; consider using CacheStore instead).
 
 すべてのセッションにおいて、セッションごとに独自IDをcookieに保存します (注意: RailsではセッションIDをURLで渡すことはセキュリティ上の危険があるため許可されません。セッションIDはcookieで渡さなくてはなりません)。
 
@@ -315,7 +317,7 @@ Railsアプリケーションにはユーザーごとにセッションが設定
 
 CookieStoreには約4KBのデータを保存できます。他のセッションストアに比べて少量ですが、通常はこれで十分です。セッションに大量のデータを保存することは、利用するセッションストアの種類にかかわらずお勧めできません。特に、セッションに複雑なオブジェクト (モデルインスタンスなどの基本的なRubyオブジェクトでないもの) を保存することはお勧めできません。このようなことをすると、サーバーがリクエスト間でセッションを再編成できずにエラーになることがあります。
 
-ユーザーセッションに重要なデータが含まれていない場合、またはユーザーセッションを長期間保存する必要がない場合 (flashメッセージで使用したいだけの場合など) は、`ActionDispatch::Session::CacheStore`を検討してください。この方式では、Webアプリケーションに設定されているキャッシュ実装を利用してセッションを保存します。この方法のよい点は、既存のキャッシュインフラをそのまま利用してセッションを保存できることと、管理用の設定を追加する必要がないことです。この方法の欠点はセッションが短命になることです。セッションはいつでも消える可能性があります。
+If your user sessions don't store critical data or don't need to be around for long periods (for instance if you just use the flash for messaging), you can consider using `ActionDispatch::セッション::CacheStore`. この方式では、Webアプリケーションに設定されているキャッシュ実装を利用してセッションを保存します。この方法のよい点は、既存のキャッシュインフラをそのまま利用してセッションを保存できることと、管理用の設定を追加する必要がないことです。この方法の欠点はセッションが短命になることです。セッションはいつでも消える可能性があります。
 
 セッションストレージの詳細については[セキュリティガイド](security.html)を参照してください。
 
@@ -345,7 +347,7 @@ Rails.application.config.session_store :cookie_store, key: '_your_app_session', 
 Railsはセッションデータの署名に使用する秘密鍵を (CookieStore用に) 設定します。この秘密鍵は`config/secrets.yml`で変更できます。
 
 ```ruby
-# Be sure to restart your server when you modify this file.
+# このファイルを変更後サーバーを必ず再起動してください。
 
 # Your secret key is used for verifying the integrity of signed cookies.
 # If you change this key, all old signed cookies will become invalid!
@@ -371,13 +373,13 @@ production:
 
 NOTE: `CookieStore`を使用中に秘密鍵を変更すると、既存のセッションがすべて無効になります。
 
-### セッションにアクセスする
+### Accessing the セッション
 
 コントローラ内では`session`インスタンスメソッドを使用してセッションにアクセスできます。
 
-NOTE: セッションは遅延読み込みされます。アクションのコードでセッションにアクセスしなかった場合、セッションは読込されません。従って、アクセスしていないのであればセッションを無効にする必要はまったくありません。アクセスしないことで既にセッションは無効になっています。
+NOTE: セッションs are lazily loaded. アクションのコードでセッションにアクセスしなかった場合、セッションは読込されません。従って、アクセスしていないのであればセッションを無効にする必要はまったくありません。アクセスしないことで既にセッションは無効になっています。
 
-セッションの値は、ハッシュに似たキー/値ペアを使用して保存されます。
+セッション values are stored using key/value pairs like a hash:
 
 ```ruby
 class ApplicationController < ActionController::Base
@@ -424,7 +426,7 @@ class LoginsController < ApplicationController
 end
 ```
 
-セッション全体をリセットするには`reset_session`を使用します。
+To reset the entire session, use `reset_session`.
 
 ### Flash
 
@@ -464,7 +466,7 @@ redirect_to root_url, flash: { referral_code: 1234 }
 
     <!-- 以下略 -->
   </body>
-</html> 
+</html>
 ```
 
 このように、アクションで通知(notice)や警告(alert)メッセージを設置すると、レイアウト側で自動的にそのメッセージが表示されます。
@@ -504,7 +506,7 @@ end
 ```ruby
 class ClientsController < ApplicationController
   def create
-    @client = Client.new(params[:client])
+  @client = Client.new(params[:client])
     if @client.save
       # ...
     else
@@ -549,7 +551,8 @@ end
 セッションを削除する場合はキーに`nil`を指定することで削除しましたが、cookieを削除する場合はこの方法ではなく、`cookies.delete(:key)`を使用してください。
 
 Railsでは、機密データ保存のために署名済みcookie jarと暗号化cookie jarを利用することもできます。署名済みcookie jarでは、暗号化した署名をcookie値に追加することで、cookieの改竄を防ぎます。暗号化cookie jarでは、署名の追加と共に、値自体を暗号化してエンドユーザーに読まれることのないようにします。
-詳細については[APIドキュメント](http://api.rubyonrails.org/classes/ActionDispatch/Cookies.html)を参照してください。
+Refer to the [API documentation](http://api.rubyonrails.org/classes/ActionDispatch/Cookies.html)
+for more details.
 
 これらの特殊なcookieではシリアライザを使用して値を文字列に変換して保存し、読み込み時に逆変換(deserialize)を行ってRubyオブジェクトに戻しています。
 
@@ -585,7 +588,8 @@ end
 ```
 
 cookieには文字列や数字などの単純なデータだけを保存することをお勧めします。
-cookieに複雑なオブジェクトを保存しなければならない場合は、後続のリクエストでcookieから値を読み出す場合の変換については自分で面倒を見る必要があります。
+If you have to store complex objects, you would need to handle the conversion
+manually when reading the values on subsequent requests.
 
 cookieセッションストアを使用する場合、`session`や`flash`ハッシュについてもこのことは該当します。
 
@@ -612,9 +616,9 @@ end
 フィルタ
 -------
 
-フィルタは、アクションの直前 (before)、直後 (after)、あるいはその両方 (around) に実行されるメソッドです。
+フィルタ are methods that are run before, after or "around" a controller action.
 
-フィルタは継承可能であるため、`ApplicationController`でフィルタを設定すればアプリケーションのすべてのコントローラでフィルタが有効になります。
+フィルタ are inherited, so if you set a filter on `ApplicationController`, it will be run on every controller in your application.
 
 "Before"フィルタは、リクエストサイクルを止めてしまう可能性があることに留意してください。"before"フィルタのよくある使われ方として、ユーザーがアクションを実行する前にログインを要求するというのがあります。このフィルタメソッドは以下のような感じになるでしょう。
 
@@ -643,9 +647,9 @@ class LoginsController < ApplicationController
 end
 ```
 
-上のようにすることで、`LoginsController`の`new`アクションと`create`アクションをこれまでどおり認証不要にすることができました。特定のアクションについてだけフィルタをスキップしたい場合には`:only`オプションを使用します。逆に特定のアクションについてだけフィルタをスキップしたくない場合は`:except`オプションを使用します。これらのオプションはフィルタを追加するときにも使用できるので、最初の場所で選択したアクションに対してだけ実行されるフィルタを追加することもできます。
+上のようにすることで、`LoginsController`の`new`アクションと`create`アクションをこれまでどおり認証不要にすることができました。特定のアクションについてだけフィルタをスキップしたい場合には`:only`オプションを使用します。逆に特定のアクションについてだけフィルタをスキップしたくない場合は`:except`オプションを使用します。These options can be used when adding filters too, so you can add a filter which only runs for selected actions in the first place.
 
-### afterフィルタとaroundフィルタ
+### After フィルタ and Around フィルタ
 
 "before"フィルタ以外に、アクションの実行後に実行されるフィルタや、実行前実行後の両方で実行されるフィルタを使用することもできます。
 
@@ -677,11 +681,11 @@ end
 
 あえてyieldを実行せず、自分で応答を作成するという方法もあります。この場合、アクションは実行されません。
 
-### その他のフィルタ使用法
+### Other Ways to Use フィルタ
 
-最も一般的なフィルタの使用法は、privateメソッドを作成し、*_action を使用してそのメソッドを追加することですが、同じ結果を得られるフィルタ使用法が他にも2とおりあります。
+While the most common way to use filters is by creating private methods and using *_action to add them, there are two other ways to do the same thing.
 
-1番目は、*\_action メソッドに対して直接ブロックを与えることです。このブロックはコントローラを引数として受け取ります。さきほどの`require_login`フィルタを書き換えて、ブロックを使用するようにします。
+The first is to use a block directly with the *\_action methods. このブロックはコントローラを引数として受け取ります。さきほどの`require_login`フィルタを書き換えて、ブロックを使用するようにします。
 
 ```ruby
 class ApplicationController < ActionController::Base
@@ -694,7 +698,7 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-ここで、フィルタで`send`メソッドを使用していることにご注意ください。その理由は、`logged_in?`メソッドはprivateであり、コントローラのスコープではフィルタが動作しないためです (訳注: `send`メソッドを使用するとprivateメソッドを呼び出せます)。この方法は、特定のフィルタを実装する方法としては推奨されませんが、もっとシンプルな場合には役に立つことがあるかもしれません。
+Note that the filter in this case uses `send` because the `logged_in?` method is private and the filter is not run in the scope of the controller. この方法は、特定のフィルタを実装する方法としては推奨されませんが、もっとシンプルな場合には役に立つことがあるかもしれません。
 
 2番目の方法はクラスを使用してフィルタを扱うものです (実際には、正しいメソッドに応答するオブジェクトであれば何でも構いません)。他の2つの方法で実装すると読みやすくならず、再利用も困難になるような複雑な場合に有用です。例として、ログインフィルタをクラスで書き換えてみましょう。
 
@@ -775,42 +779,42 @@ Railsでは、[formヘルパー](form_helpers.html)を使用して生成され�
 
 #### `path_parameters`、`query_parameters`、`request_parameters`
 
-Railsは、リクエストに関連する`params`ハッシュに集約してくれます。 collects all of the parameters sent along with the request in the `params` hash, whether they are sent as part of the query string or the post body. requestオブジェクトには3つのアクセサがあり、パラメータの由来に応じたアクセスを行なうこともできます。`query_parameters`ハッシュにはクエリ文字列として送信されたパラメータが含まれます。`request_parameters`ハッシュにはPOST bodyの一部として送信されたパラメータが含まれます。`path_parameters`には、ルーティング機構によって特定のコントローラとアクションへのパスの一部であると認識されたパラメータが含まれます。
+Rails collects all of the parameters sent along with the request in the `params` hash, whether they are sent as part of the query string or the post body. requestオブジェクトには3つのアクセサがあり、パラメータの由来に応じたアクセスを行なうこともできます。`query_parameters`ハッシュにはクエリ文字列として送信されたパラメータが含まれます。`request_parameters`ハッシュにはPOST bodyの一部として送信されたパラメータが含まれます。`path_parameters`には、ルーティング機構によって特定のコントローラとアクションへのパスの一部であると認識されたパラメータが含まれます。
 
-### The `response`オブジェクト
+### `response`オブジェクト
 
 responseオブジェクトはアクションが実行されるときに構築され、クライアントに送り返されるデータを描画 (レンダリング) するものなので、responseオブジェクトを直接使用することは通常ありません。しかし、たとえばafter filter内などでresponseオブジェクトを直接操作できれば便利です。responseオブジェクトのアクセサメソッドがセッターを持っていれば、これを使用してresponseオブジェクトの値を直接変更できます。
 
 | `response`のプロパティ | 目的                                                                                             |
 | ---------------------- | --------------------------------------------------------------------------------------------------- |
-| body                   | クライアントに送り返されるデータの文字列。多くの場合HTML。                  |
-| status                 | レスポンスのステータスコード (200 OK、404 file not foundなど)|
-| location               | リダイレクト時のリダイレクト先URL                                                  |
-| content_type           | レスポンスのContent-Type                                                                   |
-| charset                | レスポンスで使用される文字セット。デフォルトは"utf-8"。                                  |
-| headers                | レスポンスで使用されるヘッダー                                                                      |
+| body                   | This is the string of data being sent back to the client. This is most often HTML.                  |
+| status                 | The HTTP status code for the response, like 200 for a successful request or 404 for file not found. |
+| location               | The URL the client is being redirected to, if any.                                                  |
+| content_type           | The content type of the response.                                                                   |
+| charset                | The character set being used for the response. Default is "utf-8".                                  |
+| headers                | Headers used for the response.                                                                      |
 
-#### カスタムヘッダーの設定
+#### Setting Custom Headers
 
-レスポンスでカスタムヘッダーを使用したいのであれば、`response.headers`が利用できます。このヘッダー属性はハッシュであり、ヘッダ名と値がその中でマップされています。一分の値はRailsによって自動的に設定されます。ヘッダに追加・変更を行いたい場合は以下のように`response.headers`に割り当てます。
+If you want to set custom headers for a response then `response.headers` is the place to do it. The headers attribute is a hash which maps header names to their values, and Rails will set some of them automatically. If you want to add or change a header, just assign it to `response.headers` this way:
 
 ```ruby
 response.headers["Content-Type"] = "application/pdf"
 ```
 
-NOTE: 上のようなことをしたいのであれば、`content_type`セッターを直接使用する方がずっとわかりやすくなります。
+Note: in the above case it would make more sense to use the `content_type` setter directly.
 
-HTTP認証
+HTTP Authentications
 --------------------
 
-Railsには2とおりのHTTP認証機構がビルトインされています。
+Rails comes with two built-in HTTP authentication mechanisms:
 
-* BASIC認証
-* ダイジェスト認証
+* Basic Authentication
+* Digest Authentication
 
-### HTTP BASIC認証
+### HTTP Basic Authentication
 
-HTTP BASIC認証は認証スキームの一種であり、非常に多くのブラウザおよびHTTPクライアントによってサポートされています。例として、Webアプリケーションに管理画面があり、ブラウザのHTTP BASIC認証ダイアログウィンドウでユーザー名とパスワードを入力しないとアクセスできないようにしたいとします。このビルトイン認証メカニズムはとても簡単に利用できます。必要なのは`http_basic_authenticate_with`だけです。
+HTTP basic authentication is an authentication scheme that is supported by the majority of browsers and other HTTP clients. As an example, consider an administration section which will only be available by entering a username and a password into the browser's HTTP basic dialog window. Using the built-in authentication is quite easy and only requires you to use one method, `http_basic_authenticate_with`.
 
 ```ruby
 class AdminsController < ApplicationController
@@ -818,11 +822,11 @@ class AdminsController < ApplicationController
 end
 ```
 
-このとき、`AdminsController`を継承した名前空間付きのコントローラを作成することもできます。このフィルタは、該当するコントローラのすべてのアクションで実行されるので、それらをHTTP BASIC認証で保護することができます。
+With this in place, you can create namespaced controllers that inherit from `AdminsController`. The filter will thus be run for all actions in those controllers, protecting them with HTTP basic authentication.
 
-### HTTPダイジェスト認証
+### HTTP Digest Authentication
 
-HTTPダイジェスト認証は、BASIC認証よりも高度な認証システムであり、暗号化されていない平文パスワードをネットワークに送信しなくて済む利点があります (BASIC認証も、HTTPS上で行えば安全になります)。Railsではダイジェスト認証も簡単に使用できます。必要なのは`authenticate_or_request_with_http_digest`メソッドだけです。
+HTTP digest authentication is superior to the basic authentication as it does not require the client to send an unencrypted password over the network (though HTTP basic authentication is safe over HTTPS). Using digest authentication with Rails is quite easy and only requires using one method, `authenticate_or_request_with_http_digest`.
 
 ```ruby
 class AdminsController < ApplicationController
@@ -840,20 +844,20 @@ class AdminsController < ApplicationController
 end
 ```
 
-上の例で示したように、`authenticate_or_request_with_http_digest`のブロックでは、引数を1つ (ユーザー名) しか取りません。そしてブロックからはパスワードが返されます。`authenticate_or_request_with_http_digest`から`nil`または`false`が返された場合は、認証が失敗します。
+As seen in the example above, the `authenticate_or_request_with_http_digest` block takes only one argument - the username. And the block returns the password. Returning `false` or `nil` from the `authenticate_or_request_with_http_digest` will cause authentication failure.
 
-ストリーミングとファイルダウンロード
+Streaming and File Downloads
 ----------------------------
 
-HTMLを出力するのではなく、ユーザーにファイルを直接送信したい場合があります。`send_data`メソッドと`send_file`メソッドはRailsのすべてのコントローラで利用でき、いずれもストリームデータをクライアントに送信するために使用します。`send_file`は、ディスク上のファイル名を取得したり、ファイルの内容をストリーミングしたりできる、便利なメソッドです。
+Sometimes you may want to send a file to the user instead of rendering an HTML page. All controllers in Rails have the `send_data` and the `send_file` methods, which will both stream data to the client. `send_file` is a convenience method that lets you provide the name of a file on the disk and it will stream the contents of that file for you.
 
-クライアントにデータをストリーミングするには、`send_data`を使用します。
+To stream data to the client, use `send_data`:
 
 ```ruby
 require "prawn"
 class ClientsController < ApplicationController
-  # クライアントに関する情報を含むPDFを生成し、
-  # 返します。ユーザーはPDFをファイルダウンロードとして取得できます。
+  # Generates a PDF document with information on the client and
+  # returns it. The user will get the PDF as a file download.
   def download_pdf
     client = Client.find(params[:id])
     send_data generate_pdf(client),
@@ -873,15 +877,15 @@ class ClientsController < ApplicationController
 end
 ```
 
-上の例の`download_pdf`アクションから、privateメソッドが呼び出され、実際のPDF生成はprivateメソッド側で行われます。PDFは文字列として返されます。続いてこの文字列はクライアントに対してファイルダウンロードとしてストリーミング送信されます。このときに保存用のファイル名もクライアントに示されます。ストリーミング送信するファイルを、クライアント側でファイルとしてダウンロードして欲しくない (ファイルを保存して欲しくない) 場合があります。たとえば、HTMLページに埋め込める画像ファイルを撮影したとします。このときブラウザに対して、このファイルはダウンロード用ではないということを伝えるには、`:disposition`オプションに"inline"を指定します。逆のオプションは"attachment"で、こちらはストリーミングのデフォルト設定です。
+The `download_pdf` action in the example above will call a private method which actually generates the PDF document and returns it as a string. This string will then be streamed to the client as a file download and a filename will be suggested to the user. Sometimes when streaming files to the user, you may not want them to download the file. Take images, for example, which can be embedded into HTML pages. To tell the browser a file is not meant to be downloaded, you can set the `:disposition` option to "inline". The opposite and default value for this option is "attachment".
 
-### ファイルを送信する
+### Sending Files
 
-サーバーのディスク上にすでにあるファイルを送信するには、`send_file`メソッドを使用します。
+If you want to send a file that already exists on disk, use the `send_file` method.
 
 ```ruby
 class ClientsController < ApplicationController
-  # ディスク上に生成・保存済みのファイルをストリーミング送信する
+  # Stream a file that has already been generated and stored on disk.
   def download_pdf
     client = Client.find(params[:id])
     send_file("#{Rails.root}/files/clients/#{client.id}.pdf",
@@ -891,21 +895,21 @@ class ClientsController < ApplicationController
 end
 ```
 
-ファイルは4KBずつ読み出され、ストリーミング送信されます。これは、巨大なファイルを一度にメモリに読み込まないようにするためです。この分割読み出しは`:stream`オプションでオフにできます。`:buffer_size`オプションでブロックサイズを調整することもできます。
+This will read and stream the file 4kB at the time, avoiding loading the entire file into memory at once. You can turn off streaming with the `:stream` option or adjust the block size with the `:buffer_size` option.
 
-`:type`オプションが未指定の場合、`:filename`で取得したファイル名の拡張子から推測して与えられます。拡張子に該当するContent-TypeがRailsに登録されていない場合、`application/octet-stream`が使用されます。
+If `:type` is not specified, it will be guessed from the file extension specified in `:filename`. If the content type is not registered for the extension, `application/octet-stream` will be used.
 
-WARNING: サーバーのディスク上のファイルパスを指定するときに、(paramsやcookieなどの) クライアントから送信されたデータを使用する場合は、十分な注意が必要です。クライアントから邪悪なファイルパスが送り込まれ、開発者が意図しないファイルにアクセスされてしまうというセキュリティ上のリスクがあることを常に念頭に置いてください。
+WARNING: Be careful when using data coming from the client (params, cookies, etc.) to locate the file on disk, as this is a security risk that might allow someone to gain access to files they are not meant to.
 
-TIP: 静的なファイルをわざわざRails経由でストリーミング送信することはお勧めできません。ほとんどの場合、Webサーバーのpublicフォルダに置いてダウンロードさせれば済みます。Railsを経由してストリーミングでダウンロードするよりも、ApacheなどのWebサーバーから直接ファイルをダウンロードする方が遥かに高効率であり、しかもRailsスタック全体を経由する不必要なリクエストを受け付けずに済みます。
+TIP: It is not recommended that you stream static files through Rails if you can instead keep them in a public folder on your web server. It is much more efficient to let the user download the file directly using Apache or another web server, keeping the request from unnecessarily going through the whole Rails stack.
 
-### RESTfulなダウンロード
+### RESTful Downloads
 
-`send_data`だけでも問題なく使用できますが、真にRESTfulなアプリケーションを作ろうとしているのであれば、ファイルダウンロード専用にわざわざアクションを作成する必要は通常はありません。RESTという用語では、上の例で使用されているPDFファイルのようなものは、クライアントリソースを別の形で表現したものであると見なされます。Railsには、これに基づいた"RESTfulダウンロード"を簡単に実現するための洗練された手段も用意されています。PDFダウンロードをストリーミングとして扱わず、`show`アクションの一部として扱うように上の例を変更したものを以下に示します。
+While `send_data` works just fine, if you are creating a RESTful application having separate actions for file downloads is usually not necessary. In REST terminology, the PDF file from the example above can be considered just another representation of the client resource. Rails provides an easy and quite sleek way of doing "RESTful downloads". Here's how you can rewrite the example so that the PDF download is a part of the `show` action, without any streaming:
 
 ```ruby
 class ClientsController < ApplicationController
-  # ユーザーはリソース受信時にHTMLまたはPDFをリクエストできる
+  # The user can request to receive this resource as HTML or PDF.
   def show
     @client = Client.find(params[:id])
 
@@ -917,27 +921,32 @@ class ClientsController < ApplicationController
 end
 ```
 
-なお、この例が実際に動作するには、RailsのMIME typeにPDFを追加する必要があります。これを行なうには、`config/initializers/mime_types.rb`に以下を追加します。
+In order for this example to work, you have to add the PDF MIME type to Rails. This can be done by adding the following line to the file `config/initializers/mime_types.rb`:
 
 ```ruby
 Mime::Type.register "application/pdf", :pdf
 ```
 
-NOTE: Railsの設定ファイルは、起動時にしか読み込まれません(app/以下のファイルのようにリクエストごとに読み出されたりしません)。上の設定変更を反映するサーバーを再起動する必要があります。
+NOTE: Configuration files are not reloaded on each request, so you have to restart the server in order for their changes to take effect.
 
-これで、以下のようにURLに".pdf"を追加するだけでPDF版のclientを取得できます。
+Now the user can request to get a PDF version of a client just by adding ".pdf" to the URL:
 
 ```bash
 GET /clients/1.pdf
 ```
 
-### 任意のデータをライブストリーミングする
+### Live Streaming of Arbitrary Data
 
-Railsは、ファイル以外のものをストリーミング送信することもできます。実際、responseオブジェクトに含まれるものなら何でもストリーミング送信できます。`ActionController::Live`モジュールを使用すると、ブラウザとの永続的な接続を作成することができます。これにより、いつでも好きなタイミングで任意のデータをブラウザに送信することができます。
+Rails allows you to stream more than just files. In fact, you can stream anything
+you would like in a response object. The `ActionController::Live` module allows
+you to create a persistent connection with a browser. Using this module, you will
+be able to send arbitrary data to the browser at specific points in time.
 
-#### ライブストリーミングを組み込む
+#### Incorporating Live Streaming
 
-コントローラクラスの内部に`ActionController::Live`を組み込むと、そのコントローラのすべてのアクションでデータをストリーミングできるようになります。このモジュールを以下のようにミックスインできます。
+Including `ActionController::Live` inside of your controller class will provide
+all actions inside of the controller the ability to stream data. You can mix in
+the module like so:
 
 ```ruby
 class MyController < ActionController::Base
@@ -955,15 +964,25 @@ class MyController < ActionController::Base
 end
 ```
 
-上のコードでは、ブラウザとの間に永続的な接続を確立し、1秒おきに`"hello world\n"`を100個ずつ送信しています。
+The above code will keep a persistent connection with the browser and send 100
+messages of `"hello world\n"`, each one second apart.
 
-上の例には注意点がいくつもあります。レスポンスのストリームは確実に閉じられるようにする必要があります。ストリームを閉じ忘れると、ソケットが永久に開いたままになってしまいます。レスポンスストリームへの書き込みを行う前に、Content-Typeを`text/event-stream`に設定する必要もあります。その理由は、レスポンスがコミットされてしまうと (`response.committed`がtrueに相当する値を返したとき)、以後ヘッダーに書き込みできないからです。これは、レスポンスストリームに対して`write`または`commit`を行った場合に発生します。
+There are a couple of things to notice in the above example. We need to make
+sure to close the response stream. Forgetting to close the stream will leave
+the socket open forever. We also have to set the content type to `text/event-stream`
+before we write to the response stream. This is because headers cannot be written
+after the response has been committed (when `response.committed` returns a truthy
+value), which occurs when you `write` or `commit` the response stream.
 
-#### 使用例
+#### Example Usage
 
-今あなたはカラオケマシンを開発中です。ユーザーは曲の歌詞を見たいと思っています。それぞれの`Song`には特定の数の行があり、その行1つ1つに、「曲が終わるまで後何拍あるか」を表す`num_beats`が記入されています。
+Let's suppose that you were making a Karaoke machine and a user wants to get the
+lyrics for a particular song. Each `Song` has a particular number of lines and
+each line takes time `num_beats` to finish singing.
 
-歌詞を「カラオケスタイル」でユーザーに表示したいので、直前の歌詞を歌い終わってから次の歌詞を表示することになります。そこで、以下のように`ActionController::Live`を使用します。
+If we wanted to return the lyrics in Karaoke fashion (only sending the line when
+the singer has finished the previous line), then we could use `ActionController::Live`
+as follows:
 
 ```ruby
 class LyricsController < ActionController::Base
@@ -983,64 +1002,73 @@ class LyricsController < ActionController::Base
 end
 ```
 
-上のコードでは、お客さんが直前の歌詞を歌い終わった時に限って次の歌詞を送信しています。
+The above code sends the next line only after the singer has completed the previous
+line.
 
-#### ストリーミングを行う場合の考慮事項
+#### Streaming Considerations
 
-任意のデータをストリーミング送信できることは、きわめて強力なツールとなります。これまでの例でご紹介したように、好きな時に好きなものをレスポンスストリームに流すことができます。ただし、以下の点についてご注意ください。
+Streaming arbitrary data is an extremely powerful tool. As shown in the previous
+examples, you can choose when and what to send across a response stream. However,
+you should also note the following things:
 
-* レスポンスストリームが1つ作成されるたびに新しいスレッドが作成され、元のスレッドからスレッドローカルな変数がコピーされます。スレッドローカルな変数が増えすぎるとパフォーマンスに悪影響が生じます。また、スレッド数が多すぎても同様にパフォーマンスが低下します。
-* レスポンスストリームを閉じることに失敗すると、対応するソケットが永久に開いたままになってしまいます。レスポンスストリームを使用する場合は、`close`が確実に呼び出されるようにしてください。
-* WEBrickサーバーはすべてのレスポンスをバッファリングするため、`ActionController::Live`をインクルードしても動作しません。このため、レスポンスを自動的にバッファリングしないWebサーバーを使用する必要があります。
+* Each response stream creates a new thread and copies over the thread local
+  variables from the original thread. Having too many thread local variables can
+  negatively impact performance. Similarly, a large number of threads can also
+  hinder performance.
+* Failing to close the response stream will leave the corresponding socket open
+  forever. Make sure to call `close` whenever you are using a response stream.
+* WEBrick servers buffer all responses, and so including `ActionController::Live`
+  will not work. You must use a web server which does not automatically buffer
+  responses.
 
-ログをフィルタする
+Log Filtering
 -------------
 
-Railsのログファイルは、環境ごとに`log`フォルダの下に出力されます。デバッグ時にアプリケーションで何が起こっているかをログで確認できると非常に便利なのですが、その一方で本番のアプリケーションでは顧客のパスワードのような重要な情報をログファイルに出力したくないこともあります。
+Rails keeps a log file for each environment in the `log` folder. These are extremely useful when debugging what's actually going on in your application, but in a live application you may not want every bit of information to be stored in the log file.
 
-### パラメータをフィルタする
+### Parameters Filtering
 
-Railsアプリケーションの設定ファイル config.filter_parameters に、特定のリクエストパラメータをログ出力時にフィルタする設定を追加することができます。フィルタされたパラメータはログ内で [FILTERED] という文字に置き換えられます。
+You can filter out sensitive request parameters from your log files by appending them to `config.filter_parameters` in the application configuration. These parameters will be marked [FILTERED] in the log.
 
 ```ruby
 config.filter_parameters << :password
 ```
 
-### リダイレクトをフィルタする
+### Redirects Filtering
 
-アプリケーションからのリダイレクト先となるURLのいくつかは、場合によってはログに出力しない方がよいことがあります。
-設定の`config.filter_redirect`オプションを使用して、リダイレクト先をログに出力しないようにすることができます。
+Sometimes it's desirable to filter out from log files some sensitive locations your application is redirecting to.
+You can do that by using the `config.filter_redirect` configuration option:
 
 ```ruby
 config.filter_redirect << 's3.amazonaws.com'
 ```
 
-フィルタしたいリダイレクト先は、文字列、正規表現、または両方を含む配列で指定することができます。
+You can set it to a String, a Regexp, or an array of both.
 
 ```ruby
 config.filter_redirect.concat ['s3.amazonaws.com', /private_path/]
 ```
 
-マッチしたURLはログで'[FILTERED]'という文字に置き換えられます。
+Matching URLs will be marked as '[FILTERED]'.
 
 Rescue
 ------
 
-どんなアプリケーションにもどこかにバグが潜んでいたり、適切に扱う必要のある例外をスローすることがあるものです。たとえば、データベースに既に存在しなくなったリソースに対してユーザーがアクセスした場合、Active Recordは`ActiveRecord::RecordNotFound`例外をスローします。
+Most likely your application is going to contain bugs or otherwise throw an exception that needs to be handled. For example, if the user follows a link to a resource that no longer exists in the database, Active Record will throw the `ActiveRecord::RecordNotFound` exception.
 
-Railsのデフォルトの例外ハンドリングでは、例外の種類にかかわらず"500 Server Error"を表示します。リクエストがローカルのブラウザから行われた場合、詳細なトレースバックや追加情報が表示されますので、問題点を把握して対応することができます。リクエストがリモートブラウザの場合、Railsは"500 Server Error"というメッセージだけをユーザーに表示したり、ルーティングやレコードがない場合は"404 Not Found"と表示したりします。このままではあまりにそっけないので、エラーのキャッチ方法やユーザーへの表示方法をカスタマイズしたくなるものです。Railsアプリケーションでは、例外ハンドリングをさまざまなレベルで実行できます。
+Rails' default exception handling displays a "500 Server Error" message for all exceptions. If the request was made locally, a nice traceback and some added information gets displayed so you can figure out what went wrong and deal with it. If the request was remote Rails will just display a simple "500 Server Error" message to the user, or a "404 Not Found" if there was a routing error or a record could not be found. Sometimes you might want to customize how these errors are caught and how they're displayed to the user. There are several levels of exception handling available in a Rails application:
 
-### デフォルトの500・404テンプレート
+### The Default 500 and 404 Templates
 
-デフォルトでは、本番のRailsアプリケーションは404または500エラーメッセージを表示します。これらのメッセージは`public`フォルダ以下に置かれている静的なHTMLファイルです。それぞれ`404.html`および`500.html`という名前です。これらのファイルをカスタマイズして、情報を追加したりレイアウトを整えたりできます。ただし、これらはあくまで静的なHTMLファイルなので、RHTMLやERBは使用でいません。
+By default a production application will render either a 404 or a 500 error message. These messages are contained in static HTML files in the `public` folder, in `404.html` and `500.html` respectively. You can customize these files to add some extra information and layout, but remember that they are static; i.e. you can't use RHTML or layouts in them, just plain HTML.
 
 ### `rescue_from`
 
-エラーをキャッチしたときの動作をもう少し洗練されたものにしたい場合は、`rescue_from`を使用できます。これは、特定の種類または複数の種類の例外を1つのコントローラ全体およびそのサブクラスで扱えるようにするものです。
+If you want to do something a bit more elaborate when catching errors, you can use `rescue_from`, which handles exceptions of a certain type (or multiple types) in an entire controller and its subclasses.
 
-`rescue_from`命令でキャッチできる例外が発生すると、ハンドラに例外オブジェクトが渡されます。このハンドラはメソッドか、`:with`オプション付きで渡された`Proc`オブジェクトのいずれかです。明示的に`Proc`オブジェクトを使用する代りに、ブロックを直接使用することもできます。
+When an exception occurs which is caught by a `rescue_from` directive, the exception object is passed to the handler. The handler can be a method or a `Proc` object passed to the `:with` option. You can also use a block directly instead of an explicit `Proc` object.
 
-`rescue_from`を使用してすべての`ActiveRecord::RecordNotFound`エラーを奪い取り、処理を行なう方法を以下に示します。
+Here's how you can use `rescue_from` to intercept all `ActiveRecord::RecordNotFound` errors and do something with them.
 
 ```ruby
 class ApplicationController < ActionController::Base
@@ -1054,7 +1082,7 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-前よりも巧妙にはなりましたが、もちろんこの例のままではエラーハンドリングは何も改良されていません。しかしこのようにすべての例外を捉えることができれば、後は好きなようにカスタマイズできます。たとえば、カスタム例外クラスを作成して、ユーザーがアクセス権を持たないアプリケーションの特定の箇所にアクセスした場合に例外をスローすることもできます。
+Of course, this example is anything but elaborate and doesn't improve on the default exception handling at all, but once you can catch all those exceptions you're free to do whatever you want with them. For example, you could create custom exception classes that will be thrown when a user doesn't have access to a certain section of your application:
 
 ```ruby
 class ApplicationController < ActionController::Base
@@ -1069,29 +1097,31 @@ class ApplicationController < ActionController::Base
 end
 
 class ClientsController < ApplicationController
-  # ユーザーがクライアントにアクセスする権限を持っているかどうかをチェックする
+  # Check that the user has the right authorization to access clients.
   before_action :check_authorization
 
-  # このアクション内で認証周りを心配する必要がない
+  # Note how the actions don't have to worry about all the auth stuff.
   def edit
     @client = Client.find(params[:id])
   end
 
   private
 
-    # ユーザーが認証されていない場合は単に例外をスローする
+    # If the user is not authorized, just throw the exception.
     def check_authorization
       raise User::NotAuthorized unless current_user.admin?
     end
 end
 ```
 
-NOTE: `ApplicationController`クラスでは特定の例外についてはrescueできないものがあります。その理由は、コントローラが初期化されてアクションが実行される前に発生する例外があるからです。詳細については、Pratik Naikによる[記事](http://m.onkey.org/2008/7/20/rescue-from-dispatching)を参照してください。
+WARNING: You shouldn't do `rescue_from Exception` or `rescue_from StandardError` unless you have a particular reason as it will cause serious side-effects (e.g. you won't be able to see exception details and tracebacks during development).
 
-HTTPSプロトコルを強制する
+NOTE: Certain exceptions are only rescuable from the `ApplicationController` class, as they are raised before the controller gets initialized and the action gets executed. See Pratik Naik's [article](http://m.onkey.org/2008/7/20/rescue-from-dispatching) on the subject for more information.
+
+Force HTTPS protocol
 --------------------
 
-セキュリティ上の理由から、特定のコントローラについてはHTTPSのみでアクセスできるように強制したいことがあります。コントローラ内で`force_ssl`メソッドを使用することでSSLを強制することができます。
+Sometime you might want to force a particular controller to only be accessible via an HTTPS protocol for security reasons. You can use the `force_ssl` method in your controller to enforce that:
 
 ```ruby
 class DinnerController
@@ -1099,14 +1129,14 @@ class DinnerController
 end
 ```
 
-フィルタの時と同様、`:only`オプションや`:except`オプションを使用して、コントローラ内の特定のアクションでのみセキュア接続を強制することもできます。
+Just like the filter, you could also pass `:only` and `:except` to enforce the secure connection only to specific actions:
 
 ```ruby
 class DinnerController
   force_ssl only: :cheeseburger
-  # または
+  # or
   force_ssl except: :cheeseburger
 end
 ```
 
-`force_ssl`を多くのコントローラに追加したいのであれば、アプリケーション全体でHTTPS接続を強制する方がよいでしょう。これを行なうには、環境ファイルで`config.force_ssl`を設定します。
+Please note that if you find yourself adding `force_ssl` to many controllers, you may want to force the whole application to use HTTPS instead. In that case, you can set the `config.force_ssl` in your environment file.
