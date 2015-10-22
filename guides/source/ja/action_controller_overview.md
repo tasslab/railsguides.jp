@@ -1,4 +1,3 @@
-﻿
 Action Controller の概要
 ==========================
 
@@ -46,7 +45,7 @@ Railsのコントローラは、`ApplicationController`を継承したRubyのク
 ```ruby
 class ClientsController < ApplicationController
   def new
-  end
+    end
 end
 ```
 
@@ -73,32 +72,32 @@ publicなメソッドでないとアクションとして呼び出すことは�
 class ClientsController < ApplicationController
   # このアクションではクエリ文字列パラメータが使用されています
   # 送信側でHTTP GETリクエストが使用されているためです
-  # ただしパラメータにアクセスするうえでは下との違いは生じません
+  # ただしパラメータにアクセスするうえでは下との違いは生じませんThe URL for
   # 有効な顧客リストを得るため、このアクションへのURLは以下のようになっています
   # clients: /clients?status=activated
   def index
     if params[:status] == "activated"
       @clients = Client.activated
-    else
+        else
       @clients = Client.inactivated
-    end
+        end
   end
 
   # このアクションではPOSTパラメータが使用されています。このパラメータは通常
-  # ユーザーが送信したHTMLフォームが元になります。
+  # ユーザーが送信したHTMLフォームが元になります。The URL for
   # これはRESTfulなアクセスであり、URLは"/clients"となります。
   # データはURLではなくリクエストのbodyの一部として送信されます。
   def create
     @client = Client.new(params[:client])
     if @client.save
       redirect_to @client
-    else
+        else
       # 以下の行ではデフォルトのレンダリング動作を上書きします。
       # 本来は"create"ビューが描画されます。
       render "new"
-    end
+        end
   end
-end
+      end
 ```
 
 ### ハッシュと配列のパラメータ
@@ -176,7 +175,7 @@ get '/clients/:status' => 'clients#index', foo: 'bar'
 class ApplicationController < ActionController::Base
   def default_url_options
     { locale: I18n.locale }
-  end
+    end
 end
 ```
 
@@ -196,8 +195,8 @@ class PeopleController < ActionController::Base
   # 明示的な許可を行なわずに、パラメータを一括で渡してしまう
   # 危険な「マスアサインメント」が行われているからです。
   def create
-    Person.create(params[:person])
-  end
+        Person.create(params[:person])
+    end
 
   # 以下のコードは、パラメータにpersonキーがあれば成功します。
   # personキーがない場合は
@@ -208,16 +207,16 @@ class PeopleController < ActionController::Base
     person = current_account.people.find(params[:id])
     person.update!(person_params)
     redirect_to person
-  end
+    end
 
-  private
+    private
     # privateメソッドを使用して、許可するパラメータをカプセル化します。
     # これは非常によい手法であり、createとupdateの両方で使いまわすことで
     # 同じ許可を与えることができます。また、許可する属性をユーザーごとにチェックするよう
     # このメソッドを特殊化することもできます。
     def person_params
       params.require(:person).permit(:name, :age)
-    end
+        end
 end
 ```
 
@@ -245,7 +244,8 @@ params.permit(id: [])
 params.require(:log_entry).permit!
 ```
 
-こうすることで、`:log_entry`パラメータハッシュとすべてのサブハッシュが「許可」としてマーキングされます。ただし、`permit!`は属性を一括で許可してしまうものなので、くれぐれも慎重に使用してください。現在のモデルはもちろんのこと、将来属性が追加されたときにそこにマスアサインメントの脆弱性が生じる可能性があるからです。
+This will mark the `:log_entry` parameters hash および any sub-hash of it
+permitted. ただし、`permit!`は属性を一括で許可してしまうものなので、くれぐれも慎重に使用してください。現在のモデルはもちろんのこと、将来属性が追加されたときにそこにマスアサインメントの脆弱性が生じる可能性があるからです。
 
 #### ネストしたパラメータ
 
@@ -345,13 +345,13 @@ Rails.application.config.session_store :cookie_store, key: '_your_app_session', 
 Railsはセッションデータの署名に使用する秘密鍵を (CookieStore用に) 設定します。この秘密鍵は`config/secrets.yml`で変更できます。
 
 ```ruby
-# Be sure to restart your server when you modify this file.
+# このファイルを変更後サーバーを必ず再起動してください。
 
 # Your secret key is used for verifying the integrity of signed cookies.
 # If you change this key, all old signed cookies will become invalid!
 
-# Make sure the secret is at least 30 characters and all random,
-# no regular words or you'll be exposed to dictionary attacks.
+# Make sure the secret is at least 30 characters および all random,
+# no regular words または you'll be exposed to dictionary attacks.
 # You can use `rake secret` to generate a secure secret key.
 
 # Make sure the secrets in this file are kept private
@@ -382,7 +382,7 @@ NOTE: セッションは遅延読み込みされます。アクションのコ�
 ```ruby
 class ApplicationController < ActionController::Base
 
-  private
+    private
 
   # キー付きのセッションに保存されたidでユーザーを検索する
   # :current_user_id はRailsアプリケーションでユーザーログインを扱う際の定番の方法。
@@ -391,7 +391,7 @@ class ApplicationController < ActionController::Base
   def current_user
     @_current_user ||= session[:current_user_id] &&
       User.find_by(id: session[:current_user_id])
-  end
+    end
 end
 ```
 
@@ -406,9 +406,9 @@ class LoginsController < ApplicationController
       # 今後のリクエストで使用できるようにする
       session[:current_user_id] = user.id
       redirect_to root_url
-    end
+        end
   end
-end
+      end
 ```
 
 セッションからデータの一部を削除したい場合は、キーに`nil`を割り当てます。
@@ -420,7 +420,7 @@ class LoginsController < ApplicationController
     # セッションidからuser idを削除する
     @_current_user = session[:current_user_id] = nil
     redirect_to root_url
-  end
+    end
 end
 ```
 
@@ -440,7 +440,7 @@ class LoginsController < ApplicationController
     session[:current_user_id] = nil
     flash[:notice] = "You have successfully logged out."
     redirect_to root_url
-  end
+    end
 end
 ```
 
@@ -457,14 +457,14 @@ redirect_to root_url, flash: { referral_code: 1234 }
 ```erb
 <html>
   <!-- <head/> -->
-  <body>
+    <body>
     <% flash.each do |name, msg| -%>
       <%= content_tag :div, msg, class: name %>
     <% end -%>
 
     <!-- 以下略 -->
-  </body>
-</html> 
+    </body>
+</html>
 ```
 
 このように、アクションで通知(notice)や警告(alert)メッセージを設置すると、レイアウト側で自動的にそのメッセージが表示されます。
@@ -474,7 +474,7 @@ flashには、通知や警告に限らず、セッションに保存可能なも
 ```erb
 <% if flash[:just_signed_up] %>
   <p class="welcome">Welcome to our site!</p>
-<% end %>
+<% end  %>
 ```
 
 flashの値を別のリクエストにも引き継ぎたい場合は、`keep`メソッドを使用します。
@@ -488,12 +488,12 @@ class MainController < ApplicationController
   # ここで'keep'を使用すると別のリクエストでflashが消えないようになります。
   def index
     # すべてのflash値を保持する
-    flash.keep
+        flash.keep
 
     # キーを指定して値を保持することもできる
     # flash.keep(:notice)
     redirect_to users_url
-  end
+    end
 end
 ```
 
@@ -507,12 +507,12 @@ class ClientsController < ApplicationController
     @client = Client.new(params[:client])
     if @client.save
       # ...
-    else
+        else
       flash.now[:error] = "Could not save client"
       render action: "new"
-    end
+        end
   end
-end
+      end
 ```
 
 Cookies
@@ -525,7 +525,7 @@ class CommentsController < ApplicationController
   def new
     # cookieにコメント作者名が残っていたらフィールドに自動入力する
     @comment = Comment.new(author: cookies[:commenter_name])
-  end
+    end
 
   def create
     @comment = Comment.new(params[:comment])
@@ -534,16 +534,16 @@ class CommentsController < ApplicationController
       if params[:remember_name]
         # コメント作者名を保存する
         cookies[:commenter_name] = @comment.author
-      else
+            else
         # コメント作者名がcookieに残っていたら削除する
-        cookies.delete(:commenter_name)
-      end
+                cookies.delete(:commenter_name)
+            end
       redirect_to @comment.article
-    else
+        else
       render action: "new"
-    end
+        end
   end
-end
+      end
 ```
 
 セッションを削除する場合はキーに`nil`を指定することで削除しましたが、cookieを削除する場合はこの方法ではなく、`cookies.delete(:key)`を使用してください。
@@ -576,16 +576,17 @@ class CookiesController < ApplicationController
   def set_cookie
     cookies.encrypted[:expiration_date] = Date.tomorrow # => Thu, 20 Mar 2014
     redirect_to action: 'read_cookie'
-  end
+    end
 
   def read_cookie
     cookies.encrypted[:expiration_date] # => "2014-03-20"
-  end
+    end
 end
 ```
 
 cookieには文字列や数字などの単純なデータだけを保存することをお勧めします。
-cookieに複雑なオブジェクトを保存しなければならない場合は、後続のリクエストでcookieから値を読み出す場合の変換については自分で面倒を見る必要があります。
+If you have to store complex objects, you would need to handle the conversion
+manually when reading the values on subsequent requests.
 
 cookieセッションストアを使用する場合、`session`や`flash`ハッシュについてもこのことは該当します。
 
@@ -602,9 +603,9 @@ class UsersController < ApplicationController
       format.html # index.html.erb
       format.xml  { render xml: @users}
       format.json { render json: @users}
-    end
+        end
   end
-end
+      end
 ```
 
 上のコードでは、`render xml: @users.to_xml`ではなく`render xml: @users`となっていることにご注目ください。Railsは、オブジェクトが文字列型でない場合は自動的に`to_xml`を呼んでくれます。
@@ -622,15 +623,15 @@ end
 class ApplicationController < ActionController::Base
   before_action :require_login
 
-  private
+    private
 
   def require_login
     unless logged_in?
       flash[:error] = "You must be logged in to access this section"
       redirect_to new_login_url # halts request cycle
-    end
+        end
   end
-end
+      end
 ```
 
 このメソッドはエラーメッセージをflashに保存し、ユーザーがログインしていない場合にはログインフォームにリダイレクトするというシンプルなものです。"before"フィルタによって出力またはリダイレクトが行われると、このアクションは実行されません。フィルタの実行後に実行されるようスケジュールされた追加のフィルタがある場合、これらもキャンセルされます。
@@ -659,17 +660,17 @@ end
 class ChangesController < ApplicationController
   around_action :wrap_in_transaction, only: :show
 
-  private
+    private
 
   def wrap_in_transaction
     ActiveRecord::Base.transaction do
-      begin
-        yield
-      ensure
+            begin
+                yield
+            ensure
         raise ActiveRecord::Rollback
-      end
+            end
     end
-  end
+        end
 end
 ```
 
@@ -681,7 +682,7 @@ end
 
 最も一般的なフィルタの使用法は、privateメソッドを作成し、*_action を使用してそのメソッドを追加することですが、同じ結果を得られるフィルタ使用法が他にも2とおりあります。
 
-1番目は、*\_action メソッドに対して直接ブロックを与えることです。このブロックはコントローラを引数として受け取ります。さきほどの`require_login`フィルタを書き換えて、ブロックを使用するようにします。
+The first is to use a block directly with the *\_action methods. このブロックはコントローラを引数として受け取ります。さきほどの`require_login`フィルタを書き換えて、ブロックを使用するようにします。
 
 ```ruby
 class ApplicationController < ActionController::Base
@@ -689,9 +690,9 @@ class ApplicationController < ActionController::Base
     unless controller.send(:logged_in?)
       flash[:error] = "You must be logged in to access this section"
       redirect_to new_login_url
-    end
+        end
   end
-end
+      end
 ```
 
 ここで、フィルタで`send`メソッドを使用していることにご注意ください。その理由は、`logged_in?`メソッドはprivateであり、コントローラのスコープではフィルタが動作しないためです (訳注: `send`メソッドを使用するとprivateメソッドを呼び出せます)。この方法は、特定のフィルタを実装する方法としては推奨されませんが、もっとシンプルな場合には役に立つことがあるかもしれません。
@@ -708,9 +709,9 @@ class LoginFilter
     unless controller.send(:logged_in?)
       controller.flash[:error] = "You must be logged in to access this section"
       controller.redirect_to controller.new_login_url
-    end
+        end
   end
-end
+      end
 ```
 
 繰り返しますが、この例はフィルタとして理想的なものではありません。その理由は、このフィルタがコントローラのスコープで動作せず、コントローラが引数として渡されるからです。このフィルタクラスには、フィルタと同じ名前のメソッドを実装する必要があります。従って、`before_action`フィルタの場合、クラスに`before`メソッドを実装しなければならない、という具合です。`around`メソッド内では`yield`を呼んでアクションを実行してやる必要があります。
@@ -730,7 +731,7 @@ end
 <%= form_for @user do |f| %>
   <%= f.text_field :username %>
   <%= f.text_field :password %>
-<% end %>
+<% end  %>
 ```
 
 以下のようにトークンが隠しフィールドに追加されている様子がわかります。
@@ -738,8 +739,8 @@ end
 ```html
 <form accept-charset="UTF-8" action="/users/1" method="post">
 <input type="hidden"
-       value="67250ab105eb5ad10851c00a5621854a23af5489"
-       name="authenticity_token"/>
+              value="67250ab105eb5ad10851c00a5621854a23af5489"
+              name="authenticity_token"/>
 <!-- fields -->
 </form>
 ```
@@ -775,9 +776,9 @@ Railsでは、[formヘルパー](form_helpers.html)を使用して生成され�
 
 #### `path_parameters`、`query_parameters`、`request_parameters`
 
-Railsは、リクエストに関連する`params`ハッシュに集約してくれます。 collects all of the parameters sent along with the request in the `params` hash, whether they are sent as part of the query string or the post body. requestオブジェクトには3つのアクセサがあり、パラメータの由来に応じたアクセスを行なうこともできます。`query_parameters`ハッシュにはクエリ文字列として送信されたパラメータが含まれます。`request_parameters`ハッシュにはPOST bodyの一部として送信されたパラメータが含まれます。`path_parameters`には、ルーティング機構によって特定のコントローラとアクションへのパスの一部であると認識されたパラメータが含まれます。
+Rails collects all of the parameters sent along with the request in the `params` hash, whether they are sent as part of the query string または the post body. requestオブジェクトには3つのアクセサがあり、パラメータの由来に応じたアクセスを行なうこともできます。`query_parameters`ハッシュにはクエリ文字列として送信されたパラメータが含まれます。`request_parameters`ハッシュにはPOST bodyの一部として送信されたパラメータが含まれます。`path_parameters`には、ルーティング機構によって特定のコントローラとアクションへのパスの一部であると認識されたパラメータが含まれます。
 
-### The `response`オブジェクト
+### `response`オブジェクト
 
 responseオブジェクトはアクションが実行されるときに構築され、クライアントに送り返されるデータを描画 (レンダリング) するものなので、responseオブジェクトを直接使用することは通常ありません。しかし、たとえばafter filter内などでresponseオブジェクトを直接操作できれば便利です。responseオブジェクトのアクセサメソッドがセッターを持っていれば、これを使用してresponseオブジェクトの値を直接変更できます。
 
@@ -830,14 +831,14 @@ class AdminsController < ApplicationController
 
   before_action :authenticate
 
-  private
+    private
 
     def authenticate
       authenticate_or_request_with_http_digest do |username|
-        USERS[username]
-      end
+                USERS[username]
+            end
     end
-end
+      end
 ```
 
 上の例で示したように、`authenticate_or_request_with_http_digest`のブロックでは、引数を1つ (ユーザー名) しか取りません。そしてブロックからはパスワードが返されます。`authenticate_or_request_with_http_digest`から`nil`または`false`が返された場合は、認証が失敗します。
@@ -859,17 +860,17 @@ class ClientsController < ApplicationController
     send_data generate_pdf(client),
               filename: "#{client.name}.pdf",
               type: "application/pdf"
-  end
+    end
 
-  private
+    private
 
     def generate_pdf(client)
       Prawn::Document.new do
         text client.name, align: :center
         text "Address: #{client.address}"
         text "Email: #{client.email}"
-      end.render
-    end
+            end.render
+        end
 end
 ```
 
@@ -884,10 +885,10 @@ class ClientsController < ApplicationController
   # ディスク上に生成・保存済みのファイルをストリーミング送信する
   def download_pdf
     client = Client.find(params[:id])
-    send_file("#{Rails.root}/files/clients/#{client.id}.pdf",
+        send_file("#{Rails.root}/files/clients/#{client.id}.pdf",
               filename: "#{client.name}.pdf",
               type: "application/pdf")
-  end
+    end
 end
 ```
 
@@ -910,11 +911,11 @@ class ClientsController < ApplicationController
     @client = Client.find(params[:id])
 
     respond_to do |format|
-      format.html
+            format.html
       format.pdf { render pdf: generate_pdf(@client) }
-    end
+        end
   end
-end
+      end
 ```
 
 なお、この例が実際に動作するには、RailsのMIME typeにPDFを追加する必要があります。これを行なうには、`config/initializers/mime_types.rb`に以下を追加します。
@@ -948,10 +949,10 @@ class MyController < ActionController::Base
     100.times {
       response.stream.write "hello world\n"
       sleep 1
-    }
-  ensure
-    response.stream.close
-  end
+        }
+    ensure
+        response.stream.close
+    end
 end
 ```
 
@@ -963,7 +964,9 @@ end
 
 今あなたはカラオケマシンを開発中です。ユーザーは曲の歌詞を見たいと思っています。それぞれの`Song`には特定の数の行があり、その行1つ1つに、「曲が終わるまで後何拍あるか」を表す`num_beats`が記入されています。
 
-歌詞を「カラオケスタイル」でユーザーに表示したいので、直前の歌詞を歌い終わってから次の歌詞を表示することになります。そこで、以下のように`ActionController::Live`を使用します。
+If we wanted to return the lyrics in Karaoke fashion (only sending the line when
+the singer has finished the previous line), then we could use `ActionController::Live`
+as follows:
 
 ```ruby
 class LyricsController < ActionController::Base
@@ -976,10 +979,10 @@ class LyricsController < ActionController::Base
     song.each do |line|
       response.stream.write line.lyrics
       sleep line.num_beats
+        end
+        ensure
+        response.stream.close
     end
-  ensure
-    response.stream.close
-  end
 end
 ```
 
@@ -1000,7 +1003,7 @@ Railsのログファイルは、環境ごとに`log`フォルダの下に出力�
 
 ### パラメータをフィルタする
 
-Railsアプリケーションの設定ファイル config.filter_parameters に、特定のリクエストパラメータをログ出力時にフィルタする設定を追加することができます。フィルタされたパラメータはログ内で [FILTERED] という文字に置き換えられます。
+You can filter out sensitive request parameters from your log files by appending them to `config.filter_parameters` in the application configuration. フィルタされたパラメータはログ内で [FILTERED] という文字に置き換えられます。
 
 ```ruby
 config.filter_parameters << :password
@@ -1008,7 +1011,7 @@ config.filter_parameters << :password
 
 ### リダイレクトをフィルタする
 
-アプリケーションからのリダイレクト先となるURLのいくつかは、場合によってはログに出力しない方がよいことがあります。
+Sometimes it's desirable to filter out from log files some sensitive locations your application is redirecting to.
 設定の`config.filter_redirect`オプションを使用して、リダイレクト先をログに出力しないようにすることができます。
 
 ```ruby
@@ -1046,11 +1049,11 @@ Railsのデフォルトの例外ハンドリングでは、例外の種類にか
 class ApplicationController < ActionController::Base
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
-  private
+    private
 
     def record_not_found
       render plain: "404 Not Found", status: 404
-    end
+        end
 end
 ```
 
@@ -1060,31 +1063,33 @@ end
 class ApplicationController < ActionController::Base
   rescue_from User::NotAuthorized, with: :user_not_authorized
 
-  private
+    private
 
     def user_not_authorized
       flash[:error] = "You don't have access to this section."
       redirect_to :back
-    end
+        end
 end
 
 class ClientsController < ApplicationController
   # ユーザーがクライアントにアクセスする権限を持っているかどうかをチェックする
   before_action :check_authorization
 
-  # このアクション内で認証周りを心配する必要がない
+  # Note how the actions don't have to worry about all the auth stuff.
   def edit
     @client = Client.find(params[:id])
-  end
+    end
 
-  private
+    private
 
     # ユーザーが認証されていない場合は単に例外をスローする
     def check_authorization
       raise User::NotAuthorized unless current_user.admin?
-    end
+        end
 end
 ```
+
+WARNING: You shouldn't do `rescue_from Exception` または `rescue_from StandardError` unless you have a particular reason as it will cause serious side-effects (e.g. you won't be able to see exception details および tracebacks during development).
 
 NOTE: `ApplicationController`クラスでは特定の例外についてはrescueできないものがあります。その理由は、コントローラが初期化されてアクションが実行される前に発生する例外があるからです。詳細については、Pratik Naikによる[記事](http://m.onkey.org/2008/7/20/rescue-from-dispatching)を参照してください。
 
@@ -1095,7 +1100,7 @@ HTTPSプロトコルを強制する
 
 ```ruby
 class DinnerController
-  force_ssl
+    force_ssl
 end
 ```
 
