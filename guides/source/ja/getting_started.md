@@ -1,8 +1,5 @@
-﻿
-Rails をはじめよう
-==========================
-
-このガイドでは、Ruby on Rails (以下 Rails) を初めて設定して実行するまでを解説します。
+Railsをはじめよう
+=============このガイドでは、Ruby on Rails (以下 Rails) を初めて設定して実行するまでを解説します。
 
 このガイドの内容:
 
@@ -18,9 +15,10 @@ Rails をはじめよう
 
 本ガイドは、ゼロからRailsアプリケーションを構築したいと考えている初心者を対象にしています。読者がRailsの経験がないことを前提としています。ただし、このドキュメントを最大限に活用するために、以下のソフトウェアがインストールされ、利用可能な状態になっていることを前提としています。
 
-* [Ruby](https://www.ruby-lang.org/ja/downloads/) 1.9.3以降。
-* [RubyGems](http://rubygems.org)パッケージングシステム。これはRuby 1.9以降であればRubyをインストールすると自動的に導入されます。RubyGemsの詳細については、[RubyGemsガイド](http://rubygems-guides-jp.herokuapp.com/)を参照してください。
-* [SQLite3データベース](http://www.sqlite.org)がインストールされ、正常に動作する状態になっていること。
+* The [Ruby](https://www.ruby-lang.org/en/downloads) language version 1.9.3 or newer.
+* The [RubyGems](https://rubygems.org) packaging system, which is installed with Ruby
+  versions 1.9 and later. RubyGemsの詳細については、[RubyGemsガイド](http://rubygems-guides-jp.herokuapp.com/)を参照してください。
+* A working installation of the [SQLite3 Database](https://www.sqlite.org).
 
 Railsとは、Rubyプログラミング言語の上で動作するWebアプリケーションフレームワークです。
 Rubyの経験がまったくない場合、Railsを学ぶのはかなり大変な作業になるでしょう。Rubyを学ぶための精選されたオンラインリソース一覧はたくさんありますので、その中から以下をご紹介します。
@@ -47,9 +45,7 @@ Railsの哲学には、以下の2つの主要な基本理念があります。
 Railsプロジェクトを新規作成する
 ----------------------------
 
-本ガイドを活用するための最善の方法は、以下の手順を文字どおり1つずつ実行し、手順を取りこぼさないようにすることです。取りこぼしがあると、その後の手順が期待どおりに進まない可能性があります。この手順で作成された完全なRailsプロジェクトのコードは[コチラ](https://github.com/yasslab/getting_started)で公開されているので、躓いてしまったときなどに参照してください。また、完成したサンプルアプリケーションは[コチラ](https://getting-started-jp.herokuapp.com/)で公開されています。
-
-本ガイドの手順に従うことで、`blog`という名前の非常にシンプルなブログのRailsプロジェクトを作成できます。Railsアプリケーションを構築する前に、Rails本体がインストールされていることを確認してください。
+本ガイドを活用するための最善の方法は、以下の手順を文字どおり1つずつ実行し、手順を取りこぼさないようにすることです。取りこぼしがあると、その後の手順が期待どおりに進まない可能性があります。本ガイドの手順に従うことで、`blog`という名前の非常にシンプルなブログのRailsプロジェクトを作成できます。Railsアプリケーションを構築する前に、Rails本体がインストールされていることを確認してください。
 
 TIP: 以下の例では、Unix系OSのプロンプトとして`$`記号を使用していますが、これはカスタマイズ可能であり、自分の環境では異なる記号になっていることもあります。Windowsでは`c:\source_code>`のように表示されます。
 
@@ -57,20 +53,19 @@ TIP: 以下の例では、Unix系OSのプロンプトとして`$`記号を使用
 
 ターミナル (コマンドプロンプトとも言います) ウィンドウを開いてください。Mac OS Xの場合、ターミナル (Terminal.app) という名前のアプリケーションを実行します。Windowsの場合は[スタート] メニューから [ファイル名を指定して実行] をクリックして'cmd.exe'と入力します。`$`で始まる記述はコマンド行なので、これらはコマンドラインに入力して実行してください。続いて現在インストールされているRubyのバージョンが最新のものであることを確認してください。
 
-TIP: RubyやRuby on Railsを素早くインストールするためのツールは多数存在します。Windowsユーザーの場合は[Railsインストーラ](http://railsinstaller.org)をお使いください。Mac OS Xユーザーは[Tokaido](https://github.com/tokaido/tokaidoapp)をお使いください。(訳注: 具体的なインストール方法については[Railsチュートリアル 1.2 さっそく動作させる](http://railstutorial.jp/chapters/beginning?version=4.0#sec-up_and_running)を参照してください)
+TIP: A number of tools exist to help you quickly install Ruby and Ruby
+on Rails on your system. Windows users can use [Rails Installer](http://railsinstaller.org),
+while Mac OS X users can use [Tokaido](https://github.com/tokaido/tokaidoapp).
 
 ```bash
 $ ruby -v
 ruby 2.0.0p353
 ```
 
-
 自分のPC環境にRubyがインストールされていない場合は、[ruby-lang.org](https://www.ruby-lang.org/ja/installation/) を参照して、自分の環境に合うインストール方法を参照してください。
 
-
-
-
-多くのUnix系OSには実用的なバージョンのSQLite3が同梱されています。 Windowsユーザーなどその他の環境の方は[SQLite3](http://www.sqlite.org)のインストール方法を参照してください。
+多くのUnix系OSには実用的なバージョンのSQLite3が同梱されています。 Windows
+users and others can find installation instructions at the [SQLite3 website](https://www.sqlite.org).
 正しくインストールされていること、PATH環境変数が正しく通っていることを確認してください。
 
 ```bash
@@ -91,7 +86,7 @@ $ gem install rails
 $ rails --version
 ```
 
-"Rails 4.2.1"のように表示されれば、次に進むことができます。
+If it says something like "Rails 4.2.1", you are ready to continue.
 
 ### ブログアプリケーションを作成する
 
@@ -118,11 +113,11 @@ $ cd blog
 | ファイル/フォルダ | 目的 |
 | ----------- | ------- |
 |app/|ここにはアプリケーションのコントローラ、モデル、ビュー、ヘルパー、メイラー、そしてアセットが置かれます。以後、本ガイドでは基本的にこのディレクトリを中心に説明を行います。|
-|bin/|ここにはアプリケーションを起動したりデプロイしたりするためのRailsスクリプトなどのスクリプトファイルが置かれます。|
+|bin/|Contains the rails script that starts your app and can contain other scripts you use to setup, deploy or run your application.|
 |config/|アプリケーションの設定ファイル (ルーティング、データベースなど) がここに置かれます。詳細については[Railsアプリケーションを設定する](configuring.html) を参照してください。|
 |config.ru|アプリケーションの起動に必要となる、Rackベースのサーバー用のRack設定ファイルです。|
 |db/|現時点のデータベーススキーマと、データベースマイグレーションファイルが置かれます。|
-|Gemfile<br>Gemfile.lock|これらのファイルは、Railsアプリケーションで必要となるgemの依存関係を記述します。この2つのファイルはBundler gemで使用されます。Bundlerの詳細については[BundlerのWebサイト](http://gembundler.com)を参照してください。
+|Gemfile<br>Gemfile.lock|これらのファイルは、Railsアプリケーションで必要となるgemの依存関係を記述します。この2つのファイルはBundler gemで使用されます。For more information about Bundler, see the [Bundler website](http://bundler.io).|
 |lib/|アプリケーションで使用する拡張モジュールが置かれます。|
 |log/|アプリケーションのログファイルが置かれます。|
 |public/|このフォルダの下にあるファイルは外部 (インターネット) からそのまま参照できます。静的なファイルやコンパイル済みアセットはここに置きます。|
@@ -142,10 +137,17 @@ Hello, Rails!
 先ほど作成したRailsアプリケーションは、既に実行可能な状態になっています。Webアプリケーションを開発用のPCで実際に動かしてこのことを確かめてみましょう。`blog`ディレクトリに移動し、以下のコマンドを実行します。
 
 ```bash
-$ rails server
+$ bin/rails server
 ```
 
-TIP: CoffeeScriptをJavaScriptにコンパイルするにはJavaScriptランタイムが必要です。ランタイムが環境にない場合は`execjs`エラーが発生します。Mac OS XやWindowsにはJavaScriptランタイムが同梱されています。Railsが新規アプリケーション用に生成する`Gemfile`には`therubyracer`というgemがコメントアウトされた状態で含まれており、必要であればこのgemのコメントアウトを解除して有効にすることもできます。`therubyrhino`はJRubyユーザー向けに推奨されているランタイムであり、JRuby環境下ではデフォルトでアプリケーションの`Gemfile`に追加されます。サポートされているランタイムの詳細については[ExecJS](https://github.com/sstephenson/execjs#readme)で確認できます。
+TIP: If you are using Windows, you have to pass the scripts under the `bin`
+folder directly to the Ruby interpreter e.g. `ruby bin\rails server`.
+
+TIP: Compiling CoffeeScript and JavaScript asset compression requires you
+have a JavaScript runtime available on your system, in the absence
+of a runtime you will see an `execjs` error during asset compilation.
+Mac OS XやWindowsにはJavaScriptランタイムが同梱されています。Railsが新規アプリケーション用に生成する`Gemfile`には`therubyracer`というgemがコメントアウトされた状態で含まれており、必要であればこのgemのコメントアウトを解除して有効にすることもできます。`therubyrhino`はJRubyユーザー向けに推奨されているランタイムであり、JRuby環境下ではデフォルトでアプリケーションの`Gemfile`に追加されます。You can investigate
+all the supported runtimes at [ExecJS](https://github.com/rails/execjs#readme).
 
 Railsで起動されるWebサーバーは、Rubyにデフォルトで付属しているWEBrickです。Webアプリケーションが実際に動作しているところを確認するには、ブラウザを開いて <http://localhost:3000> を表示してください。以下のようなRailsのデフォルト情報ページが表示されます。
 
@@ -166,14 +168,14 @@ Railsに"Hello"と表示するには、最低でも _コントローラ_ と _�
 コントローラを新規作成するには、コントローラ用のジェネレータを実行します。ここでは以下のように、welcomeという名前のコントローラの中にindexというアクションを作成するよう指定します。
 
 ```bash
-$ rails generate controller welcome index
+$ bin/rails generate controller welcome index
 ```
 
 Railsは指定どおりコントローラを作成し、関連ファイルやルーティングも設定してくれます。
 
 ```bash
 create  app/controllers/welcome_controller.rb
-route  get 'welcome/index'
+ route  get 'welcome/index'
 invoke  erb
 create    app/views/welcome
 create    app/views/welcome/index.html.erb
@@ -181,8 +183,6 @@ invoke  test_unit
 create    test/controllers/welcome_controller_test.rb
 invoke  helper
 create    app/helpers/welcome_helper.rb
-invoke    test_unit
-create      test/helpers/welcome_helper_test.rb
 invoke  assets
 invoke    coffee
 create      app/assets/javascripts/welcome.js.coffee
@@ -225,9 +225,11 @@ Rails.application.routes.draw do
 root 'welcome#index'
 ```
 
-`root 'welcome#index'`と記述することで、アプリケーションのルートURLへのアクセスをwelcomeコントローラのindexアクションに割り当てるようRailsに指示が伝わります。同様に、`get 'welcome/index'`は<http://localhost:3000/welcome/index>というリクエストをwelcomeコントローラのindexアクションに割り当てます。後者は先ほどコントローラ用ジェネレータ (`rails generate controller welcome index`) を実行した時に自動的に作成されています。
+`root 'welcome#index'`と記述することで、アプリケーションのルートURLへのアクセスをwelcomeコントローラのindexアクションに割り当てるようRailsに指示が伝わります。同様に、`get 'welcome/index'`は<http://localhost:3000/welcome/index>というリクエストをwelcomeコントローラのindexアクションに割り当てます。This was created earlier when you ran the
+controller generator (`bin/rails generate controller welcome index`).
 
-ブラウザで<http://localhost:3000>を表示してみましょう (ジェネレータを実行するためにRailsを止めていた場合は`rails server`を再実行してください)。`app/views/welcome/index.html.erb`の中に書いた"Hello, Rails!"という文字がブラウザ上に表示されるはずです。`WelcomeController`の`index`アクションへのルーティングが新たに形成され、ビューが正しく表示されたことがこれで確認できました。
+Launch the web server again if you stopped it to generate the controller (`bin/rails
+server`) and navigate to <http://localhost:3000> in your browser. `app/views/welcome/index.html.erb`の中に書いた"Hello, Rails!"という文字がブラウザ上に表示されるはずです。`WelcomeController`の`index`アクションへのルーティングが新たに形成され、ビューが正しく表示されたことがこれで確認できました。
 
 TIP: ルーティングの詳細については[Railsのルーティング](routing.html)を参照してください。
 
@@ -239,7 +241,8 @@ TIP: ルーティングの詳細については[Railsのルーティング](rout
 今度はBlogアプリケーションに新しく _リソース_ を作成します。ここで言う「リソース」とは、記事、人、動物などのよく似たオブジェクト同士が集まったものを指します。
 リソースに対して作成 (create)、読み出し (read)、更新 (update)、削除 (destroy) の4つの操作を行なうことができるようになっており、これらの操作の頭文字を取って _CRUD_ と呼ばれます。
 
-Railsのルーティングには`resources`メソッドがあり、これを使用してRESTリソースへの標準的なルーティングを宣言できます (訳注: RESTについては[Wikipedia](http://ja.wikipedia.org/wiki/REST)を参照してください)。たとえば`config/routes.rb`で _articleリソース_ を宣言すると以下のようになります。
+Railsのルーティングには`resources`メソッドがあり、これを使用してRESTリソースへの標準的なルーティングを宣言できます (訳注: RESTについては[Wikipedia](http://ja.wikipedia.org/wiki/REST)を参照してください)。You need to add the _article resource_ to the
+`config/routes.rb` as follows:
 
 ```ruby
 Rails.application.routes.draw do
@@ -250,14 +253,15 @@ Rails.application.routes.draw do
 end
 ```
 
-コマンドラインで`rake routes`コマンドを実行すると、標準的なRESTfulアクションへのルーティングがすべて定義されていることが確認できます。以下の出力のprefix列や他の列については後ほど解説しますが、ここでご注目いただきたいのは、Railsは「articles」というリソース名から単数形の「article」を推測し、両者をその意味にそって使い分けているという点です。prefix列で単一の項目には単数形のarticle、複数項目を扱う場合には複数形のarticlesが使われているという具合です。
+If you run `bin/rake routes`, you'll see that it has defined routes for all the
+standard RESTful actions.  以下の出力のprefix列や他の列については後ほど解説しますが、ここでご注目いただきたいのは、Railsは「articles」というリソース名から単数形の「article」を推測し、両者をその意味にそって使い分けているという点です。prefix列で単一の項目には単数形のarticle、複数項目を扱う場合には複数形のarticlesが使われているという具合です。
 
 ```bash
-$ rake routes
+$ bin/rake routes
       Prefix Verb   URI Pattern                  Controller#Action
     articles GET    /articles(.:format)          articles#index
              POST   /articles(.:format)          articles#create
-new_article GET    /articles/new(.:format)      articles#new
+ new_article GET    /articles/new(.:format)      articles#new
 edit_article GET    /articles/:id/edit(.:format) articles#edit
      article GET    /articles/:id(.:format)      articles#show
              PATCH  /articles/:id(.:format)      articles#update
@@ -281,7 +285,7 @@ edit_article GET    /articles/:id/edit(.:format) articles#edit
 このエラーが発生したのは、ルーティングで指定された先に、リクエストを処理するように定義されたコントローラが見つからないためです。この問題を解決するには、それに対応する`ArticlesController`を作成すればよいのです。以下のコマンドを実行して解決します。
 
 ```bash
-$ rails g controller articles
+$ bin/rails generate controller articles
 ```
 
 今作成された`app/controllers/articles_controller.rb`をエディタで開くと、以下のような空のコントローラが作成されています。
@@ -301,24 +305,27 @@ NOTE: Rubyのメソッドは`public`、`private`、`protected`に分けられま
 
 生成した`ArticlesController`コントローラに`new`アクションが見つからないというエラーです。これは、Railsでアクションを指定せずに生成したコントローラは中身が空のままになるためです。
 
-コントローラ内にアクションを手作りするには、単にコントローラ内でメソッドを定義すればよいのです。`app/controllers/articles_controller.rb`をエディタで開き、`ArticlesController`クラスの内側に以下のように`new`メソッドを作成します。
+コントローラ内にアクションを手作りするには、単にコントローラ内でメソッドを定義すればよいのです。Open
+`app/controllers/articles_controller.rb` and inside the `ArticlesController`
+class, define a `new` method so that the controller now looks like this
 
 ```ruby
-def new
+class ArticlesController < ApplicationController
+  def new
+  end
 end
 ```
 
 `ArticlesController`コントローラに`new`メソッドを作成してからブラウザで<http://localhost:3000/articles/new>を再表示すると、今度はまた違うエラーが表示されます。
 
-![Template is missing for articles/new](images/getting_started/template_is_missing_articles_new.png)
+![Template is missing for articles/new]
+(images/getting_started/template_is_missing_articles_new.png)
 
 Railsでは、このシンプルなアクションに関連付けられたビューがあり、そこで情報を表示できることを期待しています。アクションは定義されましたが、これに関連付けられたビューがないのでエラーが表示されます。
 
 なお、上の画像ではエラーメッセージの下の部分は切り捨ててあります。完全なメッセージは以下のような感じになります。
 
-<blockquote>
-Missing template articles/new, application/new with {locale:[:en], formats:[:html], handlers:[:erb, :builder, :coffee]}. Searched in: * "/path/to/blog/app/views"
-</blockquote>
+>Missing template articles/new, application/new with {locale:[:en], formats:[:html], handlers:[:erb, :builder, :coffee]}. Searched in: * "/path/to/blog/app/views"
 
 何だかたくさんのテキストが表示されました。それぞれの部分がどういう意味なのかを見てみましょう。
 
@@ -340,7 +347,8 @@ Missing template articles/new, application/new with {locale:[:en], formats:[:htm
 
 ### 最初のフォーム
 
-このテンプレート内にフォームを作成するために、<em>form builder</em> を使用します。Railsには`form_for`というヘルパーメソッドがあり、主にこれを使用してフォームを作成します。以下のコードを`app/views/articles/new.html.erb`に追加して、`form_for`メソッドを使用できるようにしましょう。
+To create a form within this template, you will use a *form
+builder*. Railsには`form_for`というヘルパーメソッドがあり、主にこれを使用してフォームを作成します。以下のコードを`app/views/articles/new.html.erb`に追加して、`form_for`メソッドを使用できるようにしましょう。
 
 ```html+erb
 <%= form_for :article do |f| %>
@@ -375,14 +383,15 @@ Missing template articles/new, application/new with {locale:[:en], formats:[:htm
 ```
 
 この例では、`:url`オプションに`articles_path`ヘルパーが渡されています。
-このときRailsの内部で何が行われているのかを知るために、`rake routes`の出力結果をもう一度見てみましょう。
+To see what Rails will do with this, we look back at the output of
+`bin/rake routes`:
 
 ```bash
-$ rake routes
+$ bin/rake routes
       Prefix Verb   URI Pattern                  Controller#Action
     articles GET    /articles(.:format)          articles#index
              POST   /articles(.:format)          articles#create
-new_article GET    /articles/new(.:format)      articles#new
+ new_article GET    /articles/new(.:format)      articles#new
 edit_article GET    /articles/:id/edit(.:format) articles#edit
      article GET    /articles/:id(.:format)      articles#show
              PATCH  /articles/:id(.:format)      articles#update
@@ -391,20 +400,26 @@ edit_article GET    /articles/:id/edit(.:format) articles#edit
         root GET    /                            welcome#index
 ```
 
-`articles_path`ヘルパーは、`articles`という接頭語に関連付けられているURIパターンをフォームの送信先とするようRailsに指示します。そしてこのフォームはデフォルトに従って`POST`リクエストとしてルーティングに送信されます。そしてこのルーティングは、現在のコントローラである`ArticlesController`の`create`アクションに関連付けられます。
+The `articles_path` helper tells Rails to point the form to the URI Pattern
+associated with the `articles` prefix; and the form will (by default) send a
+`POST` request to that route. This is associated with the `create` action of
+the current controller, the `ArticlesController`.
 
 このフォームと、それに関連付けられたルーティングが定義されることで、フォームに記入して送信ボタンをクリックすると新しい記事作成プロセスが開始されるようになります。この状態でフォームを送信すると、既にお馴染みの以下のエラーが表示されます。
 
-![Unknown action create for ArticlesController](images/getting_started/unknown_action_create_for_articles.png)
+![Unknown action create for ArticlesController]
+(images/getting_started/unknown_action_create_for_articles.png)
 
 そこで今度は`ArticlesController`コントローラ内に`create`アクションを作成し、フォームが動作するようにしましょう。
 
 ### 記事を作成する
 
-"Unknown action"エラーを解消するには、`app/controllers/articles_controller.rb`ファイル内の`ArticlesController`クラス内の`new`アクションの下に`create`アクションを追加します。
+To make the "Unknown action" go away, you can define a `create` action within
+the `ArticlesController` class in `app/controllers/articles_controller.rb`,
+underneath the `new` action, as shown:
 
 ```ruby
-class ArticlesController < ApplicationController 
+class ArticlesController < ApplicationController
   def new
   end
 
@@ -423,11 +438,9 @@ def create
 end
 ```
 
-
-
-
 ここで`render`メソッドは非常に単純なハッシュを引数に取ります。ハッシュのキーは`plain`、ハッシュの値は`params[:article].inspect`です。`params`メソッドは、フォームから送信されてきたパラメータ (つまりフォームのフィールド) を表すオブジェクトです。`params`メソッドは`ActiveSupport::HashWithIndifferentAccess`オブジェクトを返します。文字列またはシンボルを使用して、このオブジェクトのハッシュのキーを指定できます。今回の場合、必要なのはフォームの値のうちの1つだけです。
 
+TIP: Ensure you have a firm grasp of the `params` method, as you'll use it fairly regularly. Let's consider an example URL: **http://www.example.com/?username=dhh&email=dhh@email.com**. In this URL, `params[:username]` would equal "dhh" and `params[:email]` would equal "dhh@email.com".
 
 フォームを再送信してみると、今度はmissing templateエラーが表示されなくなりました。今度は以下が表示されました。
 
@@ -442,7 +455,7 @@ end
 Railsのモデルは、単数形の名前を持ち、対応するデータベーステーブル名は複数形で表されるというルールがあります。Railsにはモデル作成用のジェネレータもあり、多くのRails開発者がモデル作成の際に使用しています。モデルを作成するにはターミナルで以下のコマンドを実行します。
 
 ```bash
-$ rails generate model Article title:string text:text
+$ bin/rails generate model Article title:string text:text
 ```
 
 このコマンドを実行すると、`Article`モデルが作成されます。その中にはstring型の _title_ 属性とtext型の _text_ 属性が作成されています。これらの属性は、データベースの`articles`テーブルに自動的に追加され、`Article`モデルと対応付けられます (訳注: 実際には後述するマイグレーションを行わないとデータベースとの対応付けは完了しません)。
@@ -453,7 +466,8 @@ TIP: Active Recordは、データベースのカラム名とモデルの属性�
 
 ### マイグレーションを実行する
 
-既に見たように`rails generate model`を実行すると _データベースマイグレーション_ ファイルが`db/migrate`の下に作成されます。マイグレーションはRubyのクラスであり、データベーステーブルの作成や変更を簡単に行うためのしくみです。マイグレーションを実行するにはrakeコマンドを実行します。マイグレーションを使用して行ったデータベース構成の変更は、後から取り消すことができます。マイグレーションファイルの名前にはタイムスタンプが含まれており、これに基いて、マイグレーションは作成された順に実行されます。
+As we've just seen, `bin/rails generate model` created a _database migration_ file
+inside the `db/migrate` directory. マイグレーションはRubyのクラスであり、データベーステーブルの作成や変更を簡単に行うためのしくみです。マイグレーションを実行するにはrakeコマンドを実行します。マイグレーションを使用して行ったデータベース構成の変更は、後から取り消すことができます。マイグレーションファイルの名前にはタイムスタンプが含まれており、これに基いて、マイグレーションは作成された順に実行されます。
 
 ここで`db/migrate/20140120191729_create_articles.rb` ファイルをエディタで開いてみると (タイムスタンプは各自異なることにご注意ください)、以下のようになっています。
 
@@ -464,7 +478,7 @@ class CreateArticles < ActiveRecord::Migration
       t.string :title
       t.text :text
 
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end
@@ -472,12 +486,13 @@ end
 
 上のマイグレーションファイルには`change`という名前のメソッドが作成されており、マイグレーションの実行時に呼び出されます。このメソッドで定義されてる操作は取り消しが可能です。つまり、Railsはchangeメソッドで行われたマイグレーションを必要に応じて元に戻すことができます。このマイグレーションを実行すると、`articles`というテーブルが作成され、文字列カラムとテキストカラムが1つずつ作成されます。Railsは、マイグレーション時に作成日と更新日を追跡するためのタイムスタンプフィールドを2つ作成します。これは指定がなくても自動的に行われます。
 
-TIP: マイグレーションの詳細については、[Railsのデータベースマイグレーション](migrations.html) (未翻訳) を参照してください。
+TIP: For more information about migrations, refer to [Rails Database Migrations]
+(migrations.html).
 
 ここでは、以下のようにrakeコマンドでマイグレーションを実行します。
 
 ```bash
-$ rake db:migrate
+$ bin/rake db:migrate
 ```
 
 マイグレーションコマンドによってArticlesテーブルがデータベース上に作成されます。
@@ -489,7 +504,9 @@ $ rake db:migrate
 ==  CreateArticles: migrated (0.0020s) =========================================
 ```
 
-NOTE: マイグレーションはデフォルトではdevelopment (開発) 環境で実行されます。そのため、`config/database.yml`ファイルの`development`セクションで定義されている開発用データベースに対して実行される点にご注意ください。production (本番) 環境など、development以外の環境に対してもマイグレーションを実行したい場合は、`rake db:migrate RAILS_ENV=production`のように環境変数を明示的に指定する必要があります。
+NOTE: マイグレーションはデフォルトではdevelopment (開発) 環境で実行されます。そのため、`config/database.yml`ファイルの`development`セクションで定義されている開発用データベースに対して実行される点にご注意ください。If you would like to execute migrations in another
+environment, for instance in production, you must explicitly pass it when
+invoking the command: `bin/rake db:migrate RAILS_ENV=production`.
 
 ### コントローラでデータを保存する
 
@@ -506,24 +523,28 @@ end
 
 変更内容を説明します。Railsのすべてのモデルは初期化時に属性(フィールド)を与えられ、それらはデータベースカラムに自動的に対応付けられます。メソッドの1行目ではまさにそれが行われています (取り出したい属性は`params[:article]`の中にあります)。次の`@article.save`で、このモデルをデータベースに保存します。最後に、ユーザーを`show`アクションにリダイレクトします (`show`アクションはこの後定義します)。訳注: モデルを保持している@articleを指定するだけで、そのモデルを表示するための`show`アクションにリダイレクトされる点にご注目ください。
 
+TIP: You might be wondering why the `A` in `Article.new` is capitalized above, whereas most other references to articles in this guide have used lowercase. In this context, we are referring to the class named `Article` that is defined in `\models\article.rb`. Class names in Ruby must begin with a capital letter.
+
 TIP: 後に解説しますが、`@article.save`は保存に成功したかどうかを真偽値 (trueまたはfalse) で返します。
 
 この時点でブラウザで<http://localhost:3000/articles/new>を表示すると、記事の作成が *ほぼ* 可能な状態になっています。実際にやってみましょう。すると、以下のようなエラーが表示されます。
 
-![Forbidden attributes for new article](images/getting_started/forbidden_attributes_for_new_article.png)
+![Forbidden attributes for new article]
+(images/getting_started/forbidden_attributes_for_new_article.png)
 
-Railsにはセキュリティの高いアプリケーションを開発するのに便利な機能が多数あり、ここではその機能に引っかかったのです。これは[`strong_parameters`](/action_controller_overview.html#strong-parameters)と呼ばれるもので、コントローラのアクションで本当に使用してよいパラメータだけを厳密に指定することを強制するものです。
+Railsにはセキュリティの高いアプリケーションを開発するのに便利な機能が多数あり、ここではその機能に引っかかったのです。This one is called [strong parameters](action_controller_overview.html#strong-parameters),
+which requires us to tell Rails exactly which parameters are allowed into our
+controller actions.
 
 なぜそんな面倒なことをしないといけないのでしょうか。コントローラが受け取ったパラメータをノーチェックでまるごと自動的にモデルに渡せるようにする方が確かに開発は楽なのですが、パラメータの渡し方をこのように便利にしてしまうと、パラメータがチェックされていない点を攻撃者に悪用される可能性があります。たとえば、サーバーへのリクエストに含まれる新規投稿送信フォームに、もともとフォームになかったフィールドが攻撃者によって密かに追加され、それがアプリケーションの整合性を脅かす可能性が考えられます。チェックされていないパラメータをまるごとモデルに保存する行為は、モデルに対する「マスアサインメント」と呼ばれています。これが発生すると、正常なデータの中に悪意のあるデータが含まれてしまう可能性があります。
 
-そこで、コントローラで渡されるパラメータはホワイトリストでチェックし、不正なマスアサインメントを防止する必要があるのです。この場合、`create`でパラメータを安全に使用するために、`title`と`text`パラメータの利用を「許可」し、かつ「必須」であることを指定したいのです。この指定を文法化するために、`require`メソッドと`permit`メソッドが導入されました。これに基いて、該当行を以下のように変更します。
+そこで、コントローラで渡されるパラメータはホワイトリストでチェックし、不正なマスアサインメントを防止する必要があるのです。この場合、`create`でパラメータを安全に使用するために、`title`と`text`パラメータの利用を「許可」し、かつ「必須」であることを指定したいのです。この指定を文法化するために、`require`メソッドと`permit`メソッドが導入されました。The change will involve one line in the `create` action:
 
 ```ruby
   @article = Article.new(params.require(:article).permit(:title, :text))
 ```
 
-この記法を毎回繰り返すのは煩雑なので、たとえば`create`アクションと`update`アクションで共用できるようにこのメソッドをくくりだしておくのが普通です。くくりだしたメソッドは、マスアサインメントを避けるだけでなく、外部から不正に呼び出されることのないように`private`宣言の後に置いてください。
-修正結果は以下のようになります。
+この記法を毎回繰り返すのは煩雑なので、たとえば`create`アクションと`update`アクションで共用できるようにこのメソッドをくくりだしておくのが普通です。くくりだしたメソッドは、マスアサインメントを避けるだけでなく、外部から不正に呼び出されることのないように`private`宣言の後に置いてください。 修正結果は以下のようになります。
 
 ```ruby
 def create
@@ -539,13 +560,16 @@ private
   end
 ```
 
-TIP: 詳細については、上に挙げた参考資料に加えて[Strong Parametersに関する公式ブログの記事](http://weblog.rubyonrails.org/2012/3/21/strong-parameters/) (英語) を参照してください。
+TIP: For more information, refer to the reference above and
+[this blog article about Strong Parameters]
+(http://weblog.rubyonrails.org/2012/3/21/strong-parameters/).
 
 ### 記事を表示する
 
 現時点の状態でフォームを再度送信すると、`show`アクションがないというメッセージがRailsから返されます。このままでは実用に耐えないので、`show`アクションを追加して先に進むことにしましょう。
 
-`rake routes`の出力結果にもあったように`show`アクションへのルーティングは以下のようになります。
+As we have seen in the output of `bin/rake routes`, the route for `show` action is
+as follows:
 
 ```
 article GET    /articles/:id(.:format)      articles#show
@@ -555,13 +579,30 @@ article GET    /articles/:id(.:format)      articles#show
 
 newで既に行ったのと同じ要領で、`app/controllers/articles_controller.rb`に`show`アクションを追加し、対応するビューも追加する必要があります。
 
+NOTE: A frequent practice is to place the standard CRUD actions in each
+controller in the following order: `index`, `show`, `new`, `edit`, `create`, `update`
+and `destroy`. You may use any order you choose, but keep in mind that these
+are public methods; as mentioned earlier in this guide, they must be placed
+before any private or protected method in the controller in order to work.
+
+以下の例では that, let's add the `show` action, as follows:
+
 ```ruby
-def show
+class ArticlesController < ApplicationController
+  def show
   @article = Article.find(params[:id])
-end
+end 
+
+  def new
+  end
+
+  # snippet for brevity
 ```
 
-ここでいくつか注意すべき点があります。ここでは`Article.find`を使用して、取り出したい記事をデータベースから探しています。このとき、リクエストの`:id`パラメータを取り出すために`params[:id]`を引数としてfindに渡しています。そして、取り出した記事オブジェクトへの参照を保持するために、通常の変数ではなく、インスタンス変数 (`@`が頭に付いているのが印です) が使用されている点にもご注目ください。これは、Railsではコントローラのインスタンス変数はすべてビューに渡されるようになっているからです (訳注: Railsはそのために背後でインスタンス変数をコントローラからビューに絶え間なくコピーし続けています)。
+ここでいくつか注意すべき点があります。We use `Article.find` to find the article we're
+interested in, passing in `params[:id]` to get the `:id` parameter from the
+request. We also use an instance variable (prefixed with `@`) to hold a
+reference to the article object. これは、Railsではコントローラのインスタンス変数はすべてビューに渡されるようになっているからです (訳注: Railsはそのために背後でインスタンス変数をコントローラからビューに絶え間なくコピーし続けています)。
 
 それでは、`app/views/articles/show.html.erb`ファイルを作成し、以下のように記入しましょう。
 
@@ -585,21 +626,35 @@ end
 ### すべての記事を一覧表示する
 
 単独の記事は表示できるようになりましたが、今度は記事の一覧も表示できるようにしてみましょう。
-今度も`rake routes`でルーティングを確認すると、以下のようなルーティングが既にあります。
+The route for this as per output of `bin/rake routes` is:
 
 ```
 articles GET    /articles(.:format)          articles#index
 ```
 
-以下のように、このルーティングに対応する`index`アクションを、`app/controllers/articles_controller.rb`の`ArticlesController`の中に作成します。
+Add the corresponding `index` action for that route inside the
+`ArticlesController` in the `app/controllers/articles_controller.rb` file.
+When we write an `index` action, the usual practice is to place it as the
+first method in the controller. Let's do it:
 
 ```ruby
-def index
-  @articles = Article.all
-end
+class ArticlesController < ApplicationController
+  def index
+    @articles = Article.all
+  end
+
+  def show
+  @article = Article.find(params[:id])
+end 
+
+  def new
+  end
+
+  # snippet for brevity
 ```
 
-最後に、このアクションに対応するビューを`app/views/articles/index.html.erb`に追加します。
+And then finally, add the view for this action, located at
+`app/views/articles/index.html.erb`:
 
 ```html+erb
 <h1>Listing articles</h1>
@@ -619,7 +674,8 @@ end
 </table>
 ```
 
-これで、`http://localhost:3000/articles`をブラウザで開くと、作成された記事の一覧が表示されるようになりました。
+Now if you go to <http://localhost:3000/articles> you will see a list of all the
+articles that you have created.
 
 ### リンクの追加
 
@@ -642,7 +698,8 @@ end
 
 このリンクをクリックするとフォームが表示され、そこで新しい記事を作成することができるようになります。
 
-`app/views/articles/new.html.erb`のフォームの下に、記事を作成せずに元の`index`アクションに戻るリンクも作成しましょう。
+Now, add another link in `app/views/articles/new.html.erb`, underneath the
+form, to go back to the `index` action:
 
 ```erb
 <%= form_for :article, url: articles_path do |f| %>
@@ -652,7 +709,9 @@ end
 <%= link_to 'Back', articles_path %>
 ```
 
-最後に、`app/views/articles/show.html.erb`テンプレートに、`index`アクションに戻るためのリンクも追加し、記事単体を見ていたユーザーが元に戻って一覧を参照できるようにします。
+Finally, add a link to the `app/views/articles/show.html.erb` template to
+go back to the `index` action as well, so that people who are viewing a single
+article can go back and view the whole list again:
 
 ```html+erb
 <p>
@@ -692,7 +751,7 @@ class Article < ActiveRecord::Base
 end
 ```
 
-このように変更されると、すべての記事にタイトルが存在し、その長さが5文字以上であることが保証されます。そうでない場合には記事はデータベースに保存されません。Railsには豊富な検証機能があり、存在確認、カラムでの重複確認、フォーマット確認、関連付けられたオブジェクトがあるかどうかの確認などが行えます。検証の詳細については[Active Record バリデーション](active_record_validations.html)を参照してください。
+このように変更されると、すべての記事にタイトルが存在し、その長さが5文字以上であることが保証されます。そうでない場合には記事はデータベースに保存されません。Railsには豊富な検証機能があり、存在確認、カラムでの重複確認、フォーマット確認、関連付けられたオブジェクトがあるかどうかの確認などが行えます。検証の詳細については[Active Record バリデーション](active_record_validations.html)を参照してください。.
 
 検証機能が追加されたので、検証が通らない内容を持つ@articleに対して`@article.save`を実行すると`false`が返されるようになりました。さて、`app/controllers/articles_controller.rb`を再度開いてみると、残念なことにまだ`create`アクションで`@article.save`の結果を利用するようになっていません。`@article.save`が失敗したらそのことをユーザーに表示してあげないと不親切です。そのためには、`app/controllers/articles_controller.rb`の`new`アクション`と`create`アクションを以下のように変更してください。
 
@@ -725,10 +784,13 @@ private
 
 ```html+erb
 <%= form_for :article, url: articles_path do |f| %>
+
   <% if @article.errors.any? %>
   <div id="error_explanation">
-    <h2><%= pluralize(@article.errors.count, "error") %> prohibited
-      this article from being saved:</h2>
+      <h2>
+        <%= pluralize(@article.errors.count, "error") %> prohibited
+        this article from being saved:
+      </h2>
     <ul>
     <% @article.errors.full_messages.each do |msg| %>
       <li><%= msg %></li>
@@ -736,6 +798,7 @@ private
     </ul>
   </div>
   <% end %>
+
   <p>
     <%= f.label :title %><br>
     <%= f.text_field :title %>
@@ -749,6 +812,7 @@ private
   <p>
     <%= f.submit %>
   </p>
+
 <% end %>
 
 <%= link_to 'Back', articles_path %>
@@ -756,13 +820,16 @@ private
 
 何やら目新しいコードが追加されています。ここでは、`@article.errors.any?`でエラーが発生しているかどうかをチェックしています。そしてエラーの場合は`@article.errors.full_messages`でエラーメッセージを全文表示します。
 
-`pluralize`は、数値を受け取ってそれに応じて英語の「単数形/複数形」活用を行ってくれるRailsのヘルパーメソッドです。数値が1より大きい場合は、引数の文字列を自動的に複数形に変更します(訳注:`pluralize`はたいていの不規則活用にも対応しています)。
+`pluralize`は、数値を受け取ってそれに応じて英語の「単数形/複数形」活用を行ってくれるRailsのヘルパーメソッドです。If the number is greater than one, the string will be automatically
+pluralized.
 
 `ArticlesController`に`@article = Article.new`を追加した理由は、そうしないとビューで受け取る`@article`が`nil`になってしまい、`@article.errors.any?`を呼び出すところでエラーになってしまうためです。Articleのインスタンス作成に成功したときは@articleが`nil`にならないようにしておきたいわけです。
 
 TIP: Railsでは、エラーメッセージを含むフィールドは自動的に`field_with_errors`クラスを持つdivタグで囲まれます。これを利用して、エラーメッセージをもっと目立たせるようにcssルールを定義しても構いません。
 
-これで、<http://localhost:3000/articles/new>のフォームで新しい記事を保存する時にタイトルがなかった場合に、適切なエラーメッセージが表示されるようになりました。
+Now you'll get a nice error message when saving an article without title when
+you attempt to do just that on the new article form
+<http://localhost:3000/articles/new>:
 
 ![エラーが表示されているフォーム](images/getting_started/form_with_errors.png)
 
@@ -770,11 +837,26 @@ TIP: Railsでは、エラーメッセージを含むフィールドは自動的�
 
 ここまでで、CRUDのうちCとRを実現しました。今度はUの部分、つまり記事の更新を実装してみましょう。
 
-最初に、`ArticlesController`に`edit`アクションを追加しましょう。
+The first step we'll take is adding an `edit` action to the `ArticlesController`,
+generally between the `new` and `create` actions, as shown:
 
 ```ruby
+def new
+  @article = Article.new
+end
+
 def edit
   @article = Article.find(params[:id])
+end
+
+def create
+  @article = Article.new(article_params)
+
+  if @article.save
+    redirect_to @article
+  else
+    render 'new'
+  end
 end
 ```
 
@@ -784,10 +866,13 @@ end
 <h1>Editing article</h1>
 
 <%= form_for :article, url: article_path(@article), method: :patch do |f| %>
+
   <% if @article.errors.any? %>
   <div id="error_explanation">
-    <h2><%= pluralize(@article.errors.count, "error") %> prohibited
-      this article from being saved:</h2>
+      <h2>
+        <%= pluralize(@article.errors.count, "error") %> prohibited
+        this article from being saved:
+      </h2>
     <ul>
     <% @article.errors.full_messages.each do |msg| %>
       <li><%= msg %></li>
@@ -795,6 +880,7 @@ end
     </ul>
   </div>
   <% end %>
+
   <p>
     <%= f.label :title %><br>
     <%= f.text_field :title %>
@@ -808,6 +894,7 @@ end
   <p>
     <%= f.submit %>
   </p>
+
 <% end %>
 
 <%= link_to 'Back', articles_path %>
@@ -817,15 +904,24 @@ end
 
 ここで`method: :patch`というオプションが指定されていますので、`PATCH`というHTTPメソッドを使用してこのフォームを送信しようとしていることがRailsに伝わります。PATCHメソッドは、RESTプロトコルに基いてリソースを **更新** するために使用されます。
 
+`form_for`ヘルパーメソッドの最初のパラメータには`@article`のようなオブジェクトを使用できます。`@article`のようなオブジェクトが最初のパラメータとして渡されると、ヘルパーはそのパラメータに含まれているフィールドを使用してフォームの項目を埋めます。ここで面白いのは、`@article`のようなインスタンス変数の代わりに同じ名前のシンボル (`:article`など) を渡した場合にも動作はまったく同じであることです。以上がこのコードで行われていることです。More details can be found in [form_for documentation]
+(http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-form_for).
 
-`form_for`ヘルパーメソッドの最初のパラメータには`@article`のようなオブジェクトを使用できます。`@article`のようなオブジェクトが最初のパラメータとして渡されると、ヘルパーはそのパラメータに含まれているフィールドを使用してフォームの項目を埋めます。ここで面白いのは、`@article`のようなインスタンス変数の代わりに同じ名前のシンボル (`:article`など) を渡した場合にも動作はまったく同じであることです。以上がこのコードで行われていることです。詳細については、[form_forに関するAPIドキュメント](http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-form_for) (英語) を参照してください。
-
-
-
-
-続いて、`app/controllers/articles_controller.rb`に`update`アクションを作成しましょう。
+Next, we need to create the `update` action in
+`app/controllers/articles_controller.rb`.
+Add it between the `create` action and the `private` method:
 
 ```ruby
+def create
+  @article = Article.new(article_params)
+
+  if @article.save
+    redirect_to @article
+  else
+    render 'new'
+  end
+end
+
 def update
   @article = Article.find(params[:id])
 
@@ -858,14 +954,14 @@ TIP: `update`に属性をすべて渡す必要はありません。たとえば�
     <th colspan="2"></th>
   </tr>
 
-<% @articles.each do |article| %>
-  <tr>
-    <td><%= article.title %></td>
-    <td><%= article.text %></td>
+  <% @articles.each do |article| %>
+    <tr>
+      <td><%= article.title %></td>
+      <td><%= article.text %></td>
     <td><%= link_to 'Show', article_path(article) %></td>
     <td><%= link_to 'Edit', edit_article_path(article) %></td>
   </tr>
-<% end %>
+  <% end %>
 </table>
 ```
 
@@ -874,8 +970,8 @@ TIP: `update`に属性をすべて渡す必要はありません。たとえば�
 ```html+erb
 ...
 
+<%= link_to 'Edit', edit_article_path(@article) %> |
 <%= link_to 'Back', articles_path %>
-| <%= link_to 'Edit', edit_article_path(@article) %>
 ```
 
 ここまでの変更で、アプリケーションの外観は以下のような感じになっているはずです。
@@ -884,7 +980,10 @@ TIP: `update`に属性をすべて渡す必要はありません。たとえば�
 
 ### 部分テンプレート(パーシャル)を使用してビューの重複コードをきれいにする
 
-さて、`edit`ページをよく見ると、`new`ページとほとんど違いがありません。実際、フォームを表示するコードはどちらでもまったく同じになっています。パーシャル(部分テンプレートとも呼ばれます)を使用して、このような無駄な重複を取り除きましょう。Rubyの慣例として、パーシャルのファイル名の先頭にはアンダースコアを追加します。
+Our `edit` page looks very similar to the `new` page; in fact, they
+both share the same code for displaying the form. Let's remove this
+duplication by using a view partial. By convention, partial files are
+prefixed with an underscore.
 
 TIP: パーシャルについての詳細は本ガイドの[レイアウトとレンダリング](layouts_and_rendering.html)を参照してください。
 
@@ -892,10 +991,13 @@ TIP: パーシャルについての詳細は本ガイドの[レイアウトと�
 
 ```html+erb
 <%= form_for @article do |f| %>
+
   <% if @article.errors.any? %>
   <div id="error_explanation">
-    <h2><%= pluralize(@article.errors.count, "error") %> prohibited
-      this article from being saved:</h2>
+      <h2>
+        <%= pluralize(@article.errors.count, "error") %> prohibited
+        this article from being saved:
+      </h2>
     <ul>
     <% @article.errors.full_messages.each do |msg| %>
       <li><%= msg %></li>
@@ -903,6 +1005,7 @@ TIP: パーシャルについての詳細は本ガイドの[レイアウトと�
     </ul>
   </div>
   <% end %>
+
   <p>
     <%= f.label :title %><br>
     <%= f.text_field :title %>
@@ -916,11 +1019,13 @@ TIP: パーシャルについての詳細は本ガイドの[レイアウトと�
   <p>
     <%= f.submit %>
   </p>
+
 <% end %>
 ```
 
 このコードをよく観察してみると、`form_for`の宣言部分以外には元のコードとの違いがないことがわかります。他のフォーム内のコードを置き換えるパーシャル内での`form_for`宣言がこのように短くて簡潔で済むのは、`@article`がRESTfulルーティングの完全なセットに対応する **リソース** であり、必要なURIとメソッドをRailsがそれに基いて推測できるからです。
-`form_for`の使用法の詳細については、[Rails APIのリソース指向のスタイル](http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-form_for-label-Resource-oriented+style) (英語) を参照してください。
+For more information about this use of `form_for`, see [Resource-oriented style]
+(http://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-form_for-label-Resource-oriented+style).
 
 今度は`app/views/articles/new.html.erb`ビューを完全に書き直して、今作成したパーシャルをここで使ってみましょう。
 
@@ -944,7 +1049,8 @@ TIP: パーシャルについての詳細は本ガイドの[レイアウトと�
 
 ### 記事を削除する
 
-いよいよCRUDのDまで到達しました。ここでは記事をデータベースから削除します。RESTの慣例に従い、記事の削除に使用するルーティングを`rake routes`の出力結果から取り出したのが以下です。
+いよいよCRUDのDまで到達しました。ここでは記事をデータベースから削除します。Following the REST convention, the route for
+deleting articles as per output of `bin/rake routes` is:
 
 ```ruby
 DELETE /articles/:id(.:format)      articles#destroy
@@ -956,7 +1062,11 @@ DELETE /articles/:id(.:format)      articles#destroy
 <a href='http://example.com/articles/1/destroy'>look at this cat!</a>
 ```
 
-リソースの削除に`delete`メソッドが使用され、このルーティングが`destroy`アクションに割り当てられる流れになります。この`destroy`アクションはまだ作成してなかったのでここで以下の内容で作成しましょう。
+We use the `delete` method for destroying resources, and this route is mapped
+to the `destroy` action inside `app/controllers/articles_controller.rb`, which
+doesn't exist yet. The `destroy` method is generally the last CRUD action in
+the controller, and like the other public CRUD actions, it must be placed
+before any `private` or `protected` methods. Let's add it:
 
 ```ruby
 def destroy
@@ -964,6 +1074,61 @@ def destroy
   @article.destroy
 
   redirect_to articles_path
+end
+```
+
+The complete `ArticlesController` in the
+`app/controllers/articles_controller.rb` file should now look like this
+
+```ruby
+class ArticlesController < ApplicationController
+  def index
+    @articles = Article.all
+  end
+
+  def show
+  @article = Article.find(params[:id])
+end 
+
+  def new
+  @article = Article.new
+  end
+
+  def edit
+  @article = Article.find(params[:id])
+end 
+
+  def create
+  @article = Article.new(article_params)
+
+  if @article.save
+    redirect_to @article
+  else
+    render 'new'
+  end
+  end
+
+  def update
+  @article = Article.find(params[:id])
+
+  if @article.update(article_params)
+    redirect_to @article
+  else
+    render 'edit'
+  end
+  end
+
+  def destroy
+  @article = Article.find(params[:id])
+  @article.destroy
+
+  redirect_to articles_path
+end 
+
+  private
+  def article_params
+    params.require(:article).permit(:title, :text)
+  end
 end
 ```
 
@@ -981,16 +1146,17 @@ end
     <th colspan="3"></th>
   </tr>
 
-<% @articles.each do |article| %>
-  <tr>
-    <td><%= article.title %></td>
-    <td><%= article.text %></td>
+  <% @articles.each do |article| %>
+    <tr>
+      <td><%= article.title %></td>
+      <td><%= article.text %></td>
     <td><%= link_to 'Show', article_path(article) %></td>
     <td><%= link_to 'Edit', edit_article_path(article) %></td>
     <td><%= link_to 'Destroy', article_path(article),
-                    method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      method: :delete,
+              data: { confirm: 'Are you sure?' } %></td>
   </tr>
-<% end %>
+  <% end %>
 </table>
 ```
 
@@ -1000,8 +1166,8 @@ end
 
 以上で記事の作成、表示、一覧表示、更新、削除をひととおり実装できました。お疲れさまでした!
 
-TIP: Railsでは、ルーティングを1つずつ手作りするよりもresourcesオブジェクトを使用してルーティングを設定することが推奨されています。
-ルーティングの詳細については、本ガイドの[Railsのルーティング](routing.html)を参照してください。
+TIP: In general, Rails encourages using resources objects instead of
+declaring routes manually. ルーティングの詳細については、本ガイドの[Railsのルーティング](routing.html)を参照してください。
 
 2番目のモデルを追加する
 ---------------------
@@ -1013,7 +1179,7 @@ TIP: Railsでは、ルーティングを1つずつ手作りするよりもresour
 今回のモデルの生成には、`Article`モデルを生成したときと同じジェネレータを使用します。作成する`Comment`モデルは、記事への参照を保持します。以下のコマンドをターミナルで実行してください。
 
 ```bash
-$ rails generate model Comment commenter:string body:text article:references
+$ bin/rails generate model Comment commenter:string body:text article:references
 ```
 
 このコマンドを実行すると、4つのファイルが生成されます。
@@ -1047,8 +1213,9 @@ class CreateComments < ActiveRecord::Migration
       # 以下の行によって`article_id`という整数カラムが追加される
       t.references :article, index: true
 
-      t.timestamps
+      t.timestamps null: false
     end
+    add_foreign_key :comments, :articles
   end
 end
 ```
@@ -1056,7 +1223,7 @@ end
 `t.references`という行は、2つのモデルの関連付けを指定するための外部キーを設定します。このとき、関連付け用のインデックスもカラム上に作成されます。それではマイグレーションを実行しましょう。
 
 ```bash
-$ rake db:migrate
+$ bin/rake db:migrate
 ```
 
 Railsは、これまで実行されていないマイグレーションだけを適切に見分けて実行しますので、以下のようなメッセージだけが表示されるはずです。
@@ -1065,6 +1232,8 @@ Railsは、これまで実行されていないマイグレーションだけを
 ==  CreateComments: migrating =================================================
 -- create_table(:comments)
    -> 0.0115s
+-- add_foreign_key(:comments, :articles)
+   -> 0.0000s
 ==  CreateComments: migrated (0.0119s) ========================================
 ```
 
@@ -1116,10 +1285,10 @@ TIP: ルーティングの詳細については[Railsのルーティング](rout
 モデルを手作りしたのですから、それに合ったコントローラも作ってみたくなります。ということで再びこれまでと同じジェネレータを使用してみましょう。
 
 ```bash
-$ rails generate controller Comments
+$ bin/rails generate controller Comments
 ```
 
-上のコマンドを実行すると、6つのファイルと1つの空ディレクトリが作成されます。
+This creates five files and one empty directory:
 
 | ファイル/ディレクトリ                               | 目的                                  |
 | -------------------------------------------- | ---------------------------------------- |
@@ -1127,7 +1296,6 @@ $ rails generate controller Comments
 | app/views/comments/                          | コントローラのビューはここにおかれる  |
 | test/controllers/comments_controller_test.rb | コントローラのテスト用ファイル              |
 | app/helpers/comments_helper.rb               | ビューヘルパー                       |
-| test/helpers/comments_helper_test.rb         | ヘルパー用のファイル                  |
 | app/assets/javascripts/comment.js.coffee     | コントローラ用のCoffeeScript          |
 | app/assets/stylesheets/comment.css.scss      | コントローラ用のCSS (カスケーディングスタイルシート) ファイル |
 
@@ -1161,8 +1329,8 @@ $ rails generate controller Comments
   </p>
 <% end %>
 
+<%= link_to 'Edit', edit_article_path(@article) %> |
 <%= link_to 'Back', articles_path %>
-| <%= link_to 'Edit', edit_article_path(@article) %>
 ```
 
 上のコードでは、`Article`のshowページにフォームが1つ追加されています。このフォームは`CommentsController`の`create`アクションを呼び出すことでコメントを新規作成します。`form_for`呼び出しでは配列を1つ渡しています。これは`/articles/1/comments`のような「ネストしたルーティング (nested route)」を生成します。
@@ -1177,7 +1345,7 @@ class CommentsController < ApplicationController
     redirect_to article_path(@article)
   end
 
-    private
+  private
     def comment_params
       params.require(:comment).permit(:commenter, :body)
     end
@@ -1204,13 +1372,13 @@ end
 <h2>Comments</h2>
 <% @article.comments.each do |comment| %>
   <p>
-    <strong>Commenter:</strong>
-    <%= comment.commenter %>
+  <strong>Commenter:</strong>
+  <%= comment.commenter %>
   </p>
 
   <p>
-    <strong>Comment:</strong>
-    <%= comment.body %>
+  <strong>Comment:</strong>
+  <%= comment.body %>
   </p>
 <% end %>
 
@@ -1229,8 +1397,8 @@ end
   </p>
 <% end %>
 
-<%= link_to 'Edit Article', edit_article_path(@article) %> |
-<%= link_to 'Back to Articles', articles_path %>
+<%= link_to 'Edit', edit_article_path(@article) %> |
+<%= link_to 'Back', articles_path %>
 ```
 
 以上で、ブログに記事やコメントを自由に追加して、それらを正しい場所に表示できるようになりました。
@@ -1244,7 +1412,8 @@ end
 
 ### パーシャルコレクションを描画する
 
-最初に、特定記事のコメントをすべて表示する部分を切り出してコメントパーシャルを作成しましょう。`app/views/comments/_comment.html.erb`というファイルを作成し、以下のコードを入力します。
+最初に、特定記事のコメントをすべて表示する部分を切り出してコメントパーシャルを作成しましょう。Create the file `app/views/comments/_comment.html.erb` and put the
+following into it:
 
 ```html+erb
 <p>
@@ -1289,8 +1458,8 @@ end
   </p>
 <% end %>
 
-<%= link_to 'Edit Article', edit_article_path(@article) %> |
-<%= link_to 'Back to Articles', articles_path %>
+<%= link_to 'Edit', edit_article_path(@article) %> |
+<%= link_to 'Back', articles_path %>
 ```
 
 これにより、`app/views/comments/_comment.html.erb`パーシャルが、`@article.comments`コレクションに含まれているコメントをすべて出力するようになりました。`render`メソッドが`@article.comments`コレクションに含まれる要素を1つ1つ列挙するときに、各コメントをパーシャルと同じ名前のローカル変数に自動的に割り当てます。この場合は`comment`というローカル変数が使用され、これはパーシャルでの表示に使用されます。
@@ -1323,19 +1492,19 @@ end
   <%= @article.title %>
 </p>
 
-      <p>
+<p>
   <strong>Text:</strong>
   <%= @article.text %>
-      </p>
+</p>
 
 <h2>Comments</h2>
 <%= render @article.comments %>
 
 <h2>Add a comment:</h2>
-<%= render "comments/form" %>
+<%= render 'comments/form' %>
 
-<%= link_to 'Edit Article', edit_article_path(@article) %> |
-<%= link_to 'Back to Articles', articles_path %>
+<%= link_to 'Edit', edit_article_path(@article) %> |
+<%= link_to 'Back', articles_path %>
 ```
 
 2番目のrenderは、描画したいパーシャルテンプレートである`comments/form`を単純に定義しているだけです。`comments/form`と書くだけで、Railsは区切りのスラッシュ文字に気付き、`app/views/comments`ディレクトリの`_form.html.erb`パーシャルを描画すればよいということを理解し、実行してくれます。`app/views/comments/_form.html.erb`などと書く必要はありません。
@@ -1396,7 +1565,8 @@ end
 
 ### 関連付けられたオブジェクトも削除する
 
-ある記事を削除したら、その記事に関連付けられているコメントも一緒に削除する必要があります。そうしないと、コメントがいつまでもデータベース上に残ってしまいます。Railsでは関連付けに`dependent`オプションを指定することでこれを実現しています。Articleモデル`app/models/article.rb`を以下のように変更しましょう。
+If you delete an article, its associated comments will also need to be
+deleted, otherwise they would simply occupy space in the database. Railsでは関連付けに`dependent`オプションを指定することでこれを実現しています。Articleモデル`app/models/article.rb`を以下のように変更しましょう。
 
 ```ruby
 class Article < ActiveRecord::Base
@@ -1406,29 +1576,36 @@ class Article < ActiveRecord::Base
 end
 ```
 
-セキュリティ
+Security
 --------
 
 ### BASIC認証
 
-このブログアプリケーションをオンラインで公開すると、このままでは誰でも記事を追加/編集/削除したり、コメントを削除したりできてしまいます。
+If you were to publish your blog online, anyone would be able to add, edit and
+delete articles or delete comments.
 
 Railsではこのような場合に便利な、非常にシンプルなHTTP認証システムが用意されています。
 
-`ArticlesController`では、認証されていない人物がアクションに触れないようにブロックする必要があります。そこで、Railsの`http_basic_authenticate_with`メソッドを使用することで、このメソッドが許可する場合に限って、リクエストされたアクションにアクセスできるようにすることができます。
+In the `ArticlesController` we need to have a way to block access to the
+various actions if the person is not authenticated. Here we can use the Rails
+`http_basic_authenticate_with` method, which allows access to the requested
+action if that method allows it.
 
-この認証システムを使用するには、`ArticlesController`コントローラの最初の部分で指定します。今回は、`index`アクションと`show`アクションは自由にアクセスできるようにし、それ以外のアクションには認証を要求するようにしたいと思います。そこで、`app/controllers/articles_controller.rb`に次の記述を追加してください。
+To use the authentication system, we specify it at the top of our
+`ArticlesController` in `app/controllers/articles_controller.rb`. In our case,
+we want the user to be authenticated on every action except `index` and `show`,
+so we write that:
 
 ```ruby
 class ArticlesController < ApplicationController
 
   http_basic_authenticate_with name: "dhh", password: "secret", except: [:index, :show]
 
-def index
+  def index
     @articles = Article.all
   end
 
-  # (以下省略)
+  # snippet for brevity
 ```
 
 コメントの削除も認証済みユーザーにだけ許可したいので、`CommentsController` (`app/controllers/comments_controller.rb`) に以下のように追記しましょう。
@@ -1440,10 +1617,10 @@ class CommentsController < ApplicationController
 
   def create
     @article = Article.find(params[:article_id])
-    ...
-  end
+  # ...
+end 
 
-  # (以下省略)
+  # snippet for brevity
 ```
 
 ここで記事を新規作成しようとすると、以下のようなBASIC http認証ダイアログが表示されます。
@@ -1455,7 +1632,7 @@ class CommentsController < ApplicationController
 
 ### その他のセキュリティ対策
 
-セキュリティ、それもWebアプリケーションのセキュリティは非常に幅広く、かつ詳細に渡っています。Railsアプリケーションのセキュリティの詳細については、本ガイドの[Railsセキュリティガイド](security.html)を参照してください。
+セキュリティ、それもWebアプリケーションのセキュリティは非常に幅広く、かつ詳細に渡っています。Railsアプリケーションのセキュリティの詳細については、本ガイドの[Railsセキュリティガイド](security.html)を参照してください。.
 
 
 次に学ぶべきこと
@@ -1463,7 +1640,7 @@ class CommentsController < ApplicationController
 
 以上で、Railsアプリケーションを初めて作るという試みは終わりです。この後は自由に更新したり実験を重ねたりできます。もちろん、何の助けもなしにWebアプリケーションを作らなければならないなどということはありません。Railsを使用してWebアプリケーションを立ち上げたり実行したりするうえで助けが必要になったら、以下のサポート用リソースを自由に参照できます。
 
-* [Ruby on Railsガイド](http://railsguides.jp) -- 本書です
+* The [Ruby on Rails Guides](index.html)
 * [Ruby on Railsチュートリアル](http://railstutorial.jp)
 * [Ruby on Railsメーリングリスト](http://www.ruby.or.jp/ja/tech/development/web_application/100_community.html)
 * irc.freenode.net上の[#rubyonrails](irc://irc.freenode.net/#rubyonrails)チャンネル
@@ -1473,7 +1650,8 @@ Railsには、rakeコマンドラインユーティリティを使用して生�
 * `rake doc:guides`を実行すると、本Railsガイドの完全なコピーがアプリケーションの`doc/guides`フォルダに生成されます。ブラウザで`doc/guides/index.html`を開くことでガイドを参照できます。
 * `rake doc:rails`を実行すると、Rails APIドキュメントの完全なコピーがアプリケーションの`doc/api`フォルダに生成されます。ブラウザで`doc/api/index.html`を開いてAPIドキュメントを参照できます。
 
-TIP: `doc:guides` rakeタスクを使用してRailsガイドをローカル生成するには、RedCloth gemをインストールする必要があります。RedCloth gemを`Gemfile`に追記して`bundle install`を実行することで利用できるようになります。
+TIP: To be able to generate the Rails Guides locally with the `doc:guides` rake
+task you need to install the RedCloth and Nokogiri gems. RedCloth gemを`Gemfile`に追記して`bundle install`を実行することで利用できるようになります。
 
 設定の落とし穴
 ---------------------
