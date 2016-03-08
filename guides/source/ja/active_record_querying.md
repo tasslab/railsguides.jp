@@ -1,6 +1,3 @@
-﻿
-
-
 Active Record クエリインターフェイス
 =============================
 
@@ -12,7 +9,6 @@ Active Record クエリインターフェイス
 * 検索されたレコードのソート順、取り出したい属性、グループ化の有無などを指定する
 * 一括読み込み (eager loading) を使用して、データ取り出しに必要なクエリの実行回数を減らす
 * 動的検索メソッドを使用する
-* 複数のActive Record メソッドを連鎖 (chain) させて同時に利用する
 * 特定のレコードが存在するかどうかをチェックする
 * Active Recordモデルでさまざまな計算を行う
 * リレーションでEXPLAINを実行する
@@ -91,7 +87,7 @@ Active Recordでは、データベースからオブジェクトを取り出す�
 * 与えられたオプションを同等のSQLクエリに変換します。
 * SQLクエリを発行し、該当する結果をデータベースから取り出します。
 * 得られた結果を行ごとに同等のRubyオブジェクトとしてインスタンス化します。
-* 指定されていれば、`after_find`を実行し、続いて`after_initialize`コールバックを実行します。
+* Run `after_find` callbacks, if any.
 
 ### 単一のオブジェクトを取り出す
 
@@ -164,7 +160,7 @@ client = Client.take(2)
 SELECT * FROM clients LIMIT 2
 ```
 
-`take`メソッドの動作は、`find`メソッドとまったく同じです。ただし、`find`メソッドでは、マッチするレコードが見つからない場合に`ActiveRecord::RecordNotFound`例外が発生する点だけが異なります。
+The `take!` method behaves exactly like `take`, except that it will raise `ActiveRecord::RecordNotFound` if no matching record is found.
 
 TIP: このメソッドで取り出されるレコードは、使用するデータベースエンジンによっても異なることがあります。
 
@@ -258,12 +254,6 @@ Client.find_by first_name: 'Jon'
 Client.where(first_name: 'Lifo').take
 ```
 
-これと同等のSQLは以下のようになります。
-
-```sql
-SELECT * FROM clients WHERE (clients.first_name = 'Lifo') LIMIT 1
-```
-
 `find_by!`メソッドの動作は、マッチするレコードが見つからない場合に`ActiveRecord::RecordNotFound`例外が発生する点を除いて、`find_by`メソッドとまったく同じです。以下に例を示します。
 
 ```ruby
@@ -318,7 +308,7 @@ end
 
 `find_each`メソッドでは、通常の`find`メソッドとほぼ同じオプションが使用できます。`:order`と`:limit`は`find_each`内部で利用するために予約されており、使用できません。
 
-このメソッドでは、通常のオプションの他に`:batch_size`、`:begin_at`、`:end_at`も利用できます。
+Two additional options, `:batch_size` and `:start`, are available as well.
 
 **`:batch_size`**
 
@@ -330,29 +320,14 @@ User.find_each(batch_size: 5000) do |user|
 end
 ```
 
-**`:begin_at`**
+**`:start`**
 
-デフォルトでは、レコードは主キーの昇順に取り出されます。主キーは整数でなければなりません。あるIDより小さいIDを除外したい場合は、`:begin_at`オプションを使用していつでもシーケンスの開始IDを指定できます。これは、たとえば中断したバッチ処理を再開する場合などに便利です (最後に実行された処理のIDがチェックポイントとして保存済みであることが前提です)。
+デフォルトでは、レコードは主キーの昇順に取り出されます。主キーは整数でなければなりません。The `:start` option allows you to configure the first ID of the sequence whenever the lowest ID is not the one you need. これは、たとえば中断したバッチ処理を再開する場合などに便利です (最後に実行された処理のIDがチェックポイントとして保存済みであることが前提です)。
 
 たとえば、1回のバッチで5000件を取り出し、主キーが2000以降のユーザーだけにニュースレターを送信したい場合は以下のようにします。
 
 ```ruby
-User.find_each(begin_at: 2000, batch_size: 5000) do |user|
-  NewsMailer.weekly(user).deliver_now
-end
-```
-
-他にも、同じ処理キューを複数の作業者で手分けする場合が考えられます。たとえば、`:begin_at`オプションを適切に使用して、作業者1人につき10000レコードずつ割り当てることができます。
-
-**`:end_at`**
-
-`:begin_at`オプションと同様、あるIDより大きいIDを除外したい場合は、`:end_at`オプションを使用していつでもシーケンスの終了IDを指定できます。
-これは、たとえば中断したバッチ処理を再開する場合などに便利です。`:begin_at`と`:end_at`でレコードのサブセットを指定します。
-
-たとえば、1回のバッチで5000件を取り出し、主キーが2000から10000のユーザーだけにニュースレターを送信したい場合は以下のようにします。
-
-```ruby
-User.find_each(begin_at: 2000, end_at: 10000, batch_size: 5000) do |user|
+User.find_each(start: 2000, batch_size: 5000) do |user|
   NewsMailer.weekly(user).deliver_now
 end
 ```
@@ -370,7 +345,7 @@ end
 
 ##### `find_in_batches`のオプション
 
-`find_in_batches`メソッドでは、`find_each`メソッドと同様に`:batch_size`、`:begin_at`、`:end_at`オプションを使用できます。
+The `find_in_batches` method accepts the same `:batch_size` and `:start` options as `find_each`.
 
 条件
 ----------
@@ -396,7 +371,7 @@ Active Recordは条件値の最初の要素を調べ、その後に要素が追�
 複数の条件を指定したい場合は次のようにします。
 
 ```ruby
-Client.where("orders_count = ?AND locked = ?", params[:orders], false)
+Client.where("orders_count = ? AND locked = ?", params[:orders], false)
 ```
 
 上の例では、1つ目の疑問符は`params[:orders]`の値で置き換えられ、2つ目の疑問符は`false`をSQL形式に変換したもの (変換方法はアダプタによって異なる) で置き換えられます。
@@ -413,7 +388,7 @@ Client.where("orders_count = ?", params[:orders])
 Client.where("orders_count = #{params[:orders]}")
 ```
 
-条件文字列の中に変数を直接置くと、その変数はデータベースに **そのまま** 渡されてしまいます。これは、悪意のある人物がエスケープされていない危険な変数を渡すことができるということです。このようなコードがあると、悪意のある人物がデータベースを意のままにすることができ、データベース全体が危険にさらされます。くれぐれも、条件文字列の中に引数を直接置くことはしないでください。
+because of argument safety. 条件文字列の中に変数を直接置くと、その変数はデータベースに **そのまま** 渡されてしまいます。これは、悪意のある人物がエスケープされていない危険な変数を渡すことができるということです。このようなコードがあると、悪意のある人物がデータベースを意のままにすることができ、データベース全体が危険にさらされます。くれぐれも、条件文字列の中に引数を直接置くことはしないでください。
 
 TIP: SQLインジェクションの詳細については[Ruby on Railsセキュリティガイド](security.html#sqlインジェクション)を参照してください。
 
@@ -502,7 +477,7 @@ Article.where.not(author: author)
 
 ```ruby
 Client.order(:created_at)
-# または
+# OR
 Client.order("created_at")
 ```
 
@@ -510,11 +485,11 @@ Client.order("created_at")
 
 ```ruby
 Client.order(created_at: :desc)
-# または
+# OR
 Client.order(created_at: :asc)
-# または
+# OR
 Client.order("created_at DESC")
-# または
+# OR
 Client.order("created_at ASC")
 ```
 
@@ -522,15 +497,15 @@ Client.order("created_at ASC")
 
 ```ruby
 Client.order(orders_count: :asc, created_at: :desc)
-# または
+# OR
 Client.order(:orders_count, created_at: :desc)
-# または
+# OR
 Client.order("orders_count ASC, created_at DESC")
-# または
+# OR
 Client.order("orders_count ASC", "created_at DESC")
 ```
 
-`order`メソッドを (条件を変えて) 複数回呼び出すと、最初の並び順に新しい並び順が追加されます。
+If you want to call `order` multiple times e.g. in different context, new order will append previous one
 
 ```ruby
 Client.order("orders_count ASC").order("created_at DESC")
@@ -559,7 +534,7 @@ SELECT viewable_by, locked FROM clients
 selectを使用すると、選択したフィールドだけを使用してモデルオブジェクトが初期化されるため、注意してください。モデルオブジェクトの初期化時に指定しなかったフィールドにアクセスしようとすると、以下のメッセージが表示されます。
 
 ```bash
-ActiveModel::MissingAttributeError: missing attribute: <属性名>
+ActiveModel::MissingAttributeError: missing attribute: <attribute>
 ```
 
 `<属性名>`は、アクセスしようとした属性です。`id`メソッドは、この`ActiveRecord::MissingAttributeError`を発生しません。このため、関連付けを扱う場合には注意してください。関連付けが正常に動作するには`id`メソッドが必要だからです。
@@ -656,7 +631,7 @@ GROUP BY status
 Having
 ------
 
-SQLでは、`GROUP BY`フィールドで条件を指定する場合に`HAVING`句を使用します。検索メソッドで`:having`メソッドを使用すると、`Model.find`で生成されるSQLに`HAVING`句を追加できます。
+SQLでは、`GROUP BY`フィールドで条件を指定する場合に`HAVING`句を使用します。You can add the `HAVING` clause to the SQL fired by the `Model.find` by adding the `:having` option to the find.
 
 以下に例を示します。
 
@@ -1145,7 +1120,8 @@ Article.includes(:comments).where(comments: { visible: true })
 
 `where`条件がない場合は、通常のクエリが2セット生成されます。
 
-NOTE: `where`がこのように動作するのは、ハッシュを渡した場合だけです。SQL断片化 (fragmentation) を避けるためには、`references` を指定して強制的にテーブルをjoinする必要があります。
+NOTE: `where`がこのように動作するのは、ハッシュを渡した場合だけです。For
+SQL-fragments you need use `references` to force joined tables:
 
 ```ruby
 Article.includes(:comments).where("comments.visible = true").references(:comments)
@@ -1193,7 +1169,7 @@ end
 Article.published # => [published articles]
 ```
 
-または、`Articles`オブジェクトからなる関連付けでこのスコープを呼び出します。
+Or on an association consisting of `Article` objects:
 
 ```ruby
 category = Category.first
@@ -1244,7 +1220,6 @@ end
 
 このモデルに対してクエリが実行されたときのSQLクエリは以下のような感じになります。
 
-
 ```sql
 SELECT * FROM clients WHERE removed_at IS NULL
 ```
@@ -1280,7 +1255,8 @@ User.active.where(state: 'finished')
 # SELECT "users".* FROM "users" WHERE "users"."state" = 'active' AND "users"."state" = 'finished'
 ```
 
-末尾のwhere句をどうしてもスコープより優先したい場合は、`Relation#merge`を使用できます。
+If we do want the `last where clause` to win then `Relation#merge` can
+be used.
 
 ```ruby
 User.active.merge(User.inactive)
@@ -1335,59 +1311,13 @@ Active Recordは、テーブルに定義されたすべてのフィールド (�
 
 nameとlockedの両方を検索したいのであれば、2つのフィールド名をandでつなぐだけでメソッドを利用できます。たとえば、`Client.find_by_first_name_and_locked("Ryan", true)`のようにかくことができます
 
-メソッドチェインを理解する
----------------------------------
-
-Active Record パターンには [メソッドチェイン (Method chaining - Wikipedia)](http://en.wikipedia.org/wiki/Method_chaining) が実装されています。これにより、複数のActive Recordメソッドをシンプルな方法で次々に適用することができます。
-
-文中でメソッドチェインができるのは、その前のメソッドが`ActiveRecord::Relation` (`all`、`where`、`joins`など) をひとつ返す場合です。文の末尾には、単一のオブジェクトを返すメソッド ([単一のオブジェクトを取り出す](#%E5%8D%98%E4%B8%80%E3%81%AE%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%82%92%E5%8F%96%E3%82%8A%E5%87%BA%E3%81%99)を参照) をひとつ置かなければなりません。
-
-いくつか例をご紹介します。本ガイドでは一部の例のみをご紹介し、すべての例を網羅することはしません。
-Active Recordメソッドが呼び出されると、クエリはその時点ではすぐに生成されず、データベースに送信されます。クエリは、データが実際に必要になった時点で初めて生成されます。以下の例では、いずれも単一のクエリを生成します。
-
-### 複数のテーブルからのデータをフィルタして取得する
-
-```ruby
-Person
-  .select('people.id, people.name, comments.text')
-  .joins(:comments)
-  .where('comments.created_at > ?', 1.week.ago)
-```
-
-結果は次のようなものになります。
-
-```sql
-SELECT people.id, people.name, comments.text
-FROM people
-INNER JOIN comments
-  ON comments.person_id = people.id
-WHERE comments.created_at = '2015-01-01'
-```
-
-### 複数のテーブルから特定のデータを取得する
-
-```ruby
-Person
-  .select('people.id, people.name, companies.name')
-  .joins(:company)
-  .find_by('people.name' => 'John') # 名を指定
-```
-
-上のコードから以下が生成されます。
-
-```sql
-SELECT people.id, people.name, companies.name
-FROM people
-INNER JOIN companies
-  ON companies.person_id = people.id
-WHERE people.name = 'John'
-LIMIT 1
-```
-
-NOTE: ひとつのクエリが複数のレコードとマッチする場合、`find_by`は「最初」の結果だけを返し、他は返しません (上の`LIMIT 1` 文を参照)。
-
 新しいオブジェクトを検索またはビルドする
 --------------------------
+
+NOTE: Some dynamic finders have been deprecated in Rails 4.0 and will be
+removed in Rails 4.1. The best practice is to use Active Record scopes
+instead. You can find the deprecation gem at
+https://github.com/rails/activerecord-deprecated_finders
 
 レコードを検索し、レコードがなければ作成する、というのはよくある一連の流れです。`find_or_create_by`および`find_or_create_by!`メソッドを使用すればこれらを一度に行なうことができます。
 
@@ -1485,7 +1415,7 @@ SQLで検索する
 Client.find_by_sql("SELECT * FROM clients
   INNER JOIN orders ON clients.id = orders.client_id
   ORDER BY clients.created_at desc")
->
+# => [
   #<Client id: 1, first_name: "Lucas" >,
   #<Client id: 2, first_name: "Jan" >,
   # ...
@@ -1528,9 +1458,9 @@ Client.pluck(:id, :name)
 
 ```ruby
 Client.select(:id).map { |c| c.id }
-# または
+# or
 Client.select(:id).map(&:id)
-# または
+# or
 Client.select(:id, :name).map { |c| [c.id, c.name] }
 ```
 
@@ -1538,7 +1468,7 @@ Client.select(:id, :name).map { |c| [c.id, c.name] }
 
 ```ruby
 Client.pluck(:id)
-# または
+# or
 Client.pluck(:id, :name)
 ```
 
@@ -1589,7 +1519,8 @@ Person.ids
 オブジェクトの存在チェック
 --------------------
 
-オブジェクトが存在するかどうかは、`exists?`このメソッドは、`find`と同様のクエリを使用してデータベースにクエリを送信しますが、オブジェクトのコレクションの代わりに`true`または`false`を返します。
+オブジェクトが存在するかどうかは、`exists?`.
+このメソッドは、`find`と同様のクエリを使用してデータベースにクエリを送信しますが、オブジェクトのコレクションの代わりに`true`または`false`を返します。
 
 ```ruby
 Client.exists?(1)
@@ -1599,7 +1530,7 @@ Client.exists?(1)
 
 ```ruby
 Client.exists?(id: [1,2,3])
-# または
+# or
 Client.exists?(name: ['John', 'Sergei'])
 ```
 
@@ -1732,16 +1663,16 @@ User.where(id: 1).joins(:articles).explain
 ```
 EXPLAIN for: SELECT `users`.* FROM `users` INNER JOIN `articles` ON `articles`.`user_id` = `users`.`id` WHERE `users`.`id` = 1
 +----+-------------+----------+-------+---------------+
-| id | select_type | table    | type  | possible_keys |
+| id | select_type | table | type  | possible_keys |
 +----+-------------+----------+-------+---------------+
-|  1 | SIMPLE      | users    | const | PRIMARY       |
-|  1 | SIMPLE      | articles | ALL   | NULL          |
+|  1 | SIMPLE      | users | const | PRIMARY       |
+|  1 | SIMPLE      | articles | ALL  | NULL          |
 +----+-------------+----------+-------+---------------+
 +---------+---------+-------+------+-------------+
-| key     | key_len | ref   | rows | Extra       |
+| key     | key_len | ref   | rows | Extra |
 +---------+---------+-------+------+-------------+
-| PRIMARY | 4       | const |    1 |             |
-| NULL    | NULL    | NULL  |    1 | Using where |
+| PRIMARY | 4       | const |    1 |       |
+| NULL | NULL    | NULL |    1 | Using where |
 +---------+---------+-------+------+-------------+
 
 2 rows in set (0.00 sec)
@@ -1749,13 +1680,14 @@ EXPLAIN for: SELECT `users`.* FROM `users` INNER JOIN `articles` ON `articles`.`
 
 上の結果はMySQLの場合です。
 
-Active Recordは、データベースシェルを模したデータをある程度整形して出力します。PostgreSQLアダプタで同じクエリを実行すると、今度は以下のような結果が得られます。
+Active Record performs a pretty printing that emulates the one of the database
+shells. PostgreSQLアダプタで同じクエリを実行すると、今度は以下のような結果が得られます。
 
 ```
 EXPLAIN for: SELECT "users".* FROM "users" INNER JOIN "articles" ON "articles"."user_id" = "users"."id" WHERE "users"."id" = 1
                                   QUERY PLAN
 ------------------------------------------------------------------------------
-Nested Loop Left Join  (cost=0.00..37.24 rows=8 width=0)
+ Nested Loop Left Join  (cost=0.00..37.24 rows=8 width=0)
    Join Filter: (articles.user_id = users.id)
    ->  Index Scan using users_pkey on users  (cost=0.00..8.27 rows=1 width=4)
          Index Cond: (id = 1)
