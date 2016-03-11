@@ -1,4 +1,3 @@
-﻿
 Active Record の基礎
 ====================
 
@@ -21,7 +20,9 @@ Active Recordとは、[MVC](http://ja.wikipedia.org/wiki/Model_View_Controller)�
 
 ### Active Recordパターン
 
-[Active RecordはMartin Fowlerによって](http://www.martinfowler.com/eaaCatalog/activeRecord.html) _Patterns of Enterprise Application Architecture_ という書籍で記述されました。Active Recordにおいて、オブジェクトとは永続的なデータであり、そのデータに対する振る舞いでもあります。Active Recordでは、データアクセスのロジックを確実なものにすることは、そのオブジェクトの利用者にデータベースへの読み書き方法を教育することの一部である、という意見を採用しています。
+[Active RecordはMartin Fowlerによって](http://www.martinfowler.com/eaaCatalog/activeRecord.html) _Patterns of Enterprise Application Architecture_ という書籍で記述されました。Active Recordにおいて、オブジェクトとは永続的なデータであり、そのデータに対する振る舞いでもあります。Active Record takes the opinion that ensuring
+data access logic as part of the object will educate users of that
+object on how to write to and read from the database.
 
 ### O/Rマッピング
 
@@ -50,8 +51,8 @@ Active Recordには、モデルとデータベースのテーブルとのマッ�
 * モデルのクラス - 単数形であり、語頭を大文字にする (例: `BookClub`)
 
 | モデル / クラス | テーブル / スキーマ |
-| ------------- | -------------- |
-| `Post`        | `posts`        |
+| ---------------- | -------------- |
+| `Article`        | `articles`     |
 | `LineItem`    | `line_items`   |
 | `Deer`        | `deers`        |
 | `Mouse`       | `mice`         |
@@ -63,7 +64,6 @@ Active Recordには、モデルとデータベースのテーブルとのマッ�
 Active Recordでは、データベースのテーブルで使用されるカラムの名前についても、利用目的に応じてルールがあります。
 
 * **外部キー** - このカラムは `テーブル名の単数形_id` にする必要があります (例 `item_id`、`order_id`)これらのカラムは、Active Recordがモデル間の関連付けを作成するときに参照されます。
-
 * **主キー** - デフォルトでは `id` という名前を持つintegerのカラムをテーブルの主キーとして使用します。このカラムは、[Active Recordマイグレーション](migrations.html)を使用してテーブルを作成するときに自動的に作成されます。
 
 他にも、Active Recordインスタンスに機能を追加するカラム名がいくつかあります。
@@ -71,9 +71,12 @@ Active Recordでは、データベースのテーブルで使用されるカラ�
 * `created_at` - レコードが作成された時に現在の日付時刻が自動的に設定されます
 * `updated_at` - レコードが更新されたときに現在の日付時刻が自動的に設定されます
 * `lock_version` - モデルに[optimistic locking](http://api.rubyonrails.org/classes/ActiveRecord/Locking.html)を追加します
-* `type` - モデルで[Single Table Inheritance](http://api.rubyonrails.org/classes/ActiveRecord/Base.html#label-Single+table+inheritance)を使用する場合に指定します
+* `type` - Specifies that the model uses [Single Table
+  Inheritance](http://api.rubyonrails.org/classes/ActiveRecord/Base.html#class-ActiveRecord::Base-label-Single+table+inheritance).
 * `関連付け名_type` - [ポリモーフィック関連付け](association_basics.html#ポリモーフィック関連付け)の種類を保存します
-* `テーブル名_count` - 関連付けにおいて、所属しているオブジェクトの数をキャッシュするのに使用されます。たとえば、`Post`クラスに`comments_count`というカラムがあり、そこに`Comment`のインスタンスが多数あると、ポストごとのコメント数がここにキャッシュされます。
+* `テーブル名_count` - 関連付けにおいて、所属しているオブジェクトの数をキャッシュするのに使用されます。例:, a `comments_count` column in a `Articles` class that
+  has many instances of `Comment` will cache the number of existent comments
+  for each article.
 
 NOTE: これらのカラム名は必須ではありませんが、Active Recordに予約されています。特殊なことをするのでなければ、これらの予約済みカラム名の使用は避けてください。たとえば、`type`という語はテーブルでSingle Table Inheritance (STI)を指定するために予約されています。STIを使用しないとしても、予約語より先にまず"context"などのような、モデルのデータを適切に表す語を検討してください。
 
@@ -114,16 +117,18 @@ Railsアプリケーションで別の命名ルールを使用しなければな
 
 ```ruby
 class Product < ActiveRecord::Base
-  self.table_name = "PRODUCT"
+  self.table_name = "my_products"
 end
 ```
 
-この指定を行った場合、テストの定義で`set_fixture_class`メソッドを使用し、フィクスチャ (クラス名.yml) に対応するクラス名を別途定義する必要があります。
+If you do so, you will have to define manually the class name that is hosting
+the fixtures (my_products.yml) using the `set_fixture_class` method in your test
+definition:
 
 ```ruby
-class FunnyJoke < ActiveSupport::TestCase
-  set_fixture_class funny_jokes: Joke
-  fixtures :funny_jokes
+class ProductTest < ActiveSupport::TestCase
+  set_fixture_class my_products: Product
+  fixtures :my_products
   ...
 end
 ```
@@ -191,7 +196,7 @@ david = User.find_by(name: 'David')
 
 ```ruby
 # 名前がDavidで、職業がコードアーティストのユーザーをすべて返し、created_atカラムで逆順ソートする
-users = User.where(name: 'David', occupation: 'Code Artist').order('created_at DESC')
+users = User.where(name: 'David', occupation: 'Code Artist').order(created_at: :desc)
 ```
 
 Active Recordモデルへのクエリについては[Active Recordクエリインターフェイス](active_record_querying.html)ガイドで詳細を説明します。
@@ -233,7 +238,12 @@ user.destroy
 
 Active Recordを使用して、モデルがデータベースに書き込まれる前にモデルの状態を検証することができます。モデルをチェックするためのさまざまなメソッドが用意されています。属性が空でないこと、一意であること、既にデータベースにないこと、特定のフォーマットに従っていることなど、多岐にわたった検証が行えます。
 
-検証は、データベースを永続化するうえで極めて重要です。そのため、`create`、`save`、`update`メソッドは、検証に失敗した場合に`false`を返します。このとき実際のデータベース操作は行われません。上の3つのメソッドにはそれぞれ破壊的なバージョン (`create!`、`save!`、`update!`)があり、こちらは検証に失敗した場合にさらに厳しい対応、つまり`ActiveRecord::RecordInvalid`例外を発生します。
+Validation is a very important issue to consider when persisting to the database, so
+the methods `save` and `update` take it into account when
+running: they return `false` when validation fails and they didn't actually
+perform any operation on the database. All of these have a bang counterpart (that
+is, `save!` and `update!`), which are stricter in that
+they raise the exception `ActiveRecord::RecordInvalid` if validation fails.
 以下の例で簡単に説明します。
 
 ```ruby
@@ -241,8 +251,9 @@ class User < ActiveRecord::Base
   validates :name, presence: true
 end
 
-User.create  # => false
-User.create! # => ActiveRecord::RecordInvalid: Validation failed: Name can't be blank
+user = User.new
+user.save   # => false
+user.save! # => ActiveRecord::RecordInvalid: Validation failed: Name can't be blank
 ```
 
 検証の詳細については[Active Record検証ガイド](active_record_validations.html)を参照してください。
@@ -268,7 +279,7 @@ class CreatePublications < ActiveRecord::Migration
       t.string :publisher_type
       t.boolean :single_issue
 
-      t.timestamps
+      t.timestamps null: false
     end
     add_index :publications, :publication_type_id
   end

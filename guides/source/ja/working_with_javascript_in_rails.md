@@ -1,4 +1,3 @@
-﻿
 Rails で JavaScript を使用する
 ================================
 
@@ -176,7 +175,7 @@ $(document).ready ->
 <a href="/articles/1" data-remote="true">an article</a>
 ```
 
-`form_for`の場合と同様、同じAjaxイベントをバインドできます。例を以下に示します。1クリックで削除できる記事の一覧があるとします。このHTMLは以下のような感じになります。
+`form_for`の場合と同様、同じAjaxイベントをバインドできます。Here's an example. 1クリックで削除できる記事の一覧があるとします。このHTMLは以下のような感じになります。
 
 ```erb
 <%= link_to "Delete article", @article, remote: true, method: :delete %>
@@ -252,7 +251,9 @@ indexビュー (`app/views/users/index.html.erb`) の内容は以下のように
 
 indexページの上部にはユーザーの一覧が表示されます。下部にはユーザー作成用のフォームが表示されます。
 
-下部のフォームは`UsersController`の`create`アクションを呼び出します。フォームのremoteオプションがオンになっているので、リクエストはAjaxリクエストとして`UsersController`に渡され、JavaScriptを探します。コントローラ内でリクエストに応答する`create`アクションは以下のようになります。
+下部のフォームは`UsersController`の`create`アクションを呼び出します。フォームのremoteオプションがオンになっているので、リクエストはAjaxリクエストとして`UsersController`に渡され、JavaScriptを探します。In order to
+serve that request, the `create` action of your controller would look like
+this
 
 ```ruby
 # app/controllers/users_controller.rb
@@ -286,7 +287,11 @@ Rails 4には[Turbolinks gem](https://github.com/rails/turbolinks)が同梱さ�
 
 ### Turbolinksの動作原理
 
-Turbolinksは、ページにあるすべての`<a>`にクリックハンドラを1つずつ追加します。ブラウザで[PushState](https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Manipulating_the_browser_history#The_pushState\(\).C2.A0method)がサポートされている場合、Turbolinksはそのページ用のAjaxリクエストを生成し、サーバーからのレスポンスを解析し、そのページの`<body>`全体をレスポンスの`<body>`で置き換えます。続いて、TurbolinksはPushStateを使用してURLを正しいものに書き換え、リフレッシュのセマンティクスを維持しながらプリティURLを与えます。
+Turbolinksは、ページにあるすべての`<a>`にクリックハンドラを1つずつ追加します。If your browser
+supports
+[PushState](https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Manipulating_the_browser_history#The_pushState%28%29_method),
+Turbolinks will make an Ajax request for the page, parse the response, and
+replace the entire `<body>` of the page with the `<body>` of the response. 続いて、TurbolinksはPushStateを使用してURLを正しいものに書き換え、リフレッシュのセマンティクスを維持しながらプリティURLを与えます。
 
 Turbolinksを有効にするには、TurbolinksをGemfileに追加し、CoffeeScriptのマニフェスト (通常は`app/assets/javascripts/application.js`) に`//= require turbolinks`を追加します。
 

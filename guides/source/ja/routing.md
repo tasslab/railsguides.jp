@@ -1,4 +1,3 @@
-﻿
 Rails のルーティング
 =================================
 
@@ -72,7 +71,7 @@ Railsアプリケーションが以下のHTTPリクエストを受け取った�
 DELETE /photos/17
 ```
 
-このリクエストは、特定のコントローラ内アクションにマッピングさせるようルーターに要求しています。最初にマッチしたのが以下のルーティングだとします。
+it asks the router to map it to a controller action. 最初にマッチしたのが以下のルーティングだとします。
 
 ```ruby
 resources :photos
@@ -184,61 +183,61 @@ form_for @geocoder, url: geocoder_path do |f|
 
 ```ruby
 namespace :admin do
-  resources :posts, :comments
+  resources :articles, :comments
 end
 ```
 
-上のルーティングにより、`posts`コントローラや`comments`コントローラへのルーティングが多数生成されます。たとえば、`Admin::PostsController`向けに作成されるルーティングは以下のとおりです。
+This will create a number of routes for each of the `articles` and `comments` controller. For `Admin::ArticlesController`, Rails will create:
 
 | HTTP 動詞 | パス                  | コントローラ#アクション   | 名前付きヘルパー              |
-| --------- | --------------------- | ------------------- | ------------------------- |
-| GET       | /admin/posts          | admin/posts#index   | admin_posts_path          |
-| GET       | /admin/posts/new      | admin/posts#new     | new_admin_post_path       |
-| POST      | /admin/posts          | admin/posts#create  | admin_posts_path          |
-| GET       | /admin/posts/:id      | admin/posts#show    | admin_post_path(:id)      |
-| GET       | /admin/posts/:id/edit | admin/posts#edit    | edit_admin_post_path(:id) |
-| PATCH/PUT | /admin/posts/:id      | admin/posts#update  | admin_post_path(:id)      |
-| DELETE    | /admin/posts/:id      | admin/posts#destroy | admin_post_path(:id)      |
+| --------- | ------------------------ | ---------------------- | ---------------------------- |
+| GET       | /admin/articles          | admin/articles#index   | admin_articles_path          |
+| GET       | /admin/articles/new      | admin/articles#new     | new_admin_article_path       |
+| POST      | /admin/articles          | admin/articles#create  | admin_articles_path          |
+| GET       | /admin/articles/:id      | admin/articles#show    | admin_article_path(:id)      |
+| GET       | /admin/articles/:id/edit | admin/articles#edit    | edit_admin_article_path(:id) |
+| PATCH/PUT | /admin/articles/:id      | admin/articles#update  | admin_article_path(:id)      |
+| DELETE    | /admin/articles/:id      | admin/articles#destroy | admin_article_path(:id)      |
 
-例外的に、(`/admin`が前についていない) `/posts`を`Admin::PostsController`にルーティングしたい場合は、以下のようにすることもできます。
+If you want to route `/articles` (without the prefix `/admin`) to `Admin::ArticlesController`, you could use:
 
 ```ruby
 scope module: 'admin' do
-  resources :posts, :comments
+  resources :articles, :comments
 end
 ```
 
 以下のようにブロックを使用しない記述も可能です。
 
 ```ruby
-resources :posts, module: 'admin'
+resources :articles, module: 'admin'
 ```
 
-逆に、`/admin/posts`を (`Admin::`なしの) `PostsController`にルーティングしたい場合は、以下のようにします。
+If you want to route `/admin/articles` to `ArticlesController` (without the `Admin::` module prefix), you could use:
 
 ```ruby
 scope '/admin' do
-  resources :posts, :comments
+  resources :articles, :comments
 end
 ```
 
 以下のようにブロックを使用しない記述も可能です。
 
 ```ruby
-resources :posts, path: '/admin/posts'
+resources :articles, path: '/admin/articles'
 ```
 
-いずれの場合も、名前付きルート (named route)は、`scope`を使用しなかった場合と同じであることにご注目ください。最後の例の場合は、以下のパスが`PostsController`に割り当てられます。
+いずれの場合も、名前付きルート (named route)は、`scope`を使用しなかった場合と同じであることにご注目ください。In the last case, the following paths map to `ArticlesController`:
 
 | HTTP 動詞 | パス                  | コントローラ#アクション   | 名前付きヘルパー              |
-| --------- | --------------------- | ----------------- | ------------------- |
-| GET       | /admin/posts          | posts#index       | posts_path          |
-| GET       | /admin/posts/new      | posts#new         | new_post_path       |
-| POST      | /admin/posts          | posts#create      | posts_path          |
-| GET       | /admin/posts/:id      | posts#show        | post_path(:id)      |
-| GET       | /admin/posts/:id/edit | posts#edit        | edit_post_path(:id) |
-| PATCH/PUT | /admin/posts/:id      | posts#update      | post_path(:id)      |
-| DELETE    | /admin/posts/:id      | posts#destroy     | post_path(:id)      |
+| --------- | ------------------------ | -------------------- | ---------------------- |
+| GET       | /admin/articles          | articles#index       | articles_path          |
+| GET       | /admin/articles/new      | articles#new         | new_article_path       |
+| POST      | /admin/articles          | articles#create      | articles_path          |
+| GET       | /admin/articles/:id      | articles#show        | article_path(:id)      |
+| GET       | /admin/articles/:id/edit | articles#edit        | edit_article_path(:id) |
+| PATCH/PUT | /admin/articles/:id      | articles#update      | article_path(:id)      |
+| DELETE    | /admin/articles/:id      | articles#destroy     | article_path(:id)      |
 
 TIP: _`namespace`ブロックの内部で異なるコントローラ名前空間を使用したいのであれば、「`get '/foo' => '/foo#index'`」のような絶対コントローラパスを指定することもできます。_
 
@@ -258,7 +257,7 @@ end
 
 ルーティングをネストする (入れ子にする) ことで、この親子関係をルーティングで表すことができるようになります。上の例の場合、以下のようにルーティングを宣言することができます。
 
-```ruby 
+```ruby
 resources :magazines do
   resources :ads
 end
@@ -305,7 +304,7 @@ TIP: _リソースのネスティングは、ぜひとも1回にとどめて下�
 前述したような深いネストを避けるひとつの方法として、コレクション (index/new/createのような、idを持たないアクション) だけを親のスコープの下で生成するという手法があります。このとき、メンバー (show/edit/update/destroyのような、idを必要とするアクション) をネストに含めないのがポイントです。これによりコレクションだけが階層化のメリットを受けられます。つまり、以下のように最小限の情報でリソースを一意に指定できるルーティングを作成するということです。
 
 ```ruby
-resources :posts do
+resources :articles do
   resources :comments, only: [:index, :new, :create]
 end
 resources :comments, only: [:show, :edit, :update, :destroy]
@@ -314,7 +313,7 @@ resources :comments, only: [:show, :edit, :update, :destroy]
 この方法は、ルーティングの記述を複雑にせず、かつ深いネストを作らないという絶妙なバランスを保っています。`:shallow`オプションを使用することで、上と同じ内容をさらに簡単に記述できます。
 
 ```ruby
-resources :posts do
+resources :articles do
   resources :comments, shallow: true
 end
 ```
@@ -322,7 +321,7 @@ end
 これによって生成されるルーティングは、最初の例と完全に同じです。親リソースで`:shallow`オプションを指定すると、すべてのネストしたリソースが浅くなります。
 
 ```ruby
-resources :posts, shallow: true do
+resources :articles, shallow: true do
   resources :comments
   resources :quotes
   resources :drafts
@@ -333,8 +332,8 @@ DSL (ドメイン固有言語) である`shallow`メソッドをルーティン�
 
 ```ruby
 shallow do
-  resources :posts do
-    resources :comments
+  resources :articles do
+  resources :comments
     resources :quotes
     resources :drafts
   end
@@ -345,7 +344,7 @@ end
 
 ```ruby
 scope shallow_path: "sekret" do
-  resources :posts do
+  resources :articles do
     resources :comments, shallow: true
   end
 end
@@ -354,10 +353,10 @@ end
 上の場合、commentsリソースのルーティングは以下のようになります。
 
 | HTTP 動詞 | パス                  | コントローラ#アクション   | 名前付きヘルパー              |
-| --------- | -------------------------------------- | ----------------- | --------------------- |
-| GET       | /posts/:post_id/comments(.:format)     | comments#index    | post_comments_path    |
-| POST      | /posts/:post_id/comments(.:format)     | comments#create   | post_comments_path    |
-| GET       | /posts/:post_id/comments/new(.:format) | comments#new      | new_post_comment_path |
+| --------- | -------------------------------------------- | ----------------- | ------------------------ |
+| GET       | /articles/:article_id/comments(.:format)     | comments#index    | article_comments_path    |
+| POST      | /articles/:article_id/comments(.:format)     | comments#create   | article_comments_path    |
+| GET       | /articles/:article_id/comments/new(.:format) | comments#new      | new_article_comment_path |
 | GET       | /sekret/comments/:id/edit(.:format)    | comments#edit     | edit_comment_path     |
 | GET       | /sekret/comments/:id(.:format)         | comments#show     | comment_path          |
 | PATCH/PUT | /sekret/comments/:id(.:format)         | comments#update   | comment_path          |
@@ -367,7 +366,7 @@ end
 
 ```ruby
 scope shallow_prefix: "sekret" do
-  resources :posts do
+  resources :articles do
     resources :comments, shallow: true
   end
 end
@@ -376,10 +375,10 @@ end
 上の場合、commentsリソースのルーティングは以下のようになります。
 
 | HTTP 動詞 | パス                  | コントローラ#アクション   | 名前付きヘルパー              |
-| --------- | -------------------------------------- | ----------------- | ------------------------ |
-| GET       | /posts/:post_id/comments(.:format)     | comments#index    | post_comments_path    |
-| POST      | /posts/:post_id/comments(.:format)     | comments#create   | post_comments_path    |
-| GET       | /posts/:post_id/comments/new(.:format) | comments#new      | new_post_comment_path    |
+| --------- | -------------------------------------------- | ----------------- | --------------------------- |
+| GET       | /articles/:article_id/comments(.:format)     | comments#index    | article_comments_path       |
+| POST      | /articles/:article_id/comments(.:format)     | comments#create   | article_comments_path       |
+| GET       | /articles/:article_id/comments/new(.:format) | comments#new      | new_article_comment_path    |
 | GET       | /comments/:id/edit(.:format)           | comments#edit     | edit_sekret_comment_path |
 | GET       | /comments/:id(.:format)                | comments#show     | sekret_comment_path      |
 | PATCH/PUT | /comments/:id(.:format)                | comments#update   | sekret_comment_path      |
@@ -404,7 +403,7 @@ concernを利用すると、同じようなルーティングを繰り返し記�
 ```ruby
 resources :messages, concerns: :commentable
 
-resources :posts, concerns: [:commentable, :image_attachable]
+resources :articles, concerns: [:commentable, :image_attachable]
 ```
 
 上のコードは以下と同等です。
@@ -414,7 +413,7 @@ resources :messages do
   resources :comments
 end
 
-resources :posts do
+resources :articles do
   resources :comments
   resources :images, only: :index
 end
@@ -423,7 +422,7 @@ end
 concernはルーティング内のどのような場所にでも配置することができます。スコープや名前空間呼び出しでの使用法は以下のとおりです。
 
 ```ruby
-namespace :posts do
+namespace :articles do
   concerns :commentable
 end
 ```
@@ -488,7 +487,8 @@ end
 
 上のルーティングはGETリクエストとそれに伴う`/photos/1/preview`を認識し、リクエストを`Photos`コントローラの`preview`アクションにルーティングし、リソースid値を`params[:id]`に渡します。同時に、`preview_photo_url`ヘルパーと`preview_photo_path`ヘルパーも作成されます。
 
-memberルーティングブロックの内側では、次に述べるHTTP動詞が指定されたルーティング名を認識できます。指定可能な動詞は`get`、`patch`、`put`、`post`、`delete`です。`member`ルーティングが1つだけしかないのであれば、以下のようにルーティングで`:on`オプションを指定することでブロックを省略できます。
+memberルーティングブロックの内側では、次に述べるHTTP動詞が指定されたルーティング名を認識できます。You can use `get`, `patch`, `put`, `post`, or `delete` here
+. `member`ルーティングが1つだけしかないのであれば、以下のようにルーティングで`:on`オプションを指定することでブロックを省略できます。
 
 ```ruby
 resources :photos do
@@ -601,13 +601,15 @@ get 'photos/:id', to: 'photos#show'
 
 上のルーティングはブラウザからの`/photos/12`パスにマッチし、`Photos`コントローラの`show`アクションに割り当てられます。
 
-`:defaults`オプションにハッシュを渡すことで、これ以外のデフォルト設定を定義することもできます。この定義は、動的セグメントとして指定していないパラメータに対しても適用されます。例: 
+`:defaults`オプションにハッシュを渡すことで、これ以外のデフォルト設定を定義することもできます。この定義は、動的セグメントとして指定していないパラメータに対しても適用されます。例:
 
-```ruby 
+```ruby
 get 'photos/:id', to: 'photos#show', defaults: { format: 'jpg' }
 ```
 
 上のルーティングは`photos/12`にマッチし、`Photos`コントローラの`show`アクションに割り当てられ、`params[:format]`には`"jpg"`が設定されます。
+
+NOTE: You cannot override defaults via query parameters - this is for security reasons. The only defaults that can be overridden are dynamic segments via substitution in the URL path.
 
 ### 名前付きルーティング
 
@@ -641,7 +643,9 @@ match 'photos', to: 'photos#show', via: [:get, :post]
 match 'photos', to: 'photos#show', via: :all
 ```
 
-NOTE: 1つのアクションに`GET`リクエストと`POST`リクエストを両方ルーティングすると、セキュリティに影響する可能性があります。本当に必要な理由がない限り、1つのアクションにすべてのHTTP動詞をルーティングすることは避けてください。
+NOTE: 1つのアクションに`GET`リクエストと`POST`リクエストを両方ルーティングすると、セキュリティに影響する可能性があります。In general, you should avoid routing all verbs to an action unless you have a good reason to.
+
+NOTE: 'GET' in Rails won't check for CSRF token. You should never write to the database from 'GET' requests, for more information see the [security guide](security.html#csrf-countermeasures) on CSRF countermeasures.
 
 ### セグメントを制限する
 
@@ -660,26 +664,26 @@ get 'photos/:id', to: 'photos#show', id: /[A-Z]\d{5}/
 `:constraints`では正規表現を使用できますが、ここでは正規表現の「アンカー」は使用できないという制限があることにご注意ください。たとえば、以下のルーティングは無効です。
 
 ```ruby
-get '/:id', to: 'posts#show', constraints: {id: /^\d/}
+get '/:id', to: 'articles#show', constraints: { id: /^\d/ }
 ```
 
 対象となるルーティングはすべて初めからアンカーされているので、このようなアンカー表現を使用する必要はないはずです。
 
-たとえば以下のルーティングでは、ルート (root) 名前空間を共有する際に`posts`に対して`to_param`が`1-hello-world`のように数字で始まる値だけが使用できるようになっており、`users`に対して`to_param`が`david`のように数字で始まらない値だけが使用できるようになっています。
+例:, the following routes would allow for `articles` with `to_param` values like `1-hello-world` that always begin with a number and `users` with `to_param` values like `david` that never begin with a number to share the root namespace:
 
 ```ruby
-get '/:id', to: 'posts#show', constraints: { id: /\d.+/ }
+get '/:id', to: 'articles#show', constraints: { id: /\d.+/ }
 get '/:username', to: 'users#show'
 ```
 
 ### リクエスト内容に応じて制限を加える
 
-また、`String`を返す<a href="action_controller_overview.html#requestオブジェクト">Request</a>オブジェクトの任意のメソッドに基いてルーティングを制限することもできます。
+You can also constrain a route based on any method on the [Request object](action_controller_overview.html#the-request-object) that returns a `String`.
 
 リクエストに応じた制限は、セグメントを制限するときと同様の方法で指定することができます。
 
 ```ruby
-get 'photos', constraints: {subdomain: 'admin'}
+get 'photos', to: 'photos#index', constraints: { subdomain: 'admin' }
 ```
 
 ブロックフォームに対して制限を指定することもできます。
@@ -692,7 +696,7 @@ namespace :admin do
 end
 ```
 
-NOTE: リクエストベースの制限は、Requestオブジェクト</a>に対してあるメソッドを呼び出すことで実行されます。メソッド呼び出し時にハッシュキーと同じ名前をメソッドに渡し、返された値をハッシュ値と比較します。従って、制限された値は、対応するRequestオブジェクトメソッドが返す型と一致する必要があります。たとえば、`constraints: { subdomain: 'api' }`という制限は`api`サブドメインに期待どおりマッチしますが、`constraints: { subdomain: :api }`のようにシンボルを使用した場合は`api`サブドメインに一致しません。`request.subdomain`が返す`'api'`は文字列型であるためです。
+NOTE: Request constraints work by calling a method on the [Request object](action_controller_overview.html#the-request-object) with the same name as the hash key and then compare the return value with the hash value. 従って、制限された値は、対応するRequestオブジェクトメソッドが返す型と一致する必要があります。たとえば、`constraints: { subdomain: 'api' }`という制限は`api`サブドメインに期待どおりマッチしますが、`constraints: { subdomain: :api }`のようにシンボルを使用した場合は`api`サブドメインに一致しません。`request.subdomain`が返す`'api'`は文字列型であるためです。
 
 ### 高度な制限
 
@@ -728,7 +732,7 @@ end
 
 ### ルーティンググロブとワイルドカードセグメント
 
-ルーティンググロブ (route globbing) とはワイルドカード展開のことであり、ルーティングのある位置から下のすべての部分に特定のパラメータをマッチさせる際に使用します。例: 
+ルーティンググロブ (route globbing) とはワイルドカード展開のことであり、ルーティングのある位置から下のすべての部分に特定のパラメータをマッチさせる際に使用します。例:
 
 ```ruby
 get 'photos/*other', to: 'photos#unknown'
@@ -736,7 +740,7 @@ get 'photos/*other', to: 'photos#unknown'
 
 上のルーティングは`photos/12`や`/photos/long/path/to/12`にマッチし、`params[:other]`には`"12"`や`"long/path/to/12"`が設定されます。先頭にアスタリスク`*`が付いている部分を「ワイルドカードセグメント」と呼びます。
 
-ワイルドカードセグメントはルーティングのどの部分でも使用できます。例: 
+ワイルドカードセグメントはルーティングのどの部分でも使用できます。例:
 
 ```ruby
 get 'books/*section/:title', to: 'books#show'
@@ -744,7 +748,7 @@ get 'books/*section/:title', to: 'books#show'
 
 上は`books/some/section/last-words-a-memoir`にマッチし、`params[:section]`には`'some/section'`が保存され、`params[:title]`には`'last-words-a-memoir'`が保存されます。
 
-技術上は、1つのルーティングに2つ以上のワイルドカードセグメントを含めることは可能です。マッチャがセグメントをパラメータに割り当てる方法は直感的です。例: 
+技術上は、1つのルーティングに2つ以上のワイルドカードセグメントを含めることは可能です。マッチャがセグメントをパラメータに割り当てる方法は直感的です。例:
 
 ```ruby
 get '*a/foo/*b', to: 'test#index'
@@ -752,7 +756,7 @@ get '*a/foo/*b', to: 'test#index'
 
 上のルーティングは`zoo/woo/foo/bar/baz`にマッチし、`params[:a]`には`'zoo/woo'`が保存され、and `params[:b]`には`'bar/baz'`が保存されます。
 
-NOTE: `'/foo/bar.json'`をリクエストすると`params[:pages]`には`'foo/bar'`がJSONリクエストフォーマットで保存されます。Rails 3.0.xの動作に戻したい場合は、以下のように`format: false`を指定することができます。
+NOTE: By requesting `'/foo/bar.json'`, your `params[:pages]` will be equal to `'foo/bar'` with the request format of JSON. Rails 3.0.xの動作に戻したい場合は、以下のように`format: false`を指定することができます。
 
 ```ruby
 get '*pages', to: 'pages#show', format: false
@@ -769,20 +773,20 @@ get '*pages', to: 'pages#show', format: true
 ルーティングで`redirect`を使用すると、あるパスを他のあらゆるパスにリダイレクトできます。
 
 ```ruby
-get '/stories', to: redirect('/posts')
+get '/stories', to: redirect('/articles')
 ```
 
 パスにマッチする動的セグメントを再利用してリダイレクトすることもできます。
 
 ```ruby
-get '/stories/:name', to: redirect('/posts/%{name}')
+get '/stories/:name', to: redirect('/articles/%{name}')
 ```
 
 リダイレクトにブロックを渡すこともできます。このリダイレクトは、シンボル化されたパスパラメータとrequestオブジェクトを受け取ります。
 
 ```ruby
-get '/stories/:name', to: redirect {|path_params, req| "/posts/#{path_params[:name].pluralize}" }
-get '/stories', to: redirect {|path_params, req| "/posts/#{req.subdomain}" }
+get '/stories/:name', to: redirect { |path_params, req| "/articles/#{path_params[:name].pluralize}" }
+get '/stories', to: redirect { |path_params, req| "/articles/#{req.subdomain}" }
 ```
 
 ここで行われているリダイレクトは、HTTPステータスで言う「301 "Moved Permanently"」であることにご注意ください。一部のWebブラウザやプロキシサーバーはこの種のリダイレクトをキャッシュすることがあり、その場合リダイレクト前の古いページにはアクセスできなくなります。
@@ -791,7 +795,7 @@ get '/stories', to: redirect {|path_params, req| "/posts/#{req.subdomain}" }
 
 ### Rackアプリケーションにルーティングする
 
-`Post`コントローラの`index`アクションに対応する`'posts#index'`のような文字列の代りに、任意の<a href="rails_on_rack.html">Rackアプリケーション</a>をマッチャーのエンドポイントとして指定することができます。
+Instead of a String like `'articles#index'`, which corresponds to the `index` action in the `ArticlesController`, you can specify any [Rack application](rails_on_rack.html) as the endpoint for a matcher:
 
 ```ruby
 match '/application.js', to: Sprockets, via: :all
@@ -799,7 +803,19 @@ match '/application.js', to: Sprockets, via: :all
 
 Railsルーターから見れば、`Sprockets`が`call`に応答して`[status, headers, body]`を返す限り、ルーティング先がRackアプリケーションであるかアクションであるかは区別できません。これは`via: :all`の適切な利用法です。というのは、適切と考えられるすべてのHTTP動詞をRackアプリケーションで扱えるようにできるからです。
 
-NOTE: 参考までに、`'posts#index'`は実際には`PostsController.action(:index)`という形に展開されます。これは正しいRackアプリケーションを返します。
+NOTE: For the curious, `'articles#index'` actually expands out to `ArticlesController.action(:index)`, which returns a valid Rack application.
+
+If you specify a rack application as the endpoint for a matcher remember that the route will be unchanged in the receiving application. With the following route your rack application should expect the route to be '/admin':
+
+```ruby
+match '/admin', to: AdminApp, via: :all
+```
+
+If you would prefer to have your rack application receive requests at the root path instead use mount:
+
+```ruby
+mount AdminApp, at: '/admin'
+```
 
 ### `root`を使用する
 
@@ -814,7 +830,7 @@ root 'pages#main' # 上の省略形
 
 NOTE: `root`ルーティングがアクションに渡せるのは`GET`リクエストだけです。
 
-名前空間やスコープの内側にrootを置くこともできます。例: 
+名前空間やスコープの内側にrootを置くこともできます。例:
 
 ```ruby
 namespace :admin do
@@ -835,7 +851,7 @@ get 'こんにちは', to: 'welcome#index'
 リソースフルルーティングをカスタマイズする
 ------------------------------
 
-ほとんどの場合、`resources :posts`のような指定を行ってデフォルトのルーティングやヘルパーを生成することで用は足りますが、もう少しルーティングをカスタマイズしたくなることもあります。Railsでは、リソースフルなヘルパーの一般的などの部分であっても事実上自由にカスタマイズ可能です。
+While the default routes and helpers generated by `resources :articles` will usually serve you well, you may want to customize them in some way. Railsでは、リソースフルなヘルパーの一般的などの部分であっても事実上自由にカスタマイズ可能です。
 
 ### 使用するコントローラを指定する
 
@@ -859,7 +875,7 @@ resources :photos, controller: 'images'
 
 NOTE: このリソースへのパスを生成するには`photos_path`や`new_photo_path`などを使用してください。
 
-名前空間内のコントローラは以下のように直接指定することができます。例: 
+名前空間内のコントローラは以下のように直接指定することができます。例:
 
 ```ruby
 resources :user_permissions, controller: 'admin/user_permissions'
@@ -874,7 +890,7 @@ NOTE: ここでサポートされている記法は、`/`で区切る「ディ�
 `:constraints`オプションを使用すると、暗黙で使用される`id`に対してフォーマットを指定することができます。例:
 
 ```ruby
-resources :photos, constraints: {id: /[A-Z][A-Z][0-9]+/}
+resources :photos, constraints: { id: /[A-Z][A-Z][0-9]+/ }
 ```
 
 上の宣言は`:id`パラメータに制限を加え、指定した正規表現にのみマッチするようにします。従って、上の例では`/photos/1`のようなパスにはマッチしなくなります。代わって、`/photos/RR27`のようなパスにマッチするようになります。
@@ -894,7 +910,7 @@ TIP: `:id`パラメータではドット`.`をデフォルトでは使用でき�
 
 ### 名前付きヘルパーをオーバーライドする
 
-`:as`オプションを使用すると、名前付きルーティングヘルパーを上書きして異なる名前を使用できます。例: 
+`:as`オプションを使用すると、名前付きルーティングヘルパーを上書きして異なる名前を使用できます。例:
 
 ```ruby
 resources :photos, as: 'images'
@@ -914,7 +930,7 @@ resources :photos, as: 'images'
 
 ### `new`セグメントや`edit`セグメントをオーバーライドする
 
-`:path_names`オプションを使用すると、パスに含まれている、自動生成された"new"セグメントや"edit"セグメントをオーバーライドできます。
+The `:path_names` option lets you override the automatically-generated `new` and `edit` segments in paths:
 
 ```ruby
 resources :photos, path_names: { new: 'make', edit: 'change' }
@@ -939,7 +955,7 @@ end
 
 ### 名前付きルーティングヘルパーにプレフィックスを追加する
 
-`:as`オプションを使用することで、Railsがルーティングに対して生成する名前付きルーティングヘルパー名の冒頭に文字を追加できます (プレフィックス)。パススコープを使用するルーティング同士での名前の衝突を避けたい場合に使用してください。例: 
+`:as`オプションを使用することで、Railsがルーティングに対して生成する名前付きルーティングヘルパー名の冒頭に文字を追加できます (プレフィックス)。パススコープを使用するルーティング同士での名前の衝突を避けたい場合に使用してください。例:
 
 ```ruby
 scope 'admin' do
@@ -949,7 +965,7 @@ end
 resources :photos
 ```
 
-上のルーティングでは、`admin_photos_path`や`new_admin_photo_path`などのルーティングヘルパーが生成されます。
+This will provide route helpers such as `admin_photos_path`, `new_admin_photo_path`, etc.
 
 ルーティングヘルパーのグループにプレフィックスを追加するには、以下のように`scope`メソッドで`:as`オプションを使用します。
 
@@ -969,15 +985,15 @@ NOTE: `namespace`スコープを使用すると、`:module`や`:path`プレフ�
 
 ```ruby
 scope ':username' do
-  resources :posts
+  resources :articles
 end
 ```
 
-上のルーティングにより、`/bob/posts/1`のような形式のURLを使用できるようになります。さらに、コントローラ、ヘルパー、ビューのいずれにおいても、このパスの`username`の部分に相当する文字列 (この場合であればbob) を`params[:username]`で参照できます。
+This will provide you with URLs such as `/bob/articles/1` and will allow you to reference the `username` part of the path as `params[:username]` in controllers, helpers and views.
 
 ### ルーティングの作成を制限する
 
-Railsは、アプリケーション内のすべてのRESTfulルーティングに対してデフォルトで7つのアクション (index、show、new、create、edit、update、destory) へのルーティングを作成します。`:only`オプションや`:except`オプションを使用することで、これらのルーティングを微調整できます。`:only`オプションは、指定されたルーティングだけを生成するよう指示します。
+By default, Rails creates routes for the seven default actions (`index`, `show`, `new`, `create`, `edit`, `update`, and `destroy`) for every RESTful route in your application. `:only`オプションや`:except`オプションを使用することで、これらのルーティングを微調整できます。`:only`オプションは、指定されたルーティングだけを生成するよう指示します。
 
 ```ruby
 resources :photos, only: [:index, :show]
@@ -1007,7 +1023,7 @@ end
 
 上のようにすることで、以下のような`Categories`コントローラへのルーティングが作成されます。
 
-| HTTP 動詞 | パス | コントローラ#アクション | 名前付きヘルパー |
+| HTTP 動詞 | パス                  | コントローラ#アクション   | 名前付きヘルパー              |
 | --------- | -------------------------- | ------------------ | ----------------------- |
 | GET       | /kategorien                | categories#index   | categories_path         |
 | GET       | /kategorien/neu            | categories#new     | new_category_path       |
@@ -1039,6 +1055,28 @@ end
 
 上のルーティングによって、`magazine_periodical_ads_url`や`edit_magazine_periodical_ad_path`などのルーティングヘルパーが生成されます。
 
+### Overriding Named Route パラメータ
+
+The `:param` option overrides the default resource identifier `:id` (name of
+the [dynamic segment](routing.html#dynamic-segments) used to generate the
+routes). You can access that segment from your controller using
+`params[<:param>]`.
+
+```ruby
+resources :videos, param: :identifier
+```
+
+```
+     videos GET  /videos(.:format)                  videos#index
+            POST /videos(.:format)                  videos#create
+ new_videos GET  /videos/new(.:format)              videos#new
+edit_videos GET  /videos/:identifier/edit(.:format) videos#edit
+```
+
+```ruby
+Video.find_by(identifier: params[:identifier])
+```
+
 ルーティングの調査とテスト
 -----------------------------
 
@@ -1046,7 +1084,7 @@ Railsには、ルーティングを調べる機能とテストする機能が備
 
 ### 既存のルールを一覧表示する
 
-現在のアプリケーションで利用可能なルーティングをすべて表示するには、サーバーが **development** 環境で動作している状態で`http://localhost:3000/rails/info/routes`をブラウザで開きます。ターミナルで`rake routes`コマンドを実行しても同じ結果を得られます。
+To get a complete list of the available routes in your application, visit `http://localhost:3000/rails/info/routes` in your browser while your server is running in the **development** environment. ターミナルで`rake routes`コマンドを実行しても同じ結果を得られます。
 
 どちらの方法を使用した場合でも、`routes.rb`ファイルに記載された順にルーティングが表示されます。1つのルーティングについて以下の情報が表示されます。
 
@@ -1060,14 +1098,14 @@ Railsには、ルーティングを調べる機能とテストする機能が備
 ```
     users GET    /users(.:format)          users#index
           POST   /users(.:format)          users#create
-new_user GET    /users/new(.:format)      users#new
+ new_user GET    /users/new(.:format)      users#new
 edit_user GET    /users/:id/edit(.:format) users#edit
 ```
 
 `CONTROLLER`環境変数を設定することで、ルーティング一覧の表示を特定のコントローラにマップされたものに制限することもできます。
 
 ```bash
-$ CONTROLLER=users rake routes
+$ CONTROLLER=users bin/rake routes
 ```
 
 TIP: 折り返しが発生しないぐらいに十分大きなサイズのターミナルを使用できるのであれば、`rake routes`コマンドの出力の方がおそらく読みやすいでしょう。
