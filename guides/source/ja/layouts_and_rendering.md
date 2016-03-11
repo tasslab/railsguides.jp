@@ -1,4 +1,3 @@
-﻿
 レイアウトとレンダリング
 ==============================
 
@@ -126,7 +125,7 @@ Cache-Control: no-cache
 $
 ```
 
-レスポンスの内容は空欄になっています (`Cache-Control`行以降にデータがない) が、ステータスコートが200 OKになっているのでリクエストが成功していることがわかります。renderメソッドの`:status`オプションを設定することでレスポンスを変更できます。何も出力しないというレスポンスは、Ajaxリクエストを使用する時に便利です。これを使用することで、リクエストが成功したという確認応答だけをブラウザに送り返すことができるからです。
+レスポンスの内容は空欄になっています (`Cache-Control`行以降にデータがない) が、ステータスコートが200 OKになっているのでリクエストが成功していることがわかります。何も出力しないというレスポンスは、Ajaxリクエストを使用する時に便利です。これを使用することで、リクエストが成功したという確認応答だけをブラウザに送り返すことができるからです。
 
 TIP: 200 OKヘッダーだけを送信したいのであれば、ここでご紹介した`render :nothing`よりも、本ガイドで後述する`head`メソッドを使用する方がおそらくよいでしょう。`head`メソッドは`render :nothing`よりも柔軟性が高く、HTTPヘッダーだけを生成していることが明確になるからです。
 
@@ -176,13 +175,7 @@ render template: "products/show"
 
 #### 任意のファイルを使用して出力する
 
-`render`メソッドで指定するビューは、現在のアプリケーションディレクトリの外部にあっても構いません (2つのRailsアプリケーションでビューを共有しているなどの場合)。
-
-```ruby
-render "/u/apps/warehouse_app/current/app/views/products/show"
-```
-
-パスがスラッシュ`/`で始まっている場合、Railsはこのコードがファイルの出力であると認識します。ファイルを出力することをより明示的にしたい場合は、以下のように`:file`オプションを使用することもできます (Rails 2.2以前ではこのオプションは必須でした)。
+The `render` method can also use a view that's entirely outside of your application:
 
 ```ruby
 render file: "/u/apps/warehouse_app/current/app/views/products/show"
@@ -190,7 +183,10 @@ render file: "/u/apps/warehouse_app/current/app/views/products/show"
 
 `:file`オプションに与えるパスは、ファイルシステムの絶対パスです。当然ながら、コンテンツを出力したいファイルに対して適切なアクセス権が与えられている必要があります。
 
-NOTE: ファイルを出力する場合、デフォルトでは現在のレイアウトが適用されません。ファイルの出力を現在のレイアウト内で行いたい場合は、`layout: true`オプションを追加する必要があります。
+NOTE: Using the `:file` option in combination with users input can lead to security problems
+since an attacker could use this action to access security sensitive files in your file system.
+
+NOTE: By default, the file is rendered using the current layout.
 
 TIP: Microsoft Windows上でRailsを実行している場合、ファイルを出力する際に`:file`オプションを省略できません。Windowsのファイル名フォーマットはUnixのファイル名と同じではないためです。
 
@@ -245,20 +241,22 @@ render plain: "OK"
 
 TIP: 平文テキストの出力は、AjaxやWebサービスリクエストに応答するときに最も有用です。これらではHTML以外の応答を期待しています。
 
-NOTE: デフォルトでは、`:plain`オプションを使用すると出力結果に現在のレイアウトが適用されません。テキストの出力を現在のレイアウト内で行いたい場合は、`layout: true`オプションを追加する必要があります。
+NOTE: デフォルトでは、`:plain`オプションを使用すると出力結果に現在のレイアウトが適用されません。If you want Rails to put the text into the current
+layout, you need to add the `layout: true` option and use the `.txt.erb`
+extension for the layout file.
 
 #### HTMLを出力する
 
 `render`で`:html`オプションを使用すると、HTML文字列を直接ブラウザに送信することができます。
 
-```ruby 
+```ruby
 render html: "<strong>Not Found</strong>".html_safe
 ```
 
 TIP: この手法は、HTMLコードのごく小規模なスニペットを出力したい場合に便利です。
 スニペットのマークアップが複雑になるようであれば、早めにテンプレートファイルに移行することをご検討ください。
 
-NOTE: このオプションを使用すると、文字列が「HTML safe」でない場合にHTML要素をエスケープします。
+NOTE: This option will escape HTML entities if the string is not HTML safe.
 
 #### JSONを出力する
 
@@ -300,7 +298,8 @@ render body: "raw"
 
 TIP: このオプションを使用するのは、レスポンスのcontent typeがどんなものであってもよい場合のみにしてください。ほとんどの場合、`:plain`や`:html`などを使用する方が適切です。
 
-NOTE: このオプションを使用してブラウザに送信されるレスポンスは、上書きされない限り`text/html`が使用されます。これはAction Dispatchによるレスポンスのデフォルトのcontent typeであるためです。
+NOTE: Unless overridden, your response returned from this render option will be
+`text/html`, as that is the default content type of Action Dispatch response.
 
 #### `render`のオプション
 
@@ -421,7 +420,7 @@ Railsは現在のレイアウトを探索する場合、最初に現在のコン
 
 ##### コントローラ用のレイアウトを指定する
 
-`layout`宣言を使用することで、デフォルトのレイアウト名ルールを上書きすることができます。例: 
+`layout`宣言を使用することで、デフォルトのレイアウト名ルールを上書きすることができます。例:
 
 ```ruby
 class ProductsController < ApplicationController
@@ -487,43 +486,43 @@ end
 
 ##### レイアウトの継承
 
-レイアウト宣言は下の階層に継承されます。下の階層、つまりより具体的なレイアウト宣言は、上の階層、つまりより一般的なレイアウトよりも常に優先されます。例: 
+レイアウト宣言は下の階層に継承されます。下の階層、つまりより具体的なレイアウト宣言は、上の階層、つまりより一般的なレイアウトよりも常に優先されます。例:
 
 * `application_controller.rb`
 
     ```ruby
-class ApplicationController < ActionController::Base
+    class ApplicationController < ActionController::Base
       layout "main"
     end
     ```
 
-* `posts_controller.rb`
+* `articles_controller.rb`
 
     ```ruby
-    class PostsController < ApplicationController
+    class ArticlesController < ApplicationController
     end
     ```
 
-* `special_posts_controller.rb`
+* `special_articles_controller.rb`
 
     ```ruby
-    class SpecialPostsController < PostsController
+    class SpecialArticlesController < ArticlesController
       layout "special"
     end
     ```
 
-* `old_posts_controller.rb`
+* `old_articles_controller.rb`
 
     ```ruby
-    class OldPostsController < SpecialPostsController
+    class OldArticlesController < SpecialArticlesController
       layout false
 
       def show
-        @post = Post.find(params[:id])
+        @article = Article.find(params[:id])
       end
 
       def index
-        @old_posts = Post.older
+        @old_articles = Article.older
         render layout: "old"
       end
       # ...
@@ -533,10 +532,10 @@ class ApplicationController < ActionController::Base
 上のアプリケーションは以下のように動作します。
 
 * ビューの出力には基本的に`main`レイアウトが使用されます。
-* `PostsController#index`では`main`レイアウトが使用されます。
-* `SpecialPostsController#index`では`special`レイアウトが使用されます。
-* `OldPostsController#show`ではレイアウトが適用されません。
-* `OldPostsController#index`では`old`レイアウトが使用されます。
+* `ArticlesController#index` will use the `main` layout
+* `SpecialArticlesController#index` will use the `special` layout
+* `OldArticlesController#show` will use no layout at all
+* `OldArticlesController#index` will use the `old` layout
 
 #### 二重レンダリングエラーを避ける
 
@@ -585,7 +584,7 @@ end
 
 HTTPリクエストにレスポンスを返すもう一つの方法は、`redirect_to`を使用することです。前述のとおり、`render`はレスポンス構成時にどのビュー (または他のアセット) を使用するかを指定するためのものです。`redirect_to`メソッドは、この点において`render`メソッドと根本的に異なります。`redirect_to`メソッドは、別のURLに対して改めてリクエストを再送信するよう、ブラウザに指令を出すためのものです。たとえば以下の呼び出しを行なうと、アプリケーションで現在どのページが表示されていても、写真のインデックス表示ページにリダイレクトされます。
 
-```ruby 
+```ruby
 redirect_to photos_url
 ```
 
@@ -894,7 +893,7 @@ WARNING: 画像ファイルの拡張子は省略できません。
 上のコードによって以下が生成されます。
 
 ```erb
-<video><source src="trailer.ogg" /><source src="movie.ogg" /></video>
+<video><source src="/videos/trailer.ogg" /><source src="/videos/trailer.flv" /></video>
 ```
 
 #### `audio_tag`を使用して音声ファイルにリンクする
@@ -1052,7 +1051,7 @@ TIP: すべてのページで共有されているコンテンツであれば、
         <b>Zone name</b><br>
         <%= f.text_field :name %>
       </p>
-      <p>
+    <p>
         <%= f.submit %>
       </p>
     <% end %>
